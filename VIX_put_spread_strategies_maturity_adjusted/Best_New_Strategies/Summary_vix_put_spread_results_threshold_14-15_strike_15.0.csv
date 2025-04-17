@@ -1,2 +1,0 @@
-File,VIX_Threshold,Sell_Strike,Number of Trades,Total Return,Max Drawdown,Risk/Reward Ratio,Winrate (%),DTE,Spread_Cost_Interval
-vix_put_spread_results_threshold_14-15_strike_15.0.csv,14-15,15.0,52,4362.6,-367.0000000000004,11.887193460490451,80.76923076923077,6; 9; 16; 18; 19; 21; 22; 23; 25; 26; 27; 28; 29; 30,-60.00000000000001 to 74.0
