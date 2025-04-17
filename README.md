@@ -35,3 +35,4 @@ It has been developed over several stages of quantitative research and live impl
 ---
 
 This system is fully autonomous, scalable, and continuously maintained for live trading.
+No copyrights allowed.
