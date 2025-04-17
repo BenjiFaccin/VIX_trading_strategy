@@ -1,0 +1,2 @@
+Date,Option expiration date,Strike short put,Strike long put,DTE,Spread Cost,Commission Sell,Commission Buy,Total Commissions,Status,VIX underlying price at trade,Qty Sell,Qty Buy,Bid Sell,Ask Sell,Bid Buy,Ask Buy,Price Sold,Price Paid,Effective Spread Cost,Total Costs,Expiry Value,Current Value of sell leg,Expected return 
+,,,,,,,,,,,,,,,,,,,,,,,
