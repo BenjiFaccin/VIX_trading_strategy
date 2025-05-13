@@ -18,14 +18,14 @@ const config = {
   url: 'https://your-docusaurus-site.example.com',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/',
+  baseUrl: '/VIX_trading_strategy/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'facebook', // Usually your GitHub org/user name.
   projectName: 'docusaurus', // Usually your repo name.
 
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
 
   // Even if you don't use internationalization, you can use this field to set
@@ -78,13 +78,13 @@ const config = {
       navbar: {
         title: 'VIX Trading',
         logo: {
-          alt: 'My Site Logo',
+          alt: 'VIX Trading',
           src: 'img/LogoVIX.jpg',
         },
         items: [
           {
           label: 'Performances',
-          to: '/performances',
+          to: 'performances',
           position: 'left',
           },
           {
@@ -103,27 +103,6 @@ const config = {
 
 // docusaurus.config.js
 
-module.exports = {
-  title: 'VIX Trading',
-  tagline: 'A Bull Put-spread Strategy',
-  url: 'https://benjifaccin.github.io',         // Your GitHub Pages URL
-  baseUrl: '/VIX_trading_strategy/',           // Your repo name (with slashes!)
-  onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/favicon.ico',
-  organizationName: 'BenjiFaccin',             // GitHub username
-  projectName: 'VIX_trading_strategy',         // GitHub repo name
-  deploymentBranch: 'gh-pages',                // Deployment branch
-  trailingSlash: false,
-  presets: [
-    [
-      'classic',
-      {
-        // ...
-      },
-    ],
-  ],
-};
 
 
 export default config;

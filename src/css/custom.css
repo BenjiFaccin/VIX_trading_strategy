@@ -28,3 +28,28 @@
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+/* Light mode navbar (default) */
+.navbar {
+  background-color: white !important;
+  color: black;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.navbar a,
+.navbar__link {
+  color: #222 !important;
+  font-weight: 500;
+}
+
+/* Dark mode overrides */
+[data-theme='dark'] .navbar {
+  background-color: #1a1a1a !important;
+  color: white;
+  box-shadow: none;
+}
+
+[data-theme='dark'] .navbar a,
+[data-theme='dark'] .navbar__link {
+  color: #fff !important;
+}

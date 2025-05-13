@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '@theme/Layout';
 import Papa from 'papaparse';
+import useBaseUrl from '@docusaurus/useBaseUrl'; // ✅ correct hook import
 
 export default function PerformancesPage() {
   const [trades, setTrades] = useState([]);
+  const csvUrl = useBaseUrl('/data/entry_trades.csv'); // ✅ moved here!
 
   useEffect(() => {
-    fetch('/data/entry_trades.csv')
+    fetch(csvUrl)
       .then(response => response.text())
       .then(csv => {
         Papa.parse(csv, {
@@ -17,7 +19,8 @@ export default function PerformancesPage() {
           }
         });
       });
-  }, []);
+  }, [csvUrl]);
+
 
   const columnsToDisplay = [
     'Date',

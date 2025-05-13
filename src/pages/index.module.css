@@ -7,9 +7,12 @@
   background-image: url('/img/header.jpg'); /* place ton image dans /static/img/ */
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
   color: white;
   padding: 4rem 0;
   text-align: center;
+  position: relative;
+  z-index: 0;
 }
 
 
