@@ -84,6 +84,11 @@ const config = {
         items: [
           {
           label: 'Overview',
+          to: 'overview',
+          position: 'left',
+          },
+          {
+          label: 'Performances',
           to: 'performances',
           position: 'left',
           },
