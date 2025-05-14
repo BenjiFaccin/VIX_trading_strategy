@@ -45,12 +45,10 @@ export default function PerformancesPage() {
     return num.toString();
   };
 
-  const totalTxs = (entryData.length * 2 + exitData.length);
-
   const normalizeDate = (dateStr) => {
     const date = new Date(dateStr);
     if (isNaN(date)) return null;
-    return date.toLocaleDateString('en-US');
+    return date.toLocaleDateString('en-US'); // MM/DD/YYYY
   };
 
   const aggregateByDate = (dataArray, statusFilter, multiplier = 1) => {
@@ -77,17 +75,24 @@ export default function PerformancesPage() {
 
   let cumFilled = 0;
   let cumCompleted = 0;
+  let cumCancelled = 0;
   const filledVsCompletedChartData = [...allDates]
     .sort((a, b) => new Date(a) - new Date(b))
     .map(date => {
       cumFilled += filledMap[date] || 0;
       cumCompleted += completedMap[date] || 0;
+      cumCancelled += cancelledMap[date] || 0;
+
       return {
         date,
         filled: cumFilled,
-        completed: cumCompleted
+        completed: cumCompleted,
+        cancelled: cumCancelled,
+        valid: cumFilled + cumCompleted
       };
     });
+
+  const totalTxs = cumFilled + cumCompleted; // Exclude cancelled
 
   const entryExitRatioData = filledVsCompletedChartData.map(({ date, filled, completed }) => {
     const total = filled + completed;
@@ -96,9 +101,16 @@ export default function PerformancesPage() {
     return { date, successRate, failRate };
   });
 
-  const cancelledData = Object.entries(cancelledMap)
-    .sort((a, b) => new Date(a[0]) - new Date(b[0]))
-    .map(([date, value]) => ({ date, cancelled: value }));
+  const cancelledRatioData = filledVsCompletedChartData.map(({ date, valid, cancelled }) => {
+    const total = valid + cancelled;
+    const validRatio = total > 0 ? valid / total : 1;
+    const cancelledRatio = 1 - validRatio;
+    return {
+      date,
+      valid: validRatio,
+      cancelled: cancelledRatio
+    };
+  });
 
   return (
     <Layout title="Performances">
@@ -203,19 +215,48 @@ export default function PerformancesPage() {
           </div>
         </div>
 
-        {/* Cancelled Transactions Graph */}
-        <div style={{ marginTop: '2rem' }}>
-          <h3 style={{ textAlign: 'center' }}>Number of Cancelled Transactions</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={cancelledData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="cancelled" fill="#ff4d4f" name="cancelled" />
-            </BarChart>
-          </ResponsiveContainer>
+        {/* Cancelled Ratio vs Valid Transactions */}
+        <div style={{ display: 'flex', gap: '2rem' }}>
+          <div style={{ flex: 1 }}>
+            <h3 style={{ textAlign: 'center' }}>Cancelled Transactions Ratio Over Time</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <AreaChart data={cancelledRatioData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis domain={[0, 1]} tickFormatter={(v) => `${Math.round(v * 100)}%`} />
+                <Tooltip formatter={(value) => `${(value * 100).toFixed(2)}%`} />
+                <Legend />
+                <Area
+                  type="monotone"
+                  dataKey="valid"
+                  stroke="#1890ff"
+                  fill="#1890ff"
+                  name="valid"
+                />
+                <Area
+                  type="monotone"
+                  dataKey="cancelled"
+                  stroke="#ff4d4f"
+                  fill="#ff4d4f"
+                  name="cancelled"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div style={{ flex: 1 }}>
+            <h3 style={{ textAlign: 'center' }}>Add Another Chart Here</h3>
+            <div style={{
+              height: '300px',
+              background: '#f5f5f5',
+              borderRadius: '10px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              Placeholder
+            </div>
+          </div>
         </div>
       </main>
     </Layout>
