@@ -14,11 +14,14 @@ export default function GeneralMetricsBacktesting() {
   const totalBacktestedTx = 21485;
   const percentageSelected = 1.52;
 
+  const fixedAverageWinrate = 92.29;
+  const fixedAverageRR = 89.41;
+
   const [strategyData, setStrategyData] = useState([]);
   const [winrateData, setWinrateData] = useState([]);
   const [riskRewardData, setRiskRewardData] = useState([]);
-  const [averageWinrate, setAverageWinrate] = useState(0);
-  const [averageRR, setAverageRR] = useState(0);
+  const [averageWinrate, setAverageWinrate] = useState(fixedAverageWinrate);
+  const [averageRR, setAverageRR] = useState(fixedAverageRR);
 
   const summaryCsvUrl = useBaseUrl('/data/Selected_Strategies_Summary.csv');
 
@@ -31,8 +34,6 @@ export default function GeneralMetricsBacktesting() {
           skipEmptyLines: true,
           complete: (results) => {
             let cumulative = 0;
-            let winrateSum = 0;
-            let rrSum = 0;
 
             const winrateArray = [];
             const rrArray = [];
@@ -43,11 +44,18 @@ export default function GeneralMetricsBacktesting() {
               const rr = parseFloat(row['Risk/Reward Ratio']) || 0;
 
               cumulative += returnVal;
-              winrateSum += winrate;
-              rrSum += rr;
 
-              winrateArray.push({ name: `Strategy${index + 1}`, winrate });
-              rrArray.push({ name: `Strategy${index + 1}`, rr });
+              winrateArray.push({
+                name: `Strategy${index + 1}`,
+                winrate,
+                avg: fixedAverageWinrate
+              });
+
+              rrArray.push({
+                name: `Strategy${index + 1}`,
+                rr,
+                avg: fixedAverageRR
+              });
 
               return {
                 name: `Strategy${index + 1}`,
@@ -56,13 +64,8 @@ export default function GeneralMetricsBacktesting() {
             });
 
             setStrategyData(data);
-            const winrateWithAvg = winrateArray.map(d => ({ ...d, avg: winrateSum / winrateArray.length }));
-            const rrWithAvg = rrArray.map(d => ({ ...d, avg: rrSum / rrArray.length }));
-
-            setWinrateData(winrateWithAvg);
-            setRiskRewardData(rrWithAvg);
-            setAverageWinrate(winrateSum / winrateArray.length);
-            setAverageRR(rrSum / rrArray.length);
+            setWinrateData(winrateArray);
+            setRiskRewardData(rrArray);
           }
         });
       });
@@ -78,21 +81,8 @@ export default function GeneralMetricsBacktesting() {
   };
 
   const formatTwoDecimals = (value) => {
-  return typeof value === 'number' ? value.toFixed(2) : value;
+    return typeof value === 'number' ? value.toFixed(2) : value;
   };
-
-  const fixedAverageWinrate = 92.29;
-  const fixedAverageRR = 89.41;
-
-  const avgWinrateLine = [
-  { name: 'Start', value: fixedAverageWinrate },
-  { name: 'End', value: fixedAverageWinrate }
-  ];
-
-  const avgRRLine = [
-    { name: 'Start', value: fixedAverageRR },
-    { name: 'End', value: fixedAverageRR }
-  ];
 
   return (
     <Layout title="General Metrics Backtesting">
@@ -110,6 +100,7 @@ export default function GeneralMetricsBacktesting() {
           General Metrics Backtesting
         </div>
 
+        {/* Metric Boxes */}
         <div style={{
           display: 'flex',
           gap: '1.5rem',
@@ -145,10 +136,10 @@ export default function GeneralMetricsBacktesting() {
           </div>
         </div>
 
-        {/* Cumulative Return Line Chart */}
+        {/* Cumulative Return Chart */}
         <div style={{ marginTop: '3rem', position: 'relative' }}>
           <h3 style={{ textAlign: 'center', marginBottom: '1rem' }}>
-            Cumulative Return by Strategy (from 2010 to 2023) with 1 contract per leg on every put-spread*
+            Cumulative Return by Strategy (from 2010 to 2023) with 1 contract per leg on every put-spread
           </h3>
           <ResponsiveContainer width="100%" height={400}>
             <LineChart data={strategyData}>
@@ -179,7 +170,7 @@ export default function GeneralMetricsBacktesting() {
           </div>
         </div>
 
-        {/* Winrate & Risk/Reward Bar Charts */}
+        {/* Winrate and Risk/Reward Charts */}
         <div style={{ display: 'flex', gap: '2rem', marginTop: '3rem' }}>
           {/* Winrate Chart */}
           <div style={{ flex: 1 }}>
@@ -195,13 +186,12 @@ export default function GeneralMetricsBacktesting() {
                 <Legend />
                 <Bar dataKey="winrate" fill="#002244" name="Winrate (%)" />
                 <Line
-                  data={avgWinrateLine}
-                  type="linear"
-                  dataKey="value"
+                  type="monotone"
+                  dataKey="avg"
                   stroke="#FFA500"
                   strokeDasharray="5 5"
                   name="Average Winrate"
-                  dot={true}
+                  dot={false}
                 />
               </BarChart>
             </ResponsiveContainer>
@@ -221,13 +211,12 @@ export default function GeneralMetricsBacktesting() {
                 <Legend />
                 <Bar dataKey="rr" fill="#002244" name="R/R Ratio" />
                 <Line
-                  data={avgRRLine}
-                  type="linear"
-                  dataKey="value"
+                  type="monotone"
+                  dataKey="avg"
                   stroke="#FFA500"
                   strokeDasharray="5 5"
                   name="Average R/R"
-                  dot={true}
+                  dot={false}
                 />
               </BarChart>
             </ResponsiveContainer>
