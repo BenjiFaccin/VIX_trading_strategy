@@ -83,7 +83,7 @@ const config = {
         },
         items: [
           {
-          label: 'Performances',
+          label: 'Overview',
           to: 'performances',
           position: 'left',
           },
