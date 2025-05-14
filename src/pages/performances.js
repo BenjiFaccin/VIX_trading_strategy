@@ -218,7 +218,7 @@ let cumulativeCompleted = 0;
 
       {/* Success Rate Chart */}
       <div style={{ flex: 1 }}>
-        <h3 style={{ textAlign: 'center' }}>Transactions Success Rate Over Time</h3>
+        <h3 style={{ textAlign: 'center' }}>Transactions Success Rate Over Time </h3>
         <ResponsiveContainer width="100%" height={300}>
           <AreaChart data={filledVsCompletedChartData}>
             <defs>
