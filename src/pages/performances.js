@@ -38,70 +38,51 @@ export default function PerformancesPage() {
 
   const formatTxCount = (num) => {
     if (num >= 100_000_000) return (num / 1_000_000).toFixed(2) + 'M';
-    if (num >= 10_000_000)  return (num / 1_000_000).toFixed(2) + 'M';
-    if (num >= 1_000_000)   return (num / 1_000_000).toFixed(2) + 'M';
-    if (num >= 100_000)     return (num / 1_000).toFixed(2) + 'k';
-    if (num >= 10_000)      return (num / 1_000).toFixed(2) + 'k';
+    if (num >= 10_000_000) return (num / 1_000_000).toFixed(2) + 'M';
+    if (num >= 1_000_000) return (num / 1_000_000).toFixed(2) + 'M';
+    if (num >= 100_000) return (num / 1_000).toFixed(2) + 'k';
+    if (num >= 10_000) return (num / 1_000).toFixed(2) + 'k';
     return num.toString();
   };
 
   const totalTxs = (entryData.length * 2 + exitData.length);
 
-  // --- Filled vs Completed TXs Over Time (Cumulative Bar) ---
-  const filledTxsByDate = {};
-  entryData
-    .filter(row => row['Status'] === 'Filled')
-    .forEach(row => {
-      const date = row['Date'];
-      if (!filledTxsByDate[date]) filledTxsByDate[date] = { filled: 0, completed: 0 };
-      filledTxsByDate[date].filled += 2;
-    });
+  const normalizeDate = (dateStr) => {
+    const date = new Date(dateStr);
+    if (isNaN(date)) return null;
+    return date.toLocaleDateString('en-US'); // e.g., MM/DD/YYYY
+  };
 
-  exitData.forEach(row => {
-    const date = row['Date'];
-    if (!filledTxsByDate[date]) filledTxsByDate[date] = { filled: 0, completed: 0 };
-    filledTxsByDate[date].completed += 1;
+  const aggregateByDate = (dataArray, key, multiplier = 1) => {
+    const result = {};
+    dataArray.forEach(row => {
+      const rawDate = normalizeDate(row['Date']);
+      if (!rawDate) return;
+      result[rawDate] = result[rawDate] || 0;
+      result[rawDate] += multiplier;
+    });
+    return result;
+  };
+
+  const filledMap = aggregateByDate(entryData.filter(r => r['Status'] === 'Filled'), 'Date', 2);
+  const completedMap = aggregateByDate(exitData, 'Date', 1);
+
+  const allDates = new Set([...Object.keys(filledMap), ...Object.keys(completedMap)]);
+  const filledVsCompletedChartData = [...allDates]
+    .sort((a, b) => new Date(a) - new Date(b))
+    .map(date => ({
+      date,
+      filled: filledMap[date] || 0,
+      completed: completedMap[date] || 0
+    }));
+
+  // Ratio per day
+  const entryExitRatioData = filledVsCompletedChartData.map(({ date, filled, completed }) => {
+    const total = filled + completed;
+    const successRate = total > 0 ? filled / total : 1;
+    const failRate = 1 - successRate;
+    return { date, successRate, failRate };
   });
-
-  let cumulativeFilled = 0;
-  let cumulativeCompleted = 0;
-
-  const filledVsCompletedChartData = Object.entries(filledTxsByDate)
-    .sort((a, b) => new Date(a[0]) - new Date(b[0]))
-    .map(([date, { filled, completed }]) => {
-      cumulativeFilled += filled;
-      cumulativeCompleted += completed;
-      return {
-        date,
-        filled: cumulativeFilled,
-        completed: cumulativeCompleted
-      };
-    });
-
-  // --- Daily Ratio Entry / (Entry + Exit) ---
-  const dailyRatioMap = {};
-  entryData
-    .filter(row => row['Status'] === 'Filled')
-    .forEach(row => {
-      const date = row['Date'];
-      if (!dailyRatioMap[date]) dailyRatioMap[date] = { entry: 0, exit: 0 };
-      dailyRatioMap[date].entry += 2;
-    });
-
-  exitData.forEach(row => {
-    const date = row['Date'];
-    if (!dailyRatioMap[date]) dailyRatioMap[date] = { entry: 0, exit: 0 };
-    dailyRatioMap[date].exit += 1;
-  });
-
-  const entryExitRatioData = Object.entries(dailyRatioMap)
-    .sort((a, b) => new Date(a[0]) - new Date(b[0]))
-    .map(([date, { entry, exit }]) => {
-      const total = entry + exit;
-      const successRate = total > 0 ? entry / total : 1;
-      const failRate = 1 - successRate;
-      return { date, successRate, failRate };
-    });
 
   return (
     <Layout title="Performances">
@@ -166,7 +147,7 @@ export default function PerformancesPage() {
           <div style={{ flex: 1 }}>
             <h3 style={{ textAlign: 'center' }}>Number of Transactions Over Time</h3>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={filledVsCompletedChartData} stackOffset="sign">
+              <BarChart data={filledVsCompletedChartData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
                 <YAxis />
