@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import Layout from '@theme/Layout';
 import Papa from 'papaparse';
 import {
-  LineChart, Line, BarChart, Bar, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ResponsiveContainer
+  AreaChart, Area, BarChart, Bar,
+  XAxis, YAxis, Tooltip, CartesianGrid, Legend, ResponsiveContainer
 } from 'recharts';
 import useBaseUrl from '@docusaurus/useBaseUrl';
-
 
 export default function PerformancesPage() {
   const [entryData, setEntryData] = useState([]);
@@ -36,7 +36,6 @@ export default function PerformancesPage() {
       });
   }, []);
 
-  // --- Format large numbers for TXs display ---
   const formatTxCount = (num) => {
     if (num >= 100_000_000) return (num / 1_000_000).toFixed(2) + 'M';
     if (num >= 10_000_000)  return (num / 1_000_000).toFixed(2) + 'M';
@@ -48,76 +47,24 @@ export default function PerformancesPage() {
 
   const totalTxs = (entryData.length * 2 + exitData.length);
 
-  // --- Total Costs (Cumulative, Absolute) ---
-  const parsedEntries = entryData
-    .map(row => ({
-      date: new Date(row['Date']),
-      cost: parseFloat(row['Total Costs']) || 0
-    }))
-    .filter(row => !isNaN(row.date.getTime()))
-    .sort((a, b) => a.date - b.date);
-
-  let cumulativeCost = 0;
-  const costChartData = parsedEntries.map(({ date, cost }) => {
-    cumulativeCost += cost;
-    return {
-      date: date.toLocaleString(),
-      cost: Math.abs(parseFloat(cumulativeCost.toFixed(2)))
-    };
-  });
-
-  // --- Cumulative Transactions ---
-  const txCountChartData = parsedEntries.map((entry, index) => ({
-    date: entry.date.toLocaleString(),
-    count: index + 1
-  }));
-
-  // --- Expected Return ---
-  const expectedReturnOverTime = exitData.reduce((acc, row) => {
-    const date = row['Date'];
-    const value = parseFloat(row['Expected return']) || 0;
-    acc[date] = (acc[date] || 0) + value;
-    return acc;
-  }, {});
-  const returnChartData = Object.entries(expectedReturnOverTime).map(([date, value]) => ({
-    date,
-    expectedReturn: parseFloat(value.toFixed(2))
-  }));
-
-  // --- Current Expiry Value (Filtered by Filled) ---
-  const currentExpiryValues = entryData
+  // --- Filled vs Completed TXs Over Time (Cumulative Bar) ---
+  const filledTxsByDate = {};
+  entryData
     .filter(row => row['Status'] === 'Filled')
-    .reduce((acc, row) => {
-      const label = `${row['Option expiration date']} | ${row['Strike short put']} / ${row['Strike long put']}`;
-      const value = parseFloat(row['Current Expiry Value']) || 0;
-      acc[label] = (acc[label] || 0) + value;
-      return acc;
-    }, {});
-  const expiryValueChartData = Object.entries(currentExpiryValues).map(([label, value]) => ({
-    label,
-    currentExpiryValue: parseFloat(value.toFixed(2))
-  }));
-
-  // --- Filled vs Completed TXs Over Time (Stacked Bar) ---
-  const filledTxsByDate = entryData
-    .filter(row => row['Status'] === 'Filled')
-    .reduce((acc, row) => {
+    .forEach(row => {
       const date = row['Date'];
-      acc[date] = acc[date] || { filled: 0, completed: 0 };
-      acc[date].filled += 2;
-      return acc;
-    }, {});
+      if (!filledTxsByDate[date]) filledTxsByDate[date] = { filled: 0, completed: 0 };
+      filledTxsByDate[date].filled += 2;
+    });
 
   exitData.forEach(row => {
     const date = row['Date'];
-    if (!filledTxsByDate[date]) {
-      filledTxsByDate[date] = { filled: 0, completed: 0 };
-    }
+    if (!filledTxsByDate[date]) filledTxsByDate[date] = { filled: 0, completed: 0 };
     filledTxsByDate[date].completed += 1;
   });
 
   let cumulativeFilled = 0;
-let cumulativeCompleted = 0;
+  let cumulativeCompleted = 0;
 
   const filledVsCompletedChartData = Object.entries(filledTxsByDate)
     .sort((a, b) => new Date(a[0]) - new Date(b[0]))
@@ -130,20 +77,35 @@ let cumulativeCompleted = 0;
         completed: cumulativeCompleted
       };
     });
-  // --- Add successRate as ratio of filled vs exit (entry/exit) ---
-  filledVsCompletedChartData.forEach(d => {
-    const filled = d.filled;
-    const completed = d.completed;
-    const ratio = completed === 0 ? 1 : filled / completed;
 
-    d.successRate = Math.min(ratio, 1); // cap at 1.0 = 100%
-    d.failRate = 1 - d.successRate;
+  // --- Daily Ratio Entry / (Entry + Exit) ---
+  const dailyRatioMap = {};
+  entryData
+    .filter(row => row['Status'] === 'Filled')
+    .forEach(row => {
+      const date = row['Date'];
+      if (!dailyRatioMap[date]) dailyRatioMap[date] = { entry: 0, exit: 0 };
+      dailyRatioMap[date].entry += 2;
+    });
+
+  exitData.forEach(row => {
+    const date = row['Date'];
+    if (!dailyRatioMap[date]) dailyRatioMap[date] = { entry: 0, exit: 0 };
+    dailyRatioMap[date].exit += 1;
   });
+
+  const entryExitRatioData = Object.entries(dailyRatioMap)
+    .sort((a, b) => new Date(a[0]) - new Date(b[0]))
+    .map(([date, { entry, exit }]) => {
+      const total = entry + exit;
+      const successRate = total > 0 ? entry / total : 1;
+      const failRate = 1 - successRate;
+      return { date, successRate, failRate };
+    });
 
   return (
     <Layout title="Performances">
       <main style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
-        {/* Black banner */}
         <div style={{
           background: '#111',
           color: 'white',
@@ -157,14 +119,12 @@ let cumulativeCompleted = 0;
           Transactions Analysis
         </div>
 
-        {/* Compact Stat Tiles */}
         <div style={{
           display: 'flex',
           gap: '1.5rem',
           marginBottom: '2rem',
           justifyContent: 'space-between'
         }}>
-          {/* Total TXs */}
           <div style={{
             flex: 1,
             background: '#fff',
@@ -183,7 +143,6 @@ let cumulativeCompleted = 0;
             <span style={{ fontSize: '0.9rem', color: '#444' }}>Total Transactions Count</span>
           </div>
 
-          {/* Win Rate */}
           <div style={{
             flex: 1,
             background: '#fff',
@@ -203,64 +162,49 @@ let cumulativeCompleted = 0;
           </div>
         </div>
 
-    {/* Cumulative TXs by Status - Half Width */}
-    <div style={{ display: 'flex', gap: '2rem', marginBottom: '3rem' }}>
-      <div style={{ flex: 1 }}>
-        <h3 style={{ textAlign: 'center' }}>Number of Transactions Over Time</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={filledVsCompletedChartData} stackOffset="sign">
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="filled" stackId="a" fill="#00d1c1" name="entry" />
-            <Bar dataKey="completed" stackId="a" fill="#000000" name="exit" />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+        <div style={{ display: 'flex', gap: '2rem', marginBottom: '3rem' }}>
+          <div style={{ flex: 1 }}>
+            <h3 style={{ textAlign: 'center' }}>Number of Transactions Over Time</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={filledVsCompletedChartData} stackOffset="sign">
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="filled" stackId="a" fill="#00d1c1" name="entry" />
+                <Bar dataKey="completed" stackId="a" fill="#000000" name="exit" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
 
-      {/* Success Rate Chart */}
-      <div style={{ flex: 1 }}>
-        <h3 style={{ textAlign: 'center' }}>Transactions Rate Over Time </h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <AreaChart data={filledVsCompletedChartData}>
-            <defs>
-              <linearGradient id="colorSuccess" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#00d1c1" stopOpacity={0.8}/>
-                <stop offset="95%" stopColor="#00d1c1" stopOpacity={0}/>
-              </linearGradient>
-              <linearGradient id="colorFail" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#000" stopOpacity={0.8}/>
-                <stop offset="95%" stopColor="#000" stopOpacity={0}/>
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis domain={[0, 1]} tickFormatter={v => `${Math.round(v * 100)}%`} />
-            <Tooltip formatter={(value) => `${(value * 100).toFixed(2)}%`} />
-            <Legend />
-            <Area
-              type="monotone"
-              dataKey="successRate"
-              stroke="#00d1c1"
-              fillOpacity={1}
-              fill="url(#colorSuccess)"
-              name="true"
-            />
-            <Area
-              type="monotone"
-              dataKey="failRate"
-              stroke="#000"
-              fillOpacity={1}
-              fill="url(#colorFail)"
-              name="false"
-            />
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
-
-    </div>
+          <div style={{ flex: 1 }}>
+            <h3 style={{ textAlign: 'center' }}>Transactions Rate Over Time</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <AreaChart data={entryExitRatioData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis domain={[0, 1]} tickFormatter={(v) => `${Math.round(v * 100)}%`} />
+                <Tooltip formatter={(value) => `${(value * 100).toFixed(2)}%`} />
+                <Legend />
+                <Area
+                  type="monotone"
+                  dataKey="successRate"
+                  stroke="#00d1c1"
+                  fill="#00d1c1"
+                  name="true"
+                />
+                <Area
+                  type="monotone"
+                  dataKey="failRate"
+                  stroke="#000"
+                  fill="#000"
+                  name="false"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
       </main>
     </Layout>
   );
