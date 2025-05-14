@@ -35,26 +35,31 @@ export default function PerformancesPage() {
       });
   }, []);
 
-  // 1. Total Costs Over Time
-const parsedEntries = entryData
-  .map(row => ({
-    date: new Date(row['Date']),
-    cost: parseFloat(row['Total Costs']) || 0
-  }))
-  .filter(row => !isNaN(row.date.getTime()))
-  .sort((a, b) => a.date - b.date);
+  // --- Total Costs (Cumulative, Absolute) ---
+  const parsedEntries = entryData
+    .map(row => ({
+      date: new Date(row['Date']),
+      cost: parseFloat(row['Total Costs']) || 0
+    }))
+    .filter(row => !isNaN(row.date.getTime()))
+    .sort((a, b) => a.date - b.date);
 
-let cumulative = 0;
-const costChartData = parsedEntries.map(({ date, cost }) => {
-  cumulative += cost;
-  return {
-    date: date.toLocaleString(), // or date.toISOString() if you prefer
-    cost: Math.abs(parseFloat(cumulative.toFixed(2)))
-  };
-});
+  let cumulativeCost = 0;
+  const costChartData = parsedEntries.map(({ date, cost }) => {
+    cumulativeCost += cost;
+    return {
+      date: date.toLocaleString(),
+      cost: Math.abs(parseFloat(cumulativeCost.toFixed(2)))
+    };
+  });
 
+  // --- Cumulative Transactions ---
+  const txCountChartData = parsedEntries.map((entry, index) => ({
+    date: entry.date.toLocaleString(),
+    count: index + 1
+  }));
 
-  // 2. Expected Return Over Time
+  // --- Expected Return ---
   const expectedReturnOverTime = exitData.reduce((acc, row) => {
     const date = row['Date'];
     const value = parseFloat(row['Expected return']) || 0;
@@ -66,7 +71,7 @@ const costChartData = parsedEntries.map(({ date, cost }) => {
     expectedReturn: parseFloat(value.toFixed(2))
   }));
 
-  // 3. Current Expiry Value by Option Details
+  // --- Current Expiry Value (Filtered by Filled) ---
   const currentExpiryValues = entryData
     .filter(row => row['Status'] === 'Filled')
     .reduce((acc, row) => {
@@ -82,42 +87,90 @@ const costChartData = parsedEntries.map(({ date, cost }) => {
 
   return (
     <Layout title="Performances">
-      <main style={{ padding: '2rem' }}>
-        <h1>Total Costs Over Time</h1>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={costChartData}>
-            <CartesianGrid stroke="#ccc" />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="cost" stroke="#8884d8" />
-          </LineChart>
-        </ResponsiveContainer>
+      <main style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
+        {/* Header Stats */}
+        <div style={{ display: 'flex', gap: '2rem', marginBottom: '2rem', justifyContent: 'space-around' }}>
+          <div style={{
+            flex: 1, background: '#f5f5f5', padding: '2rem', borderRadius: '10px', textAlign: 'center'
+          }}>
+            <h2 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{entryData.length}</h2>
+            <p>Total Trades</p>
+          </div>
+          <div style={{
+            flex: 1, background: '#f5f5f5', padding: '2rem', borderRadius: '10px', textAlign: 'center'
+          }}>
+            <h2 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>– %</h2>
+            <p>Current Win Rate</p>
+          </div>
+        </div>
 
-        <h1 style={{ marginTop: '4rem' }}>Expected Return Over Time</h1>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={returnChartData}>
-            <CartesianGrid stroke="#ccc" />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="expectedReturn" stroke="#82ca9d" />
-          </LineChart>
-        </ResponsiveContainer>
+        {/* Graph Grid */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gridTemplateRows: 'auto auto',
+          gap: '2rem'
+        }}>
+          {/* Transaction Count */}
+          <div style={{ gridColumn: 'span 2' }}>
+            <h3>Cumulative Trade Count Over Time</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={txCountChartData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" hide={false} />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="count" fill="#00c0c7" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
 
-        <h1 style={{ marginTop: '4rem' }}>Current Expiry Value (Filled Only)</h1>
-        <ResponsiveContainer width="100%" height={400}>
-          <BarChart data={expiryValueChartData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="label" angle={-30} textAnchor="end" height={100} interval={0} />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="currentExpiryValue" fill="#ffc658" />
-          </BarChart>
-        </ResponsiveContainer>
+          {/* Total Costs */}
+          <div>
+            <h3>Total Costs Over Time</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={costChartData}>
+                <CartesianGrid stroke="#ccc" />
+                <XAxis dataKey="date" hide={false} />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="cost" stroke="#8884d8" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Current Expiry Value */}
+          <div>
+            <h3>Current Expiry Value (Filled Only)</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={expiryValueChartData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="label" angle={-30} textAnchor="end" interval={0} height={80} />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="currentExpiryValue" fill="#ffc658" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Expected Return Full Width */}
+        <div style={{ marginTop: '4rem' }}>
+          <h3>Expected Return Over Time</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={returnChartData}>
+              <CartesianGrid stroke="#ccc" />
+              <XAxis dataKey="date" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="expectedReturn" stroke="#82ca9d" />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
       </main>
     </Layout>
   );
