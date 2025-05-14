@@ -88,7 +88,7 @@ const config = {
           position: 'left',
           },
           {
-          label: 'ForwardTesting',
+          label: 'Performances',
           to: 'performances',
           position: 'left',
           },
