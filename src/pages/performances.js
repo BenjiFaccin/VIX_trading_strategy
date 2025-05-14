@@ -36,16 +36,23 @@ export default function PerformancesPage() {
   }, []);
 
   // 1. Total Costs Over Time
-  const totalCostsOverTime = entryData.reduce((acc, row) => {
-    const date = row['Date'];
-    const cost = parseFloat(row['Total Costs']) || 0;
-    acc[date] = (acc[date] || 0) + cost;
-    return acc;
-  }, {});
-  const costChartData = Object.entries(totalCostsOverTime).map(([date, value]) => ({
-    date,
-    cost: parseFloat(value.toFixed(2))
-  }));
+const parsedEntries = entryData
+  .map(row => ({
+    date: new Date(row['Date']),
+    cost: parseFloat(row['Total Costs']) || 0
+  }))
+  .filter(row => !isNaN(row.date.getTime()))
+  .sort((a, b) => a.date - b.date);
+
+let cumulative = 0;
+const costChartData = parsedEntries.map(({ date, cost }) => {
+  cumulative += cost;
+  return {
+    date: date.toLocaleString(), // or date.toISOString() if you prefer
+    cost: Math.abs(parseFloat(cumulative.toFixed(2)))
+  };
+});
+
 
   // 2. Expected Return Over Time
   const expectedReturnOverTime = exitData.reduce((acc, row) => {
