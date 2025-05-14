@@ -115,13 +115,21 @@ export default function PerformancesPage() {
     filledTxsByDate[date].completed += 1;
   });
 
+  let cumulativeFilled = 0;
+let cumulativeCompleted = 0;
+
   const filledVsCompletedChartData = Object.entries(filledTxsByDate)
     .sort((a, b) => new Date(a[0]) - new Date(b[0]))
-    .map(([date, { filled, completed }]) => ({
-      date,
-      filled,
-      completed
-    }));
+    .map(([date, { filled, completed }]) => {
+      cumulativeFilled += filled;
+      cumulativeCompleted += completed;
+      return {
+        date,
+        filled: cumulativeFilled,
+        completed: cumulativeCompleted
+      };
+    });
+
 
   return (
     <Layout title="Performances">
@@ -186,21 +194,39 @@ export default function PerformancesPage() {
           </div>
         </div>
 
-        {/* Filled vs Completed TXs Over Time */}
-        <div style={{ marginBottom: '3rem' }}>
-          <h3>Number of Transactions Based on Status Over Time</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={filledVsCompletedChartData} stackOffset="sign">
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="filled" stackId="a" fill="#00d1c1" name="true" />
-              <Bar dataKey="completed" stackId="a" fill="#000000" name="false" />
-            </BarChart>
-          </ResponsiveContainer>
+    {/* Cumulative TXs by Status - Half Width */}
+    <div style={{ display: 'flex', gap: '2rem', marginBottom: '3rem' }}>
+      <div style={{ flex: 1 }}>
+        <h3>Number of Transactions Based on Status Over Time</h3>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={filledVsCompletedChartData} stackOffset="sign">
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="date" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="filled" stackId="a" fill="#00d1c1" name="true" />
+            <Bar dataKey="completed" stackId="a" fill="#000000" name="false" />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Placeholder for future chart */}
+      <div style={{ flex: 1 }}>
+        <h3>Another Chart (Placeholder)</h3>
+        <div style={{
+          height: '300px',
+          background: '#f2f2f2',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: '10px'
+        }}>
+          Add your chart here
         </div>
+      </div>
+    </div>
+
       </main>
     </Layout>
   );
