@@ -109,7 +109,7 @@ export default function PerformancesPage() {
   marginBottom: '2rem',
   justifyContent: 'space-between'
 }}>
-  {/* Total Trades */}
+  {/* Total TXs */}
   <div style={{
     flex: 1,
     background: '#fff',
@@ -123,9 +123,9 @@ export default function PerformancesPage() {
     justifyContent: 'center'
   }}>
     <span style={{ fontSize: '3rem', fontWeight: '600' }}>
-      {entryData.length} TXs
+      {(entryData.length * 2 + exitData.length)} TXs
     </span>
-    <span style={{ fontSize: '0.9rem', color: '#444' }}>Total Trades</span>
+    <span style={{ fontSize: '0.9rem', color: '#444' }}>Total Transactions</span>
   </div>
 
   {/* Win Rate */}
@@ -147,6 +147,7 @@ export default function PerformancesPage() {
     <span style={{ fontSize: '0.9rem', color: '#444' }}>Current Win Rate</span>
   </div>
 </div>
+
       </main>
     </Layout>
   );
