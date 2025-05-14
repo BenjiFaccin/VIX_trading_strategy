@@ -97,6 +97,32 @@ export default function PerformancesPage() {
     currentExpiryValue: parseFloat(value.toFixed(2))
   }));
 
+  // --- Filled vs Completed TXs Over Time (Stacked Bar) ---
+  const filledTxsByDate = entryData
+    .filter(row => row['Status'] === 'Filled')
+    .reduce((acc, row) => {
+      const date = row['Date'];
+      acc[date] = acc[date] || { filled: 0, completed: 0 };
+      acc[date].filled += 2;
+      return acc;
+    }, {});
+
+  exitData.forEach(row => {
+    const date = row['Date'];
+    if (!filledTxsByDate[date]) {
+      filledTxsByDate[date] = { filled: 0, completed: 0 };
+    }
+    filledTxsByDate[date].completed += 1;
+  });
+
+  const filledVsCompletedChartData = Object.entries(filledTxsByDate)
+    .sort((a, b) => new Date(a[0]) - new Date(b[0]))
+    .map(([date, { filled, completed }]) => ({
+      date,
+      filled,
+      completed
+    }));
+
   return (
     <Layout title="Performances">
       <main style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
@@ -137,7 +163,7 @@ export default function PerformancesPage() {
             <span style={{ fontSize: '3rem', fontWeight: '600' }}>
               {formatTxCount(totalTxs)} TXs
             </span>
-            <span style={{ fontSize: '0.9rem', color: '#444' }}>Total Transactions</span>
+            <span style={{ fontSize: '0.9rem', color: '#444' }}>Total Transactions Count</span>
           </div>
 
           {/* Win Rate */}
@@ -158,6 +184,22 @@ export default function PerformancesPage() {
             </span>
             <span style={{ fontSize: '0.9rem', color: '#444' }}>Current Win Rate</span>
           </div>
+        </div>
+
+        {/* Filled vs Completed TXs Over Time */}
+        <div style={{ marginBottom: '3rem' }}>
+          <h3>Number of Transactions Based on Status Over Time</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={filledVsCompletedChartData} stackOffset="sign">
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="filled" stackId="a" fill="#00d1c1" name="true" />
+              <Bar dataKey="completed" stackId="a" fill="#000000" name="false" />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </main>
     </Layout>
