@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import Layout from '@theme/Layout';
 import Papa from 'papaparse';
 import {
-  LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ResponsiveContainer
+  LineChart, Line, BarChart, Bar, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ResponsiveContainer
 } from 'recharts';
+
 import useBaseUrl from '@docusaurus/useBaseUrl';
+
 
 export default function PerformancesPage() {
   const [entryData, setEntryData] = useState([]);
