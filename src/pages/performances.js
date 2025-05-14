@@ -140,6 +140,28 @@ const cancelledCostData = entryData
     };
   });
 
+  let cumRowReturn = 0;
+let cumNetReturn = 0;
+
+const cumulativeReturnData = exitData
+  .map(row => {
+    const date = normalizeDate(row['Date']);
+    const rowReturn = parseFloat(row['Current Value of sell leg']) || 0;
+    const netReturn = parseFloat(row['Expected return']) || 0;
+    return { date, rowReturn, netReturn };
+  })
+  .filter(row => row.date) // Valid dates only
+  .sort((a, b) => new Date(a.date) - new Date(b.date))
+  .map(row => {
+    cumRowReturn += row.rowReturn;
+    cumNetReturn += row.netReturn;
+    return {
+      date: row.date,
+      rowReturn: parseFloat(cumRowReturn.toFixed(2)),
+      netReturn: parseFloat(cumNetReturn.toFixed(2))
+    };
+  });
+
   return (
     <Layout title="Performances">
       <main style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
@@ -320,6 +342,33 @@ const cancelledCostData = entryData
         }}>
           Performances Review
         </div>
+        <div style={{ marginTop: '2rem' }}>
+  <h3 style={{ textAlign: 'center' }}>Cumulative Row Return and Net Return Over Time</h3>
+  <ResponsiveContainer width="100%" height={400}>
+    <LineChart data={cumulativeReturnData}>
+      <CartesianGrid strokeDasharray="3 3" />
+      <XAxis dataKey="date" />
+      <YAxis />
+      <Tooltip formatter={(value) => `$${value}`} />
+      <Legend />
+      <Line
+        type="monotone"
+        dataKey="rowReturn"
+        stroke="#00bcd4"
+        strokeWidth={2}
+        name="Row Return"
+      />
+      <Line
+        type="monotone"
+        dataKey="netReturn"
+        stroke="#ff9800"
+        strokeWidth={2}
+        name="Net Return"
+      />
+    </LineChart>
+  </ResponsiveContainer>
+</div>
+
       </main>
     </Layout>
   );
