@@ -74,6 +74,24 @@ export default function PerformancesPage() {
     return { date, cancelled: cumCancelled2nd };
   });
 
+  let cumCancelledCost = 0;
+const cancelledCostData = entryData
+  .filter(row => row['Status'] === 'Partial/Cancelled')
+  .map(row => {
+    const date = normalizeDate(row['Date']);
+    const cost = parseFloat(row['Total Costs']) || 0;
+    return { date, cost };
+  })
+  .filter(row => row.date) // remove invalid dates
+  .sort((a, b) => new Date(a.date) - new Date(b.date))
+  .map(row => {
+    cumCancelledCost += row.cost;
+    return {
+      date: row.date,
+      cost: parseFloat(cumCancelledCost.toFixed(2))
+    };
+  });
+
 
   const allDates = new Set([
     ...Object.keys(filledMap),
@@ -224,7 +242,7 @@ export default function PerformancesPage() {
         </div>
 
         {/* Cancelled Ratio vs Valid Transactions */}
-        <div style={{ display: 'flex', gap: '2rem' }}>
+        <div style={{ display: 'flex', gap: '2rem', marginTop: '3rem' }}>
           <div style={{ flex: 1 }}>
             <h3 style={{ textAlign: 'center' }}>Cancelled Transactions Ratio Over Time</h3>
             <ResponsiveContainer width="100%" height={300}>
@@ -254,7 +272,7 @@ export default function PerformancesPage() {
 
           <div style={{ flex: 1 }}>
             <div style={{ flex: 1 }}>
-                <h3 style={{ textAlign: 'center' }}>Cumulative Cancelled Transactions</h3>
+                <h3 style={{ textAlign: 'center' }}>Cumulative Cancelled Transactions Over Time</h3>
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={cancelledCumulativeData}>
                     <CartesianGrid strokeDasharray="3 3" />
@@ -267,6 +285,20 @@ export default function PerformancesPage() {
                 </ResponsiveContainer>
               </div>
           </div>
+          <div style={{ flex: 1 }}>
+            <h3 style={{ textAlign: 'center' }}>Cumulative Cancelled Costs Over Time</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={cancelledCostData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip formatter={(value) => `$${value}`} />
+                <Legend />
+                <Bar dataKey="cost" fill="#ffa500" name="cancelled cost" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
         </div>
       </main>
     </Layout>
