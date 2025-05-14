@@ -162,6 +162,29 @@ const cumulativeReturnData = exitData
     };
   });
 
+  let cumTotalCosts = 0;
+let cumTotalCommissions = 0;
+
+const cumulativeCostsData = entryData
+  .map(row => {
+    const date = normalizeDate(row['Date']);
+    const cost = parseFloat(row['Total Costs']) || 0;
+    const commission = parseFloat(row['Total Commissions']) || 0;
+    return { date, cost, commission };
+  })
+  .filter(row => row.date)
+  .sort((a, b) => new Date(a.date) - new Date(b.date))
+  .map(row => {
+    cumTotalCosts += row.cost;
+    cumTotalCommissions += row.commission;
+    return {
+      date: row.date,
+      cost: parseFloat(cumTotalCosts.toFixed(2)),
+      commission: parseFloat(cumTotalCommissions.toFixed(2))
+    };
+  });
+
+
   return (
     <Layout title="Performances">
       <main style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
@@ -367,6 +390,37 @@ const cumulativeReturnData = exitData
       />
     </LineChart>
   </ResponsiveContainer>
+</div>
+<div style={{ display: 'flex', gap: '2rem', marginTop: '3rem' }}>
+  {/* Cumulative Total Costs */}
+  <div style={{ flex: 1 }}>
+    <h3 style={{ textAlign: 'center' }}>Cumulative Total Costs Over Time</h3>
+    <ResponsiveContainer width="100%" height={300}>
+      <BarChart data={cumulativeCostsData}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="date" />
+        <YAxis />
+        <Tooltip formatter={(value) => `$${value}`} />
+        <Legend />
+        <Bar dataKey="cost" fill="#00d1c1" name="Total Costs" />
+      </BarChart>
+    </ResponsiveContainer>
+  </div>
+
+  {/* Cumulative Total Commissions */}
+  <div style={{ flex: 1 }}>
+    <h3 style={{ textAlign: 'center' }}>Cumulative Total Commissions Over Time</h3>
+    <ResponsiveContainer width="100%" height={300}>
+      <BarChart data={cumulativeCostsData}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="date" />
+        <YAxis />
+        <Tooltip formatter={(value) => `$${value}`} />
+        <Legend />
+        <Bar dataKey="commission" fill="#00d1c1" name="Total Commissions" />
+      </BarChart>
+    </ResponsiveContainer>
+  </div>
 </div>
 
       </main>
