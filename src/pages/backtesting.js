@@ -81,6 +81,18 @@ export default function GeneralMetricsBacktesting() {
   return typeof value === 'number' ? value.toFixed(2) : value;
   };
 
+  const fixedAverageWinrate = 92.29;
+  const fixedAverageRR = 89.41;
+
+  const avgWinrateLine = [
+  { name: 'Start', value: fixedAverageWinrate },
+  { name: 'End', value: fixedAverageWinrate }
+  ];
+
+  const avgRRLine = [
+    { name: 'Start', value: fixedAverageRR },
+    { name: 'End', value: fixedAverageRR }
+  ];
 
   return (
     <Layout title="General Metrics Backtesting">
@@ -183,13 +195,14 @@ export default function GeneralMetricsBacktesting() {
                 <Legend />
                 <Bar dataKey="winrate" fill="#002244" name="Winrate (%)" />
                 <Line
-                type="monotone"
-                dataKey="avg"
-                stroke="#FFA500"
-                strokeDasharray="5 5"
-                name="Average"
-                dot={false}
-              />
+                  data={avgWinrateLine}
+                  type="linear"
+                  dataKey="value"
+                  stroke="#FFA500"
+                  strokeDasharray="5 5"
+                  name="Average Winrate"
+                  dot={false}
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -208,11 +221,12 @@ export default function GeneralMetricsBacktesting() {
                 <Legend />
                 <Bar dataKey="rr" fill="#002244" name="R/R Ratio" />
                 <Line
-                  type="monotone"
-                  dataKey="avg"
+                  data={avgRRLine}
+                  type="linear"
+                  dataKey="value"
                   stroke="#FFA500"
                   strokeDasharray="5 5"
-                  name="Average"
+                  name="Average R/R"
                   dot={false}
                 />
               </BarChart>
