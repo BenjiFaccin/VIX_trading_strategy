@@ -197,7 +197,7 @@ let cumulativeCompleted = 0;
     {/* Cumulative TXs by Status - Half Width */}
     <div style={{ display: 'flex', gap: '2rem', marginBottom: '3rem' }}>
       <div style={{ flex: 1 }}>
-        <h3>Number of Transactions Based on Status Over Time</h3>
+        <h3 style={{ textAlign: 'center' }}>Number of Transactions Based on Status Over Time</h3>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={filledVsCompletedChartData} stackOffset="sign">
             <CartesianGrid strokeDasharray="3 3" />
@@ -205,8 +205,8 @@ let cumulativeCompleted = 0;
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar dataKey="filled" stackId="a" fill="#00d1c1" name="true" />
-            <Bar dataKey="completed" stackId="a" fill="#000000" name="false" />
+            <Bar dataKey="filled" stackId="a" fill="#00d1c1" name="entry" />
+            <Bar dataKey="completed" stackId="a" fill="#000000" name="exit" />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -226,7 +226,6 @@ let cumulativeCompleted = 0;
         </div>
       </div>
     </div>
-
       </main>
     </Layout>
   );
