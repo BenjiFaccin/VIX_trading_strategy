@@ -63,7 +63,7 @@ export default function GeneralMetricsBacktesting() {
               {percentageSelected.toFixed(2)}%
             </span>
             <span style={metricLabelStyle}>
-              % of profiles selected (38 out of 2500)
+              % of best profiles selected (38 out of 2500)
             </span>
           </div>
         </div>
