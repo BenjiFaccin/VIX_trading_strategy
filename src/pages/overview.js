@@ -47,7 +47,7 @@ export default function OverviewPage() {
   return (
     <Layout title="Overview">
       <main style={{ padding: '2rem' }}>
-        <h1>Trade Overview: Put-Spreads</h1>
+        <h1>Active trades: Put-Spreads</h1>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr>

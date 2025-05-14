@@ -1,76 +1,116 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '@theme/Layout';
 import Papa from 'papaparse';
-import useBaseUrl from '@docusaurus/useBaseUrl'; // ✅ correct hook import
+import {
+  LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ResponsiveContainer
+} from 'recharts';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 export default function PerformancesPage() {
-  const [trades, setTrades] = useState([]);
-  const csvUrl = useBaseUrl('/data/entry_trades.csv'); // ✅ moved here!
+  const [entryData, setEntryData] = useState([]);
+  const [exitData, setExitData] = useState([]);
+
+  const entryCsvUrl = useBaseUrl('/data/entry_trades.csv');
+  const exitCsvUrl = useBaseUrl('/data/exit_trades.csv');
 
   useEffect(() => {
-    fetch(csvUrl)
-      .then(response => response.text())
+    fetch(entryCsvUrl)
+      .then(res => res.text())
       .then(csv => {
         Papa.parse(csv, {
           header: true,
           skipEmptyLines: true,
-          complete: (results) => {
-            setTrades(results.data);
-          }
+          complete: results => setEntryData(results.data)
         });
       });
-  }, [csvUrl]);
 
+    fetch(exitCsvUrl)
+      .then(res => res.text())
+      .then(csv => {
+        Papa.parse(csv, {
+          header: true,
+          skipEmptyLines: true,
+          complete: results => setExitData(results.data)
+        });
+      });
+  }, []);
 
-  const columnsToDisplay = [
-    'Date',
-    'Option expiration date',
-    'Strike short put',
-    'Strike long put',
-    'Status',
-    'Qty Buy',
-    'Qty Sell',
-    'Total Costs',
-    'Current Expiry Value',
-    'AVG Expiry Value'
-  ];
+  // 1. Total Costs Over Time
+  const totalCostsOverTime = entryData.reduce((acc, row) => {
+    const date = row['Date'];
+    const cost = parseFloat(row['Total Costs']) || 0;
+    acc[date] = (acc[date] || 0) + cost;
+    return acc;
+  }, {});
+  const costChartData = Object.entries(totalCostsOverTime).map(([date, value]) => ({
+    date,
+    cost: parseFloat(value.toFixed(2))
+  }));
 
-  const formatCell = (value, column) => {
-    if (['Current Expiry Value', 'AVG Expiry Value'].includes(column)) {
-      const number = parseFloat(value);
-      if (!isNaN(number)) {
-        return number.toFixed(2);
-      }
-    }
-    return value || '—';
-  };
+  // 2. Expected Return Over Time
+  const expectedReturnOverTime = exitData.reduce((acc, row) => {
+    const date = row['Date'];
+    const value = parseFloat(row['Expected return']) || 0;
+    acc[date] = (acc[date] || 0) + value;
+    return acc;
+  }, {});
+  const returnChartData = Object.entries(expectedReturnOverTime).map(([date, value]) => ({
+    date,
+    expectedReturn: parseFloat(value.toFixed(2))
+  }));
+
+  // 3. Current Expiry Value by Option Details
+  const currentExpiryValues = entryData
+    .filter(row => row['Status'] === 'Filled')
+    .reduce((acc, row) => {
+      const label = `${row['Option expiration date']} | ${row['Strike short put']} / ${row['Strike long put']}`;
+      const value = parseFloat(row['Current Expiry Value']) || 0;
+      acc[label] = (acc[label] || 0) + value;
+      return acc;
+    }, {});
+  const expiryValueChartData = Object.entries(currentExpiryValues).map(([label, value]) => ({
+    label,
+    currentExpiryValue: parseFloat(value.toFixed(2))
+  }));
 
   return (
     <Layout title="Performances">
       <main style={{ padding: '2rem' }}>
-        <h1>Active trades: put-spreads</h1>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr>
-              {columnsToDisplay.map((col) => (
-                <th key={col} style={{ border: '1px solid #ccc', padding: '8px', background: '#f5f5f5' }}>
-                  {col}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {trades.map((row, index) => (
-              <tr key={index}>
-                {columnsToDisplay.map((col) => (
-                  <td key={col} style={{ border: '1px solid #eee', padding: '8px' }}>
-                    {formatCell(row[col], col)}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <h1>Total Costs Over Time</h1>
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={costChartData}>
+            <CartesianGrid stroke="#ccc" />
+            <XAxis dataKey="date" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Line type="monotone" dataKey="cost" stroke="#8884d8" />
+          </LineChart>
+        </ResponsiveContainer>
+
+        <h1 style={{ marginTop: '4rem' }}>Expected Return Over Time</h1>
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={returnChartData}>
+            <CartesianGrid stroke="#ccc" />
+            <XAxis dataKey="date" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Line type="monotone" dataKey="expectedReturn" stroke="#82ca9d" />
+          </LineChart>
+        </ResponsiveContainer>
+
+        <h1 style={{ marginTop: '4rem' }}>Current Expiry Value (Filled Only)</h1>
+        <ResponsiveContainer width="100%" height={400}>
+          <BarChart data={expiryValueChartData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="label" angle={-30} textAnchor="end" height={100} interval={0} />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="currentExpiryValue" fill="#ffc658" />
+          </BarChart>
+        </ResponsiveContainer>
       </main>
     </Layout>
   );
