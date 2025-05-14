@@ -74,6 +74,11 @@ export default function GeneralMetricsBacktesting() {
     return num.toString();
   };
 
+  const formatTwoDecimals = (value) => {
+  return typeof value === 'number' ? value.toFixed(2) : value;
+  };
+
+
   return (
     <Layout title="General Metrics Backtesting">
       <main style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
@@ -128,14 +133,14 @@ export default function GeneralMetricsBacktesting() {
         {/* Cumulative Return Line Chart */}
         <div style={{ marginTop: '3rem', position: 'relative' }}>
           <h3 style={{ textAlign: 'center', marginBottom: '1rem' }}>
-            Cumulative Return by Strategy (from 2010 to 2023) with 1 contract per leg on every put-spread
+            Cumulative Return by Strategy (from 2010 to 2023) with 1 contract per leg on every put-spread*
           </h3>
           <ResponsiveContainer width="100%" height={400}>
             <LineChart data={strategyData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" tick={false} axisLine={false} />
-              <YAxis />
-              <Tooltip formatter={(value) => `${value}`} />
+              <YAxis tickFormatter={formatTxCount} />
+              <Tooltip formatter={(value) => formatTxCount(value)} />
               <Legend />
               <Line
                 type="monotone"
@@ -171,7 +176,7 @@ export default function GeneralMetricsBacktesting() {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" tick={false} axisLine={false} />
                 <YAxis />
-                <Tooltip />
+                <Tooltip formatter={(value) => formatTwoDecimals(value)} />
                 <Legend />
                 <Bar dataKey="winrate" fill="#002244" name="Winrate (%)" />
                 <Line
@@ -196,7 +201,7 @@ export default function GeneralMetricsBacktesting() {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" tick={false} axisLine={false} />
                 <YAxis />
-                <Tooltip />
+                <Tooltip formatter={(value) => formatTwoDecimals(value)} />
                 <Legend />
                 <Bar dataKey="rr" fill="#002244" name="R/R Ratio" />
                 <Line
