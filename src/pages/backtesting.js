@@ -201,7 +201,7 @@ export default function GeneralMetricsBacktesting() {
                   stroke="#FFA500"
                   strokeDasharray="5 5"
                   name="Average Winrate"
-                  dot={false}
+                  dot={true}
                 />
               </BarChart>
             </ResponsiveContainer>
@@ -227,7 +227,7 @@ export default function GeneralMetricsBacktesting() {
                   stroke="#FFA500"
                   strokeDasharray="5 5"
                   name="Average R/R"
-                  dot={false}
+                  dot={true}
                 />
               </BarChart>
             </ResponsiveContainer>
