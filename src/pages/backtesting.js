@@ -126,10 +126,9 @@ export default function GeneralMetricsBacktesting() {
         </div>
 
         {/* Cumulative Return Line Chart */}
-        <div style={{ marginTop: '3rem' }}>
+        <div style={{ marginTop: '3rem', position: 'relative' }}>
           <h3 style={{ textAlign: 'center', marginBottom: '1rem' }}>
-            Cumulative Return by Strategy (from 2010 to 2023) with 1 contract per leg on every put-spread* 
-            *buying at ask, selling at bid (worst case scenario taken)
+            Cumulative Return by Strategy (from 2010 to 2023) with 1 contract per leg on every put-spread
           </h3>
           <ResponsiveContainer width="100%" height={400}>
             <LineChart data={strategyData}>
@@ -148,6 +147,16 @@ export default function GeneralMetricsBacktesting() {
               />
             </LineChart>
           </ResponsiveContainer>
+          <div style={{
+            position: 'absolute',
+            bottom: '8px',
+            right: '16px',
+            fontSize: '0.75rem',
+            fontStyle: 'italic',
+            color: '#666'
+          }}>
+            *buying at ask, selling at bid (worst case scenario taken)
+          </div>
         </div>
 
         {/* Winrate & Risk/Reward Bar Charts */}
@@ -168,7 +177,7 @@ export default function GeneralMetricsBacktesting() {
                 <Line
                   type="monotone"
                   dataKey={() => averageWinrate}
-                  stroke="#002244"
+                  stroke="#FFA500"
                   strokeDasharray="5 5"
                   name="Average Winrate"
                   dot={false}
@@ -193,7 +202,7 @@ export default function GeneralMetricsBacktesting() {
                 <Line
                   type="monotone"
                   dataKey={() => averageRR}
-                  stroke="#002244"
+                  stroke="#FFA500"
                   strokeDasharray="5 5"
                   name="Average R/R"
                   dot={false}
