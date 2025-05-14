@@ -307,7 +307,8 @@ const cancelledCostData = entryData
               </LineChart>
             </ResponsiveContainer>
           </div>
-          <div style={{
+        </div>
+                  <div style={{
           background: '#111',
           color: 'white',
           padding: '1.5rem',
@@ -318,7 +319,6 @@ const cancelledCostData = entryData
           marginTop: '3rem'
         }}>
           Performances Review
-        </div>
         </div>
       </main>
     </Layout>
