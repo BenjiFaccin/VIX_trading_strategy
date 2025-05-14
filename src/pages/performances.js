@@ -288,17 +288,23 @@ const cancelledCostData = entryData
           <div style={{ flex: 1 }}>
             <h3 style={{ textAlign: 'center' }}>Cumulative Cancelled Costs Over Time</h3>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={cancelledCostData}>
+              <LineChart data={cancelledCostData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
                 <YAxis />
                 <Tooltip formatter={(value) => `$${value}`} />
                 <Legend />
-                <Bar dataKey="cost" fill="#ffa500" name="cancelled cost" />
-              </BarChart>
+                <Line
+                  type="monotone"
+                  dataKey="cost"
+                  stroke="#ff4d4f"
+                  strokeWidth={3}
+                  dot={false}
+                  name="cancelled cost"
+                />
+              </LineChart>
             </ResponsiveContainer>
           </div>
-
         </div>
       </main>
     </Layout>
