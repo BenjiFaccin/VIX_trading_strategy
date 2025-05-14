@@ -1,30 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Layout from '@theme/Layout';
-import Papa from 'papaparse';
-import useBaseUrl from '@docusaurus/useBaseUrl';
 
 export default function GeneralMetricsBacktesting() {
-  const [totalBacktestedTx, setTotalBacktestedTx] = useState(0);
-
-  const summaryCsvUrl = useBaseUrl('/data/Selected_Strategies_Summary.csv');
-
-  useEffect(() => {
-    fetch(summaryCsvUrl)
-      .then(res => res.text())
-      .then(csv => {
-        Papa.parse(csv, {
-          header: true,
-          skipEmptyLines: true,
-          complete: (results) => {
-            const total = results.data.reduce((acc, row) => {
-              const trades = parseInt(row['Number of Trades']) || 0;
-              return acc + trades;
-            }, 0);
-            setTotalBacktestedTx(total);
-          }
-        });
-      });
-  }, []);
+  const totalBacktestedTx = 21485;
+  const percentageSelected = 1.52;
 
   const formatTxCount = (num) => {
     if (num >= 100_000_000) return (num / 1_000_000).toFixed(2) + 'M';
@@ -39,7 +18,7 @@ export default function GeneralMetricsBacktesting() {
     <Layout title="General Metrics Backtesting">
       <main style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
         <div style={{
-          background: '#002244', // dark blue
+          background: '#002244',
           color: 'white',
           padding: '1.5rem',
           textAlign: 'center',
@@ -55,47 +34,36 @@ export default function GeneralMetricsBacktesting() {
           display: 'flex',
           gap: '1.5rem',
           marginBottom: '2rem',
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
+          flexWrap: 'wrap'
         }}>
-          {/* Box 1 */}
-          <div style={{
-            flex: 1,
-            background: '#fff',
-            padding: '1rem 1.5rem',
-            borderRadius: '12px',
-            boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
-            textAlign: 'center',
-            minHeight: '120px',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center'
-          }}>
-            <span style={{ fontSize: '3rem', fontWeight: '600' }}>
+          {/* Box 1: Total Transactions */}
+          <div style={metricBoxStyle}>
+            <span style={metricValueStyle}>
               {formatTxCount(totalBacktestedTx)}
             </span>
-            <span style={{ fontSize: '0.9rem', color: '#444' }}>
-              Number of total transactions backtested (selected profiles)
+            <span style={metricLabelStyle}>
+              Number of total transactions backtested
             </span>
           </div>
 
-          {/* Box 2 */}
-          <div style={{
-            flex: 1,
-            background: '#fff',
-            padding: '1rem 1.5rem',
-            borderRadius: '12px',
-            boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
-            textAlign: 'center',
-            minHeight: '120px',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center'
-          }}>
+          {/* Box 2: VIX Interval */}
+          <div style={metricBoxStyle}>
             <span style={{ fontSize: '2.5rem', fontWeight: '600' }}>
               [10.00 : 60.00]
             </span>
-            <span style={{ fontSize: '0.9rem', color: '#444' }}>
+            <span style={metricLabelStyle}>
               VIX Interval Backtested
+            </span>
+          </div>
+
+          {/* Box 3: % of Profiles Selected */}
+          <div style={metricBoxStyle}>
+            <span style={metricValueStyle}>
+              {percentageSelected.toFixed(2)}%
+            </span>
+            <span style={metricLabelStyle}>
+              % of profiles selected (38 out of 2500)
             </span>
           </div>
         </div>
@@ -103,3 +71,27 @@ export default function GeneralMetricsBacktesting() {
     </Layout>
   );
 }
+
+// 💅 Shared styles
+const metricBoxStyle = {
+  flex: '1 1 30%',
+  background: '#fff',
+  padding: '1rem 1.5rem',
+  borderRadius: '12px',
+  boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
+  textAlign: 'center',
+  minHeight: '120px',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center'
+};
+
+const metricValueStyle = {
+  fontSize: '3rem',
+  fontWeight: '600'
+};
+
+const metricLabelStyle = {
+  fontSize: '0.9rem',
+  color: '#444'
+};
