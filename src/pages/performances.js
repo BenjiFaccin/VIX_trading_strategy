@@ -88,89 +88,59 @@ export default function PerformancesPage() {
   return (
     <Layout title="Performances">
       <main style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
-        {/* Header Stats */}
-        <div style={{ display: 'flex', gap: '2rem', marginBottom: '2rem', justifyContent: 'space-around' }}>
-          <div style={{
-            flex: 1, background: '#f5f5f5', padding: '2rem', borderRadius: '10px', textAlign: 'center'
-          }}>
-            <h2 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{entryData.length}</h2>
-            <p>Total Trades</p>
-          </div>
-          <div style={{
-            flex: 1, background: '#f5f5f5', padding: '2rem', borderRadius: '10px', textAlign: 'center'
-          }}>
-            <h2 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>– %</h2>
-            <p>Current Win Rate</p>
-          </div>
-        </div>
+  {/* Black banner */}
+  <div style={{
+    background: '#111',
+    color: 'white',
+    padding: '1.5rem',
+    textAlign: 'center',
+    fontSize: '1.8rem',
+    fontWeight: 'bold',
+    borderRadius: '12px',
+    marginBottom: '2rem'
+  }}>
+    Transactions Analysis
+  </div>
 
-        {/* Graph Grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gridTemplateRows: 'auto auto',
-          gap: '2rem'
-        }}>
-          {/* Transaction Count */}
-          <div style={{ gridColumn: 'span 2' }}>
-            <h3>Cumulative Trade Count Over Time</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={txCountChartData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" hide={false} />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="count" fill="#00c0c7" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+  {/* Compact Stat Tiles */}
+  <div style={{
+    display: 'flex',
+    gap: '1.5rem',
+    marginBottom: '2rem',
+    justifyContent: 'space-between'
+  }}>
+    <div style={{
+      flex: 1,
+      background: '#fff',
+      padding: '1rem 1.5rem',
+      borderRadius: '12px',
+      boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
+      textAlign: 'center',
+      minHeight: '100px',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center'
+    }}>
+      <span style={{ fontSize: '2rem', fontWeight: '600' }}>{entryData.length}</span>
+      <span style={{ fontSize: '0.9rem', color: '#444' }}>Total Trades</span>
+    </div>
 
-          {/* Total Costs */}
-          <div>
-            <h3>Total Costs Over Time</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={costChartData}>
-                <CartesianGrid stroke="#ccc" />
-                <XAxis dataKey="date" hide={false} />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line type="monotone" dataKey="cost" stroke="#8884d8" />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-
-          {/* Current Expiry Value */}
-          <div>
-            <h3>Current Expiry Value (Filled Only)</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={expiryValueChartData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="label" angle={-30} textAnchor="end" interval={0} height={80} />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="currentExpiryValue" fill="#ffc658" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Expected Return Full Width */}
-        <div style={{ marginTop: '4rem' }}>
-          <h3>Expected Return Over Time</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={returnChartData}>
-              <CartesianGrid stroke="#ccc" />
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="expectedReturn" stroke="#82ca9d" />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+    <div style={{
+      flex: 1,
+      background: '#fff',
+      padding: '1rem 1.5rem',
+      borderRadius: '12px',
+      boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
+      textAlign: 'center',
+      minHeight: '100px',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center'
+    }}>
+      <span style={{ fontSize: '2rem', fontWeight: '600' }}>–%</span>
+      <span style={{ fontSize: '0.9rem', color: '#444' }}>Current Win Rate</span>
+    </div>
+  </div>
       </main>
     </Layout>
   );
