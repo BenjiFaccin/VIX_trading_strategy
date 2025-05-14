@@ -4,7 +4,6 @@ import Papa from 'papaparse';
 import {
   LineChart, Line, BarChart, Bar, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ResponsiveContainer
 } from 'recharts';
-
 import useBaseUrl from '@docusaurus/useBaseUrl';
 
 
@@ -131,11 +130,14 @@ let cumulativeCompleted = 0;
         completed: cumulativeCompleted
       };
     });
-  // --- Add successRate and failRate to chart data ---
+  // --- Add successRate as ratio of filled vs exit (entry/exit) ---
   filledVsCompletedChartData.forEach(d => {
-    const total = d.filled + d.completed;
-    d.successRate = total > 0 ? d.filled / total : 0;
-    d.failRate = total > 0 ? d.completed / total : 0;
+    const filled = d.filled;
+    const completed = d.completed;
+    const ratio = completed === 0 ? 1 : filled / completed;
+
+    d.successRate = Math.min(ratio, 1); // cap at 1.0 = 100%
+    d.failRate = 1 - d.successRate;
   });
 
   return (
@@ -220,7 +222,7 @@ let cumulativeCompleted = 0;
 
       {/* Success Rate Chart */}
       <div style={{ flex: 1 }}>
-        <h3 style={{ textAlign: 'center' }}>Transactions Success Rate Over Time </h3>
+        <h3 style={{ textAlign: 'center' }}>Transactions Rate Over Time </h3>
         <ResponsiveContainer width="100%" height={300}>
           <AreaChart data={filledVsCompletedChartData}>
             <defs>
