@@ -44,15 +44,29 @@ export default function OverviewPage() {
     return value || '—';
   };
 
-  return (
-    <Layout title="Overview">
-      <main style={{ padding: '2rem' }}>
-        <h1>Active trades: Put-Spreads</h1>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+return (
+  <Layout title="Overview">
+    <main style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
+      <h1 style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+        Active trades: Put-Spreads
+      </h1>
+
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <table style={{
+          borderCollapse: 'collapse',
+          width: 'auto',
+          minWidth: '80%',
+          maxWidth: '1000px'
+        }}>
           <thead>
             <tr>
               {columnsToDisplay.map((col) => (
-                <th key={col} style={{ border: '1px solid #ccc', padding: '8px', background: '#f5f5f5' }}>
+                <th key={col} style={{
+                  border: '1px solid #ccc',
+                  padding: '8px',
+                  background: '#f5f5f5',
+                  textAlign: 'center'
+                }}>
                   {col}
                 </th>
               ))}
@@ -62,7 +76,11 @@ export default function OverviewPage() {
             {trades.map((row, index) => (
               <tr key={index}>
                 {columnsToDisplay.map((col) => (
-                  <td key={col} style={{ border: '1px solid #eee', padding: '8px' }}>
+                  <td key={col} style={{
+                    border: '1px solid #eee',
+                    padding: '8px',
+                    textAlign: 'center'
+                  }}>
                     {formatCell(row[col], col)}
                   </td>
                 ))}
@@ -70,7 +88,8 @@ export default function OverviewPage() {
             ))}
           </tbody>
         </table>
-      </main>
-    </Layout>
-  );
+      </div>
+    </main>
+  </Layout>
+);
 }

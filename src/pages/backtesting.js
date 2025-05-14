@@ -136,7 +136,7 @@ export default function GeneralMetricsBacktesting() {
         {/* Cumulative Return Chart */}
         <div style={{ marginTop: '3rem', position: 'relative' }}>
           <h3 style={{ textAlign: 'center', marginBottom: '1rem' }}>
-            Cumulative Return by Strategy (from 2010 to 2023) with 1 contract per leg on every put-spread
+            Cumulative Return by Selected Strategies (from 2010 to 2023) with 1 contract per leg on every put-spread*
           </h3>
           <ResponsiveContainer width="100%" height={400}>
             <LineChart data={strategyData}>
@@ -172,7 +172,7 @@ export default function GeneralMetricsBacktesting() {
           {/* Winrate Chart */}
           <div style={{ flex: 1 }}>
             <h3 style={{ textAlign: 'center', marginBottom: '1rem' }}>
-              Winrate by Strategy (%)
+              Winrate by Selected Strategies (%)
             </h3>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={winrateData}>
@@ -189,7 +189,7 @@ export default function GeneralMetricsBacktesting() {
           {/* Risk/Reward Chart */}
           <div style={{ flex: 1 }}>
             <h3 style={{ textAlign: 'center', marginBottom: '1rem' }}>
-              Risk/Reward Ratio by Strategy
+              Risk/Reward Ratio by Selected Strategies
             </h3>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={riskRewardData}>
@@ -207,7 +207,7 @@ export default function GeneralMetricsBacktesting() {
         {/* Max Drawdown Chart */}
         <div style={{ marginTop: '3rem' }}>
           <h3 style={{ textAlign: 'center', marginBottom: '1rem' }}>
-            Cumulative Max Drawdown by Strategy
+            Cumulative Max Drawdown by Selected Strategies
           </h3>
           <ResponsiveContainer width="100%" height={400}>
             <LineChart data={strategyData}>
