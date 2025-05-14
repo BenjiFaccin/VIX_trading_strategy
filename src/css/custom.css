@@ -53,3 +53,14 @@
 [data-theme='dark'] .navbar__link {
   color: #fff !important;
 }
+
+@font-face {
+  font-family: 'Aeonik Mono';
+  src: url('/fonts/AeonikTRIAL-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+* {
+  font-family: 'Aeonik Mono', monospace !important;
+}
