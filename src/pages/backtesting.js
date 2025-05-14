@@ -3,6 +3,7 @@ import Layout from '@theme/Layout';
 import Papa from 'papaparse';
 import {
   LineChart, Line,
+  BarChart, Bar,
   XAxis, YAxis,
   Tooltip, CartesianGrid,
   ResponsiveContainer, Legend
@@ -12,7 +13,12 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 export default function GeneralMetricsBacktesting() {
   const totalBacktestedTx = 21485;
   const percentageSelected = 1.52;
+
   const [strategyData, setStrategyData] = useState([]);
+  const [winrateData, setWinrateData] = useState([]);
+  const [riskRewardData, setRiskRewardData] = useState([]);
+  const [averageWinrate, setAverageWinrate] = useState(0);
+  const [averageRR, setAverageRR] = useState(0);
 
   const summaryCsvUrl = useBaseUrl('/data/Selected_Strategies_Summary.csv');
 
@@ -25,15 +31,35 @@ export default function GeneralMetricsBacktesting() {
           skipEmptyLines: true,
           complete: (results) => {
             let cumulative = 0;
+            let winrateSum = 0;
+            let rrSum = 0;
+
+            const winrateArray = [];
+            const rrArray = [];
+
             const data = results.data.map((row, index) => {
-              const value = parseFloat(row['Total Return']) || 0;
-              cumulative += value;
+              const returnVal = parseFloat(row['Total Return']) || 0;
+              const winrate = parseFloat(row['Winrate (%)']) || 0;
+              const rr = parseFloat(row['Risk/Reward Ratio']) || 0;
+
+              cumulative += returnVal;
+              winrateSum += winrate;
+              rrSum += rr;
+
+              winrateArray.push({ name: `Strategy${index + 1}`, winrate });
+              rrArray.push({ name: `Strategy${index + 1}`, rr });
+
               return {
                 name: `Strategy${index + 1}`,
                 totalReturn: parseFloat(cumulative.toFixed(2))
               };
             });
+
             setStrategyData(data);
+            setWinrateData(winrateArray);
+            setRiskRewardData(rrArray);
+            setAverageWinrate(winrateSum / winrateArray.length);
+            setAverageRR(rrSum / rrArray.length);
           }
         });
       });
@@ -71,7 +97,6 @@ export default function GeneralMetricsBacktesting() {
           justifyContent: 'space-between',
           flexWrap: 'wrap'
         }}>
-          {/* Box 1: Total Transactions */}
           <div style={metricBoxStyle}>
             <span style={metricValueStyle}>
               {formatTxCount(totalBacktestedTx)}
@@ -81,7 +106,6 @@ export default function GeneralMetricsBacktesting() {
             </span>
           </div>
 
-          {/* Box 2: VIX Interval */}
           <div style={metricBoxStyle}>
             <span style={{ fontSize: '2.5rem', fontWeight: '600' }}>
               [10.00 : 60.00]
@@ -91,7 +115,6 @@ export default function GeneralMetricsBacktesting() {
             </span>
           </div>
 
-          {/* Box 3: % of Profiles Selected */}
           <div style={metricBoxStyle}>
             <span style={metricValueStyle}>
               {percentageSelected.toFixed(2)}%
@@ -102,11 +125,11 @@ export default function GeneralMetricsBacktesting() {
           </div>
         </div>
 
-        {/* Graph of Total Return per Strategy */}
-        {/* Graph of Total Return per Strategy */}
+        {/* Cumulative Return Line Chart */}
         <div style={{ marginTop: '3rem' }}>
           <h3 style={{ textAlign: 'center', marginBottom: '1rem' }}>
-            Total Return by Strategy
+            Cumulative Return by Strategy (from 2010 to 2023) with 1 contract per leg on every put-spread* 
+            *buying at ask, selling at bid (worst case scenario taken)
           </h3>
           <ResponsiveContainer width="100%" height={400}>
             <LineChart data={strategyData}>
@@ -121,10 +144,63 @@ export default function GeneralMetricsBacktesting() {
                 stroke="#000000"
                 strokeWidth={2}
                 dot={false}
-                name="Total Return"
+                name="Cumulative Return"
               />
             </LineChart>
           </ResponsiveContainer>
+        </div>
+
+        {/* Winrate & Risk/Reward Bar Charts */}
+        <div style={{ display: 'flex', gap: '2rem', marginTop: '3rem' }}>
+          {/* Winrate Chart */}
+          <div style={{ flex: 1 }}>
+            <h3 style={{ textAlign: 'center', marginBottom: '1rem' }}>
+              Winrate by Strategy (%)
+            </h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={winrateData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" tick={false} axisLine={false} />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="winrate" fill="#002244" name="Winrate (%)" />
+                <Line
+                  type="monotone"
+                  dataKey={() => averageWinrate}
+                  stroke="#002244"
+                  strokeDasharray="5 5"
+                  name="Average Winrate"
+                  dot={false}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Risk/Reward Chart */}
+          <div style={{ flex: 1 }}>
+            <h3 style={{ textAlign: 'center', marginBottom: '1rem' }}>
+              Risk/Reward Ratio by Strategy
+            </h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={riskRewardData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" tick={false} axisLine={false} />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="rr" fill="#002244" name="R/R Ratio" />
+                <Line
+                  type="monotone"
+                  dataKey={() => averageRR}
+                  stroke="#002244"
+                  strokeDasharray="5 5"
+                  name="Average R/R"
+                  dot={false}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </main>
     </Layout>
