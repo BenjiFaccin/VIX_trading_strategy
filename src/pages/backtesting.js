@@ -1,9 +1,38 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '@theme/Layout';
+import Papa from 'papaparse';
+import {
+  LineChart, Line,
+  XAxis, YAxis,
+  Tooltip, CartesianGrid,
+  ResponsiveContainer, Legend
+} from 'recharts';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 export default function GeneralMetricsBacktesting() {
   const totalBacktestedTx = 21485;
   const percentageSelected = 1.52;
+  const [strategyData, setStrategyData] = useState([]);
+
+  const summaryCsvUrl = useBaseUrl('/data/Selected_Strategies_Summary.csv');
+
+  useEffect(() => {
+    fetch(summaryCsvUrl)
+      .then(res => res.text())
+      .then(csv => {
+        Papa.parse(csv, {
+          header: true,
+          skipEmptyLines: true,
+          complete: (results) => {
+            const data = results.data.map((row, index) => ({
+              name: `Strategy${index + 1}`,
+              totalReturn: parseFloat(row['Total Return']) || 0
+            }));
+            setStrategyData(data);
+          }
+        });
+      });
+  }, []);
 
   const formatTxCount = (num) => {
     if (num >= 100_000_000) return (num / 1_000_000).toFixed(2) + 'M';
@@ -67,12 +96,38 @@ export default function GeneralMetricsBacktesting() {
             </span>
           </div>
         </div>
+
+        {/* Graph of Total Return per Strategy */}
+        {/* Graph of Total Return per Strategy */}
+<div style={{ marginTop: '3rem' }}>
+  <h3 style={{ textAlign: 'center', marginBottom: '1rem' }}>
+    Total Return by Strategy
+  </h3>
+  <ResponsiveContainer width="100%" height={400}>
+    <LineChart data={strategyData}>
+      <CartesianGrid strokeDasharray="3 3" />
+      <XAxis dataKey="name" />
+      <YAxis />
+      <Tooltip formatter={(value) => `${value}`} />
+      <Legend />
+      <Line
+        type="monotone"
+        dataKey="totalReturn"
+        stroke="#000000"
+        strokeWidth={2}
+        dot={false}
+        name="Total Return"
+      />
+    </LineChart>
+  </ResponsiveContainer>
+</div>
+
       </main>
     </Layout>
   );
 }
 
-// 💅 Shared styles
+// Shared styles
 const metricBoxStyle = {
   flex: '1 1 30%',
   background: '#fff',
