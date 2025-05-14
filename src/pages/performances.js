@@ -406,7 +406,6 @@ const cumulativeCostsData = entryData
       </BarChart>
     </ResponsiveContainer>
   </div>
-
   {/* Cumulative Total Commissions */}
   <div style={{ flex: 1 }}>
     <h3 style={{ textAlign: 'center' }}>Cumulative Total Commissions Over Time</h3>
@@ -417,7 +416,7 @@ const cumulativeCostsData = entryData
         <YAxis />
         <Tooltip formatter={(value) => `$${value}`} />
         <Legend />
-        <Bar dataKey="commission" fill="#00d1c1" name="Total Commissions" />
+        <Bar dataKey="commission" fill="#b2ebf2" name="Total Commissions" />
       </BarChart>
     </ResponsiveContainer>
   </div>
