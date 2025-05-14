@@ -116,7 +116,7 @@ export default function PerformancesPage() {
       borderRadius: '12px',
       boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
       textAlign: 'center',
-      minHeight: '100px',
+      minHeight: '120px',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center'
@@ -132,7 +132,7 @@ export default function PerformancesPage() {
       borderRadius: '12px',
       boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
       textAlign: 'center',
-      minHeight: '100px',
+      minHeight: '120px',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center'
