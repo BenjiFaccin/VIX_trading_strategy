@@ -88,8 +88,13 @@ const config = {
           position: 'left',
           },
           {
-          label: 'Performances',
+          label: 'ForwardTesting',
           to: 'performances',
+          position: 'left',
+          },
+          {
+          label: 'BackTesting Results',
+          to: 'backtesting',
           position: 'left',
           },
           {
