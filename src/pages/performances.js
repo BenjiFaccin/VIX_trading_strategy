@@ -68,13 +68,21 @@ export default function PerformancesPage() {
   const completedMap = aggregateByDate(exitData, 'Date', 1);
 
   const allDates = new Set([...Object.keys(filledMap), ...Object.keys(completedMap)]);
+  
+  let cumFilled = 0;
+  let cumCompleted = 0;
   const filledVsCompletedChartData = [...allDates]
     .sort((a, b) => new Date(a) - new Date(b))
-    .map(date => ({
-      date,
-      filled: filledMap[date] || 0,
-      completed: completedMap[date] || 0
-    }));
+    .map(date => {
+      cumFilled += filledMap[date] || 0;
+      cumCompleted += completedMap[date] || 0;
+      return {
+        date,
+        filled: cumFilled,
+        completed: cumCompleted
+      };
+    });
+
 
   // Ratio per day
   const entryExitRatioData = filledVsCompletedChartData.map(({ date, filled, completed }) => {
@@ -173,14 +181,14 @@ export default function PerformancesPage() {
                   dataKey="successRate"
                   stroke="#00d1c1"
                   fill="#00d1c1"
-                  name="true"
+                  name="entry"
                 />
                 <Area
                   type="monotone"
                   dataKey="failRate"
                   stroke="#000"
                   fill="#000"
-                  name="false"
+                  name="exit"
                 />
               </AreaChart>
             </ResponsiveContainer>
