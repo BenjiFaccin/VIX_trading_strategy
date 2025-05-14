@@ -66,6 +66,14 @@ export default function PerformancesPage() {
   const filledMap = aggregateByDate(entryData, 'Filled', 2);
   const completedMap = aggregateByDate(exitData, null, 1);
   const cancelledMap = aggregateByDate(entryData, 'Partial/Cancelled', 1);
+  let cumCancelled2nd = 0;
+  const cancelledCumulativeData = Object.entries(cancelledMap)
+  .sort((a, b) => new Date(a[0]) - new Date(b[0]))
+  .map(([date, value]) => {
+    cumCancelled2nd += value;
+    return { date, cancelled: cumCancelled2nd };
+  });
+
 
   const allDates = new Set([
     ...Object.keys(filledMap),
@@ -245,17 +253,19 @@ export default function PerformancesPage() {
           </div>
 
           <div style={{ flex: 1 }}>
-            <h3 style={{ textAlign: 'center' }}>Add Another Chart Here</h3>
-            <div style={{
-              height: '300px',
-              background: '#f5f5f5',
-              borderRadius: '10px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              Placeholder
-            </div>
+            <div style={{ flex: 1 }}>
+                <h3 style={{ textAlign: 'center' }}>Cumulative Cancelled Transactions</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={cancelledCumulativeData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="cancelled" fill="#ff4d4f" name="cancelled" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
           </div>
         </div>
       </main>
