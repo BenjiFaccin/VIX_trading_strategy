@@ -27,7 +27,7 @@ const FeatureList = [
     description: (
       <>
         With 10+ codes and 2000+ lines of code, this trading strategy
-        is fully automated and managed by AI agents.    
+        is fully automated and managed by AI agents through a 24/7 operating virtual machine.    
       </>
     ),
   },
