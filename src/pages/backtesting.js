@@ -24,10 +24,15 @@ export default function GeneralMetricsBacktesting() {
           header: true,
           skipEmptyLines: true,
           complete: (results) => {
-            const data = results.data.map((row, index) => ({
-              name: `Strategy${index + 1}`,
-              totalReturn: parseFloat(row['Total Return']) || 0
-            }));
+            let cumulative = 0;
+            const data = results.data.map((row, index) => {
+              const value = parseFloat(row['Total Return']) || 0;
+              cumulative += value;
+              return {
+                name: `Strategy${index + 1}`,
+                totalReturn: parseFloat(cumulative.toFixed(2))
+              };
+            });
             setStrategyData(data);
           }
         });
@@ -99,29 +104,28 @@ export default function GeneralMetricsBacktesting() {
 
         {/* Graph of Total Return per Strategy */}
         {/* Graph of Total Return per Strategy */}
-<div style={{ marginTop: '3rem' }}>
-  <h3 style={{ textAlign: 'center', marginBottom: '1rem' }}>
-    Total Return by Strategy
-  </h3>
-  <ResponsiveContainer width="100%" height={400}>
-    <LineChart data={strategyData}>
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="name" />
-      <YAxis />
-      <Tooltip formatter={(value) => `${value}`} />
-      <Legend />
-      <Line
-        type="monotone"
-        dataKey="totalReturn"
-        stroke="#000000"
-        strokeWidth={2}
-        dot={false}
-        name="Total Return"
-      />
-    </LineChart>
-  </ResponsiveContainer>
-</div>
-
+        <div style={{ marginTop: '3rem' }}>
+          <h3 style={{ textAlign: 'center', marginBottom: '1rem' }}>
+            Total Return by Strategy
+          </h3>
+          <ResponsiveContainer width="100%" height={400}>
+            <LineChart data={strategyData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" tick={false} axisLine={false} />
+              <YAxis />
+              <Tooltip formatter={(value) => `${value}`} />
+              <Legend />
+              <Line
+                type="monotone"
+                dataKey="totalReturn"
+                stroke="#000000"
+                strokeWidth={2}
+                dot={false}
+                name="Total Return"
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
       </main>
     </Layout>
   );
