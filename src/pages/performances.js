@@ -129,7 +129,12 @@ let cumulativeCompleted = 0;
         completed: cumulativeCompleted
       };
     });
-
+  // --- Add successRate and failRate to chart data ---
+  filledVsCompletedChartData.forEach(d => {
+    const total = d.filled + d.completed;
+    d.successRate = total > 0 ? d.filled / total : 0;
+    d.failRate = total > 0 ? d.completed / total : 0;
+  });
 
   return (
     <Layout title="Performances">
@@ -197,7 +202,7 @@ let cumulativeCompleted = 0;
     {/* Cumulative TXs by Status - Half Width */}
     <div style={{ display: 'flex', gap: '2rem', marginBottom: '3rem' }}>
       <div style={{ flex: 1 }}>
-        <h3 style={{ textAlign: 'center' }}>Number of Transactions Based on Status Over Time</h3>
+        <h3 style={{ textAlign: 'center' }}>Number of Transactions Over Time</h3>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={filledVsCompletedChartData} stackOffset="sign">
             <CartesianGrid strokeDasharray="3 3" />
@@ -211,20 +216,46 @@ let cumulativeCompleted = 0;
         </ResponsiveContainer>
       </div>
 
-      {/* Placeholder for future chart */}
+      {/* Success Rate Chart */}
       <div style={{ flex: 1 }}>
-        <h3>Another Chart (Placeholder)</h3>
-        <div style={{
-          height: '300px',
-          background: '#f2f2f2',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: '10px'
-        }}>
-          Add your chart here
-        </div>
+        <h3 style={{ textAlign: 'center' }}>Transactions Success Rate Over Time</h3>
+        <ResponsiveContainer width="100%" height={300}>
+          <AreaChart data={filledVsCompletedChartData}>
+            <defs>
+              <linearGradient id="colorSuccess" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#00d1c1" stopOpacity={0.8}/>
+                <stop offset="95%" stopColor="#00d1c1" stopOpacity={0}/>
+              </linearGradient>
+              <linearGradient id="colorFail" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#000" stopOpacity={0.8}/>
+                <stop offset="95%" stopColor="#000" stopOpacity={0}/>
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="date" />
+            <YAxis domain={[0, 1]} tickFormatter={v => `${Math.round(v * 100)}%`} />
+            <Tooltip formatter={(value) => `${(value * 100).toFixed(2)}%`} />
+            <Legend />
+            <Area
+              type="monotone"
+              dataKey="successRate"
+              stroke="#00d1c1"
+              fillOpacity={1}
+              fill="url(#colorSuccess)"
+              name="true"
+            />
+            <Area
+              type="monotone"
+              dataKey="failRate"
+              stroke="#000"
+              fillOpacity={1}
+              fill="url(#colorFail)"
+              name="false"
+            />
+          </AreaChart>
+        </ResponsiveContainer>
       </div>
+
     </div>
       </main>
     </Layout>
