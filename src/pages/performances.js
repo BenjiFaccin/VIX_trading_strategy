@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import Layout from '@theme/Layout';
 import Papa from 'papaparse';
 import {
-  AreaChart, Area, BarChart, Bar,
+  AreaChart, Area,
+  BarChart, Bar,
+  LineChart, Line,  
   XAxis, YAxis, Tooltip, CartesianGrid, Legend, ResponsiveContainer
 } from 'recharts';
 import useBaseUrl from '@docusaurus/useBaseUrl';
