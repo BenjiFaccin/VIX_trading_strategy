@@ -103,44 +103,50 @@ export default function PerformancesPage() {
   </div>
 
   {/* Compact Stat Tiles */}
+<div style={{
+  display: 'flex',
+  gap: '1.5rem',
+  marginBottom: '2rem',
+  justifyContent: 'space-between'
+}}>
+  {/* Total Trades */}
   <div style={{
+    flex: 1,
+    background: '#fff',
+    padding: '1rem 1.5rem',
+    borderRadius: '12px',
+    boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
+    textAlign: 'center',
+    minHeight: '120px',
     display: 'flex',
-    gap: '1.5rem',
-    marginBottom: '2rem',
-    justifyContent: 'space-between'
+    flexDirection: 'column',
+    justifyContent: 'center'
   }}>
-    <div style={{
-      flex: 1,
-      background: '#fff',
-      padding: '1rem 1.5rem',
-      borderRadius: '12px',
-      boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
-      textAlign: 'center',
-      minHeight: '120px',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center'
-    }}>
-      <span style={{ fontSize: '2rem', fontWeight: '600' }}>{entryData.length}</span>
-      <span style={{ fontSize: '0.9rem', color: '#444' }}>Total Trades</span>
-    </div>
-
-    <div style={{
-      flex: 1,
-      background: '#fff',
-      padding: '1rem 1.5rem',
-      borderRadius: '12px',
-      boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
-      textAlign: 'center',
-      minHeight: '120px',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center'
-    }}>
-      <span style={{ fontSize: '2rem', fontWeight: '600' }}>–%</span>
-      <span style={{ fontSize: '0.9rem', color: '#444' }}>Current Win Rate</span>
-    </div>
+    <span style={{ fontSize: '3rem', fontWeight: '600' }}>
+      {entryData.length} TXs
+    </span>
+    <span style={{ fontSize: '0.9rem', color: '#444' }}>Total Trades</span>
   </div>
+
+  {/* Win Rate */}
+  <div style={{
+    flex: 1,
+    background: '#fff',
+    padding: '1rem 1.5rem',
+    borderRadius: '12px',
+    boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
+    textAlign: 'center',
+    minHeight: '120px',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center'
+  }}>
+    <span style={{ fontSize: '3rem', fontWeight: '600' }}>
+      <span style={{ marginRight: '0.3rem' }}>✓</span>–%
+    </span>
+    <span style={{ fontSize: '0.9rem', color: '#444' }}>Current Win Rate</span>
+  </div>
+</div>
       </main>
     </Layout>
   );
