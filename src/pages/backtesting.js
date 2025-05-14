@@ -14,14 +14,9 @@ export default function GeneralMetricsBacktesting() {
   const totalBacktestedTx = 21485;
   const percentageSelected = 1.52;
 
-  const fixedAverageWinrate = 92.29;
-  const fixedAverageRR = 89.41;
-
   const [strategyData, setStrategyData] = useState([]);
   const [winrateData, setWinrateData] = useState([]);
   const [riskRewardData, setRiskRewardData] = useState([]);
-  const [averageWinrate, setAverageWinrate] = useState(fixedAverageWinrate);
-  const [averageRR, setAverageRR] = useState(fixedAverageRR);
 
   const summaryCsvUrl = useBaseUrl('/data/Selected_Strategies_Summary.csv');
 
@@ -34,32 +29,34 @@ export default function GeneralMetricsBacktesting() {
           skipEmptyLines: true,
           complete: (results) => {
             let cumulative = 0;
+            let cumulativeDrawdown = 0;
 
             const winrateArray = [];
             const rrArray = [];
 
             const data = results.data.map((row, index) => {
               const returnVal = parseFloat(row['Total Return']) || 0;
+              const drawdown = parseFloat(row['Max Drawdown']) || 0;
               const winrate = parseFloat(row['Winrate (%)']) || 0;
               const rr = parseFloat(row['Risk/Reward Ratio']) || 0;
 
               cumulative += returnVal;
+              cumulativeDrawdown += drawdown;
 
               winrateArray.push({
                 name: `Strategy${index + 1}`,
-                winrate,
-                avg: fixedAverageWinrate
+                winrate
               });
 
               rrArray.push({
                 name: `Strategy${index + 1}`,
-                rr,
-                avg: fixedAverageRR
+                rr
               });
 
               return {
                 name: `Strategy${index + 1}`,
-                totalReturn: parseFloat(cumulative.toFixed(2))
+                totalReturn: parseFloat(cumulative.toFixed(2)),
+                totalDrawdown: parseFloat(cumulativeDrawdown.toFixed(2))
               };
             });
 
@@ -185,14 +182,6 @@ export default function GeneralMetricsBacktesting() {
                 <Tooltip formatter={(value) => formatTwoDecimals(value)} />
                 <Legend />
                 <Bar dataKey="winrate" fill="#002244" name="Winrate (%)" />
-                <Line
-                  type="monotone"
-                  dataKey="avg"
-                  stroke="#FFA500"
-                  strokeDasharray="5 5"
-                  name="Average Winrate"
-                  dot={false}
-                />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -210,17 +199,33 @@ export default function GeneralMetricsBacktesting() {
                 <Tooltip formatter={(value) => formatTwoDecimals(value)} />
                 <Legend />
                 <Bar dataKey="rr" fill="#002244" name="R/R Ratio" />
-                <Line
-                  type="monotone"
-                  dataKey="avg"
-                  stroke="#FFA500"
-                  strokeDasharray="5 5"
-                  name="Average R/R"
-                  dot={false}
-                />
               </BarChart>
             </ResponsiveContainer>
           </div>
+        </div>
+
+        {/* Max Drawdown Chart */}
+        <div style={{ marginTop: '3rem' }}>
+          <h3 style={{ textAlign: 'center', marginBottom: '1rem' }}>
+            Cumulative Max Drawdown by Strategy
+          </h3>
+          <ResponsiveContainer width="100%" height={400}>
+            <LineChart data={strategyData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" tick={false} axisLine={false} />
+              <YAxis tickFormatter={formatTxCount} />
+              <Tooltip formatter={(value) => formatTxCount(value)} />
+              <Legend />
+              <Line
+                type="monotone"
+                dataKey="totalDrawdown"
+                stroke="#C62828"
+                strokeWidth={2}
+                dot={false}
+                name="Cumulative Max Drawdown"
+              />
+            </LineChart>
+          </ResponsiveContainer>
         </div>
       </main>
     </Layout>
