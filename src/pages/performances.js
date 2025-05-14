@@ -165,6 +165,9 @@ const cumulativeReturnData = exitData
   let cumTotalCosts = 0;
 let cumTotalCommissions = 0;
 
+let cumCost = 0;
+let cumCommission = 0;
+
 const cumulativeCostsData = entryData
   .map(row => {
     const date = normalizeDate(row['Date']);
@@ -175,15 +178,14 @@ const cumulativeCostsData = entryData
   .filter(row => row.date)
   .sort((a, b) => new Date(a.date) - new Date(b.date))
   .map(row => {
-    cumTotalCosts += row.cost;
-    cumTotalCommissions += row.commission;
+    cumCost += row.cost;
+    cumCommission += row.commission;
     return {
       date: row.date,
-      cost: parseFloat(cumTotalCosts.toFixed(2)),
-      commission: parseFloat(cumTotalCommissions.toFixed(2))
+      cost: Math.abs(parseFloat(cumCost.toFixed(2))), // ✅ Make cost absolute here
+      commission: parseFloat(cumCommission.toFixed(2))
     };
   });
-
 
   return (
     <Layout title="Performances">
