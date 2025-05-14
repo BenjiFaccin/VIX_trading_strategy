@@ -56,8 +56,11 @@ export default function GeneralMetricsBacktesting() {
             });
 
             setStrategyData(data);
-            setWinrateData(winrateArray);
-            setRiskRewardData(rrArray);
+            const winrateWithAvg = winrateArray.map(d => ({ ...d, avg: winrateSum / winrateArray.length }));
+            const rrWithAvg = rrArray.map(d => ({ ...d, avg: rrSum / rrArray.length }));
+
+            setWinrateData(winrateWithAvg);
+            setRiskRewardData(rrWithAvg);
             setAverageWinrate(winrateSum / winrateArray.length);
             setAverageRR(rrSum / rrArray.length);
           }
@@ -180,13 +183,13 @@ export default function GeneralMetricsBacktesting() {
                 <Legend />
                 <Bar dataKey="winrate" fill="#002244" name="Winrate (%)" />
                 <Line
-                  type="monotone"
-                  dataKey={() => averageWinrate}
-                  stroke="#FFA500"
-                  strokeDasharray="5 5"
-                  name="Average Winrate"
-                  dot={false}
-                />
+                type="monotone"
+                dataKey="avg"
+                stroke="#FFA500"
+                strokeDasharray="5 5"
+                name="Average"
+                dot={false}
+              />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -206,10 +209,10 @@ export default function GeneralMetricsBacktesting() {
                 <Bar dataKey="rr" fill="#002244" name="R/R Ratio" />
                 <Line
                   type="monotone"
-                  dataKey={() => averageRR}
+                  dataKey="avg"
                   stroke="#FFA500"
                   strokeDasharray="5 5"
-                  name="Average R/R"
+                  name="Average"
                   dot={false}
                 />
               </BarChart>
