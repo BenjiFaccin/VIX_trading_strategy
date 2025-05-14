@@ -50,12 +50,13 @@ export default function PerformancesPage() {
   const normalizeDate = (dateStr) => {
     const date = new Date(dateStr);
     if (isNaN(date)) return null;
-    return date.toLocaleDateString('en-US'); // e.g., MM/DD/YYYY
+    return date.toLocaleDateString('en-US');
   };
 
-  const aggregateByDate = (dataArray, key, multiplier = 1) => {
+  const aggregateByDate = (dataArray, statusFilter, multiplier = 1) => {
     const result = {};
     dataArray.forEach(row => {
+      if (statusFilter && row['Status'] !== statusFilter) return;
       const rawDate = normalizeDate(row['Date']);
       if (!rawDate) return;
       result[rawDate] = result[rawDate] || 0;
@@ -64,11 +65,16 @@ export default function PerformancesPage() {
     return result;
   };
 
-  const filledMap = aggregateByDate(entryData.filter(r => r['Status'] === 'Filled'), 'Date', 2);
-  const completedMap = aggregateByDate(exitData, 'Date', 1);
+  const filledMap = aggregateByDate(entryData, 'Filled', 2);
+  const completedMap = aggregateByDate(exitData, null, 1);
+  const cancelledMap = aggregateByDate(entryData, 'Partial/Cancelled', 1);
 
-  const allDates = new Set([...Object.keys(filledMap), ...Object.keys(completedMap)]);
-  
+  const allDates = new Set([
+    ...Object.keys(filledMap),
+    ...Object.keys(completedMap),
+    ...Object.keys(cancelledMap)
+  ]);
+
   let cumFilled = 0;
   let cumCompleted = 0;
   const filledVsCompletedChartData = [...allDates]
@@ -83,14 +89,16 @@ export default function PerformancesPage() {
       };
     });
 
-
-  // Ratio per day
   const entryExitRatioData = filledVsCompletedChartData.map(({ date, filled, completed }) => {
     const total = filled + completed;
     const successRate = total > 0 ? filled / total : 1;
     const failRate = 1 - successRate;
     return { date, successRate, failRate };
   });
+
+  const cancelledData = Object.entries(cancelledMap)
+    .sort((a, b) => new Date(a[0]) - new Date(b[0]))
+    .map(([date, value]) => ({ date, cancelled: value }));
 
   return (
     <Layout title="Performances">
@@ -193,6 +201,21 @@ export default function PerformancesPage() {
               </AreaChart>
             </ResponsiveContainer>
           </div>
+        </div>
+
+        {/* Cancelled Transactions Graph */}
+        <div style={{ marginTop: '2rem' }}>
+          <h3 style={{ textAlign: 'center' }}>Number of Cancelled Transactions</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={cancelledData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="cancelled" fill="#ff4d4f" name="cancelled" />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </main>
     </Layout>
