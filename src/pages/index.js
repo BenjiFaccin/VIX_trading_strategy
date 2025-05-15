@@ -32,8 +32,8 @@ export default function Home() {
   const { siteConfig } = useDocusaurusContext();
   return (
     <Layout
-      title={`Hello from ${siteConfig.title}`}
-      description="Description goes here"
+      title={`${siteConfig.title}`}
+      description="A bull intraday put-spread automated trading algo strategy on VIX."
     >
       <HomepageHeader />
       <main>
