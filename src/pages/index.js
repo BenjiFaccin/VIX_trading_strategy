@@ -7,33 +7,29 @@ import HomepageFeatures from '@site/src/components/HomepageFeatures';
 import Heading from '@theme/Heading';
 import styles from './index.module.css';
 
-function HomepageHeader() {
-  const { siteConfig } = useDocusaurusContext();
-  return (
-    <header className={clsx('hero hero--primary', styles.heroBanner)}>
-      <div className={styles.overlayWrapper}>
-        <img
-          src="/img/BackgroundHomepage.png"
-          alt="Decorative background"
-          className={styles.heroImageOverlay}
-        />
-        <div className={styles.textOverlay}>
-          <Heading as="h1" className="hero__title">
-            {siteConfig.title}
-          </Heading>
-          <p className="hero__subtitle">{siteConfig.tagline}</p>
-          <div className={styles.buttons}>
-            <Link
-              className="button button--secondary button--lg"
-              to="/performances">
-              Performances ➡️
-            </Link>
-          </div>
-        </div>
+<header className={clsx('hero hero--primary', styles.heroBanner)}>
+  <div className={styles.overlayWrapper}>
+    <img
+      src="/img/BackgroundHomepage.png"
+      alt="VIX Trading background"
+      className={styles.heroImageOverlay}
+    />
+    <div className={styles.textOverlay}>
+      <Heading as="h1" className="hero__title">
+        {siteConfig.title}
+      </Heading>
+      <p className="hero__subtitle">{siteConfig.tagline}</p>
+      <div className={styles.buttons}>
+        <Link
+          className="button button--secondary button--lg"
+          to="/performances">
+          Performances ➡️
+        </Link>
       </div>
-    </header>
-  );
-}
+    </div>
+  </div>
+</header>
+
 
 
 
