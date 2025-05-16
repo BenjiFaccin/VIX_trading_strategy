@@ -54,6 +54,33 @@
   color: #fff !important;
 }
 
+/* Return cell coloring */
+.return-positive {
+  background-color: #d4f8d4; /* light green */
+}
+.return-negative {
+  background-color: #f8d4d4; /* light red */
+}
+
+[data-theme='dark'] .return-positive {
+  background-color: #2e4d2e; /* darker green for dark mode */
+  color: #c6f3c6;
+}
+[data-theme='dark'] .return-negative {
+  background-color: #4d2e2e; /* darker red for dark mode */
+  color: #f8bcbc;
+}
+:root {
+  --table-header-bg: #f5f5f5;
+  --table-header-color: #000;
+}
+
+[data-theme='dark'] {
+  --table-header-bg: #333333;
+  --table-header-color: #ffffff;
+}
+
+
 @font-face {
   font-family: 'Aeonik Mono';
   src: url('/fonts/AeonikTRIAL-Regular.otf') format('opentype');

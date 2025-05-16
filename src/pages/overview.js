@@ -94,7 +94,8 @@ export default function OverviewPage() {
                   <th key={col} style={{
                     border: '1px solid #ccc',
                     padding: '8px',
-                    background: '#f5f5f5',
+                    backgroundColor: 'var(--table-header-bg)',
+                    color: 'var(--table-header-color)',
                     textAlign: 'center'
                   }}>
                     {col}
@@ -136,7 +137,8 @@ export default function OverviewPage() {
                   <th key={col} style={{
                     border: '1px solid #ccc',
                     padding: '8px',
-                    background: '#f5f5f5',
+                    backgroundColor: 'var(--table-header-bg)',
+                    color: 'var(--table-header-color)',
                     textAlign: 'center'
                   }}>
                     {col}
@@ -156,7 +158,8 @@ export default function OverviewPage() {
                     <tr key={index}>
                       {exitedColumns.map(col => {
                         let cellValue = '—';
-                        let style = {
+                        let className = '';
+                        const baseStyle = {
                           border: '1px solid #eee',
                           padding: '8px',
                           textAlign: 'center'
@@ -165,11 +168,8 @@ export default function OverviewPage() {
                         if (col === 'Return') {
                           if (!isNaN(returnValue)) {
                             cellValue = returnValue.toFixed(2);
-                            if (returnValue > 0) {
-                              style.backgroundColor = '#d4f8d4'; // light green
-                            } else if (returnValue < 0) {
-                              style.backgroundColor = '#f8d4d4'; // light red
-                            }
+                            if (returnValue > 0) className = 'return-positive';
+                            else if (returnValue < 0) className = 'return-negative';
                           }
                         } else if (col === 'AVG Backtested Return') {
                           if (!isNaN(avgBacktestedReturn)) {
@@ -180,7 +180,7 @@ export default function OverviewPage() {
                         }
 
                         return (
-                          <td key={col} style={style}>
+                          <td key={col} style={baseStyle} className={className}>
                             {cellValue}
                           </td>
                         );
