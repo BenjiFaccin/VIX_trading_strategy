@@ -27,3 +27,21 @@
   align-items: center;
   justify-content: center;
 }
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.textContent {
+  flex: 1;
+  min-width: 250px;
+}
+
+.heroImage {
+  max-width: 400px;
+  height: auto;
+  margin-left: 2rem;
+}
