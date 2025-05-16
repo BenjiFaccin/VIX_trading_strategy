@@ -91,3 +91,23 @@
 * {
   font-family: 'Aeonik Mono', monospace !important;
 }
+
+:root {
+  --metric-box-bg: #ffffff;
+  --metric-box-text: #000000;
+  --metric-box-label: #444444;
+  --chart-bg: #ffffff;
+  --chart-grid: #cccccc;
+  --header-bg: #002244;
+  --header-text: #ffffff;
+}
+
+[data-theme='dark'] {
+  --metric-box-bg: #1f1f1f;
+  --metric-box-text: #ffffff;
+  --metric-box-label: #bbbbbb;
+  --chart-bg: #121212;
+  --chart-grid: #444444;
+  --header-bg: #0d2b4c;
+  --header-text: #ffffff;
+}

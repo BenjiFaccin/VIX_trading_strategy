@@ -85,8 +85,8 @@ export default function GeneralMetricsBacktesting() {
     <Layout title="General Metrics Backtesting">
       <main style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
         <div style={{
-          background: '#002244',
-          color: 'white',
+          backgroundColor: 'var(--header-bg)',
+          color: 'var(--header-text)',
           padding: '1.5rem',
           textAlign: 'center',
           fontSize: '1.8rem',
@@ -235,7 +235,8 @@ export default function GeneralMetricsBacktesting() {
 // Shared styles
 const metricBoxStyle = {
   flex: '1 1 30%',
-  background: '#fff',
+  backgroundColor: 'var(--metric-box-bg)',
+  color: 'var(--metric-box-text)',
   padding: '1rem 1.5rem',
   borderRadius: '12px',
   boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
@@ -253,5 +254,5 @@ const metricValueStyle = {
 
 const metricLabelStyle = {
   fontSize: '0.9rem',
-  color: '#444'
+  color: 'var(--metric-box-label)'
 };
