@@ -11,31 +11,30 @@ function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
-      <div className="container">
-        <div className={styles.headerContent}>
-          <div className={styles.textContent}>
-            <Heading as="h1" className="hero__title">
-              {siteConfig.title}
-            </Heading>
-            <p className="hero__subtitle">{siteConfig.tagline}</p>
-            <div className={styles.buttons}>
-              <Link
-                className="button button--secondary button--lg"
-                to="/performances">
-                Performances ➡️
-              </Link>
-            </div>
+      <div className={styles.overlayWrapper}>
+        <img
+          src="/img/BackgroundHomepage.png"
+          alt="Decorative background"
+          className={styles.heroImageOverlay}
+        />
+        <div className={styles.textOverlay}>
+          <Heading as="h1" className="hero__title">
+            {siteConfig.title}
+          </Heading>
+          <p className="hero__subtitle">{siteConfig.tagline}</p>
+          <div className={styles.buttons}>
+            <Link
+              className="button button--secondary button--lg"
+              to="/performances">
+              Performances ➡️
+            </Link>
           </div>
-          <img
-            src="/img/BackgroundHomepage.png"
-            alt="Decorative background"
-            className={styles.heroImage}
-          />
         </div>
       </div>
     </header>
   );
 }
+
 
 
 export default function Home() {
