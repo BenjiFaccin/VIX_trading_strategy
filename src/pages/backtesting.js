@@ -139,7 +139,7 @@ export default function GeneralMetricsBacktesting() {
             Cumulative Return by Selected Strategies (from 2010 to 2023) with 1 contract per leg on every put-spread*
           </h3>
           <ResponsiveContainer width="100%" height={400}>
-            <LineChart data={strategyData}>
+            <LineChart data={strategyData} style={{ backgroundColor: 'white', borderRadius: '8px' }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" tick={false} axisLine={false} />
               <YAxis tickFormatter={formatTxCount} />
@@ -175,7 +175,7 @@ export default function GeneralMetricsBacktesting() {
               Winrate by Selected Strategies (%)
             </h3>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={winrateData}>
+              <BarChart data={winrateData} style={{ backgroundColor: 'white', borderRadius: '8px' }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" tick={false} axisLine={false} />
                 <YAxis />
@@ -192,7 +192,8 @@ export default function GeneralMetricsBacktesting() {
               Risk/Reward Ratio by Selected Strategies
             </h3>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={riskRewardData}>
+              <BarChart data={riskRewardData} style={{ backgroundColor: 'white', borderRadius: '8px' }}>
+
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" tick={false} axisLine={false} />
                 <YAxis />
@@ -210,7 +211,7 @@ export default function GeneralMetricsBacktesting() {
             Cumulative Max Drawdown by Selected Strategies
           </h3>
           <ResponsiveContainer width="100%" height={400}>
-            <LineChart data={strategyData}>
+            <LineChart data={strategyData} style={{ backgroundColor: 'white', borderRadius: '8px' }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" tick={false} axisLine={false} />
               <YAxis tickFormatter={formatTxCount} />
