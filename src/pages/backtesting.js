@@ -193,7 +193,6 @@ export default function GeneralMetricsBacktesting() {
             </h3>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={riskRewardData} style={{ backgroundColor: 'white', borderRadius: '8px' }}>
-
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" tick={false} axisLine={false} />
                 <YAxis />
