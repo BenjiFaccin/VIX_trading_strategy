@@ -1,1 +1,3 @@
 Date,Option expiration date,Strike short put,Strike long put,DTE,Spread Cost,Commission Sell,Commission Buy,Total Commissions,Status,VIX underlying price at trade,Qty Sell,Qty Buy,Bid Sell,Ask Sell,Bid Buy,Ask Buy,Price Sold,Price Paid,Effective Spread Cost,Total Costs,Expiry Value,Current Value of sell leg,Expected return 
+5/15/2025,5/18/2025,13,19,2,,,,,Exit,,1,1,,,,,,,,-161,,440,447.36
+5/16/2025,5/22/2025,18,10,6,,,,,Exit,,1,1,,,,,,,,-343,,635,661.27
