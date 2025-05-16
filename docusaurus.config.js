@@ -98,6 +98,11 @@ const config = {
           position: 'left',
           },
           {
+          href: 'https://vercel.com/benjis-projects-c3cba0f9/vix-trading-strategy/deployments',
+          label: 'VercelApp',
+          position: 'right',
+          },
+          {
             href: 'https://github.com/BenjiFaccin/VIX_trading_strategy',
             label: 'GitHub',
             position: 'right',
