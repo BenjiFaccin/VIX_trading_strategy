@@ -73,7 +73,7 @@ export default function OverviewPage() {
     const avg = parseFloat(trade['AVG Expiry Value']);
     const cost = parseFloat(trade['Total Costs']);
     if (!isNaN(avg) && !isNaN(cost)) {
-      return avg - cost;
+      return avg - Math.abs(cost);
     }
     return null;
   };
