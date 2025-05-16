@@ -30,14 +30,17 @@
 
 .headerContent {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: center; /* centrage vertical */
+  justify-content: center; /* centrage horizontal global */
   flex-wrap: wrap;
+  text-align: center;
 }
 
 .textContent {
   flex: 1;
-  min-width: 250px;
+  min-width: 300px;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .heroImage {

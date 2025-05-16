@@ -8,7 +8,7 @@ const FeatureList = [
     Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
     description: (
       <>
-        Extracting 3315 historical daily End of Day data for VIX option chain (from 2010 to 2023). 
+        3315 historical daily End of Day data for VIX option chain (from 2010 to 2023). 
       </>
     ),
   },
@@ -17,16 +17,16 @@ const FeatureList = [
     Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
     description: (
       <>
-        Backtesting historical performances of put-spreads from 50 different VIX prices (50^2 = 2500 profiles generated). 
+        Backtesting put-spreads from 50 different VIX prices (50^2 = 2500 profiles generated). 
       </>
     ),
   },
   {
-    title: 'AI-agent powered',
+    title: 'Automated Algorithmic Trading',
     Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
     description: (
       <>
-        With 10+ codes and 2000+ lines of code, this trading strategy
+        With 20+ codes and 5000+ lines of code, this trading strategy
         is fully automated and managed by AI agents through a 24/7 operating virtual machine.    
       </>
     ),
