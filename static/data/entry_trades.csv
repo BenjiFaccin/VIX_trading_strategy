@@ -1,1 +1,6 @@
 Date,Option expiration date,Strike short put,Strike long put,DTE,Spread Cost,Commission Sell,Commission Buy,Total Commissions,Status,VIX underlying price at trade,Qty Sell,Qty Buy,Bid Sell,Ask Sell,Bid Buy,Ask Buy,Price Sold,Price Paid,Effective Spread Cost,Total Costs,Strategy File,AVG Expiry Value,Current Expiry Value
+5/15/2025,5/18/2025,13,19,2,,,,,Exit,,1,1,,,,,,,,-161,,440,450
+5/14/2025,5/19/2025,14,20,3,,,,,Filled,,1,1,,,,,,,,-180,,580,600
+5/11/2025,5/20/2025,13,21,4,,,,,Partial/Cancelled,,1,1,,,,,,,,-200,,560,550
+5/15/2025,5/21/2025,15,23,5,,,,,Filled,,1,1,,,,,,,,-300,,370,350
+5/16/2025,5/22/2025,18,19,6,,,,,Exit,,1,1,,,,,,,,-343,,635,670

@@ -47,9 +47,57 @@ export default function OverviewPage() {
 return (
   <Layout title="Overview">
     <main style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
+      {/* === ACTIVE TRADES === */}
       <h1 style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
         Active trades: Put-Spreads
       </h1>
+
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '3rem' }}>
+        <table style={{
+          borderCollapse: 'collapse',
+          width: 'auto',
+          minWidth: '80%',
+          maxWidth: '1000px'
+        }}>
+          <thead>
+            <tr>
+              {columnsToDisplay.map((col) => (
+                <th key={col} style={{
+                  border: '1px solid #ccc',
+                  padding: '8px',
+                  background: '#f5f5f5',
+                  textAlign: 'center'
+                }}>
+                  {col}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {trades
+              .filter(row => row['Status'] !== 'Exit')
+              .sort((a, b) => new Date(b['Date']) - new Date(a['Date']))
+              .map((row, index) => (
+                <tr key={index}>
+                  {columnsToDisplay.map((col) => (
+                    <td key={col} style={{
+                      border: '1px solid #eee',
+                      padding: '8px',
+                      textAlign: 'center'
+                    }}>
+                      {formatCell(row[col], col)}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* === EXITED TRADES === */}
+      <h2 style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+        Exited trades
+      </h2>
 
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <table style={{
@@ -73,19 +121,22 @@ return (
             </tr>
           </thead>
           <tbody>
-            {trades.map((row, index) => (
-              <tr key={index}>
-                {columnsToDisplay.map((col) => (
-                  <td key={col} style={{
-                    border: '1px solid #eee',
-                    padding: '8px',
-                    textAlign: 'center'
-                  }}>
-                    {formatCell(row[col], col)}
-                  </td>
-                ))}
-              </tr>
-            ))}
+            {trades
+              .filter(row => row['Status'] === 'Exit')
+              .sort((a, b) => new Date(b['Date']) - new Date(a['Date']))
+              .map((row, index) => (
+                <tr key={index}>
+                  {columnsToDisplay.map((col) => (
+                    <td key={col} style={{
+                      border: '1px solid #eee',
+                      padding: '8px',
+                      textAlign: 'center'
+                    }}>
+                      {formatCell(row[col], col)}
+                    </td>
+                  ))}
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
