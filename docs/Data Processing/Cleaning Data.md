@@ -75,6 +75,6 @@ The cleaned dataset is now:
 - **Filtered for liquidity and DTE constraints**
 - **Enriched with historical VIX price context**
 
-![Example of cleaned data output](./outputex.png)
+![Example of cleaned data output](/img/outputex.png)
 
 This pipeline ensures all backtests and forward tests are based on **realistic**, **clean**, and **well-aligned data**, providing a robust foundation for strategy design and evaluation.
