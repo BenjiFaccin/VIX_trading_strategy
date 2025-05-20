@@ -44,7 +44,7 @@ This strategy and its implementation are not financial advice and are presented 
 
 # Context and Motivation
 
-This project was initiated after successfully completing the **CFA Level I exam**. Following years of academic study, I felt the need to adopt a more **hands-on and applied approach** to financial strategy—especially to learn how to **automate trading strategies** and evaluate them through **forward testing**, rather than staying limited to theoretical models or backtesting results. Academic frameworks often lack the practical nuance required for real-world trading, and this project was an effort to close that gap.
+This project was initiated after successfully completing my master degree in financial markets area and completing the **CFA Level I exam**. Following years of academic study, I felt the need to adopt a more **hands-on and applied approach** to financial strategy—especially to learn how to **automate trading strategies** and evaluate them through **forward testing**, rather than staying limited to theoretical models or backtesting results. Academic frameworks often lack the practical nuance required for real-world trading, and this project was an effort to close that gap.
 
 <div class="extra-space"></div>
 

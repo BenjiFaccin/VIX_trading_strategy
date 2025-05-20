@@ -1,8 +1,0 @@
-{
-  "label": "Indicators",
-  "position": 3,
-  "link": {
-    "type": "generated-index",
-    "description": "Discover bitcoin indicators used, as well as how I replicated them using Python, in order to gather any data required to build and predict a normalized dependent variable."
-  }
-}
