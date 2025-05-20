@@ -1,0 +1,8 @@
+{
+  "label": "Experimental Results",
+  "position": 5,
+  "link": {
+    "type": "generated-index",
+    "description": "Presentation of results, analysis of performances, and additional tests performed."
+  }
+}

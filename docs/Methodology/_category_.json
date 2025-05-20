@@ -1,0 +1,8 @@
+{
+  "label": "Methodology",
+  "position": 4,
+  "link": {
+    "type": "generated-index",
+    "description": "Learn more about LSTM neuronal model and how I've computed data and parameter the model to get Eclipse."
+  }
+}
