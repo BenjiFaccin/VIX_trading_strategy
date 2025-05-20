@@ -35,7 +35,7 @@ Once the raw trade data is saved, I compute **summary statistics** per profile t
 - **Max Drawdown**
 - **Average Spread Cost** (i.e., average premium received at entry)
 - **Average Expiry Value** (i.e., average value of the spread at expiration)
-- **Quartiles (Q1, Median, Q3)** of expiry values  
+- **Quartiles (Q1, Q3)** of expiry values  
   This gives insight into the **distribution** of outcomes and allows for modeling:
   - **Entry points**: When the premium received is unusually high (above Q3)
   - **Exit points**: When expected loss becomes statistically significant (below Q1)
@@ -44,21 +44,10 @@ Once the raw trade data is saved, I compute **summary statistics** per profile t
 
 ## 🗂️ Sample Output Structure
 
-Each row in the aggregated `.csv` output includes:
+Each row in the aggregated `.csv` output example:
 
-| Column Name          | Description                                 |
-|----------------------|---------------------------------------------|
-| File                 | Filename of the strategy profile            |
-| VIX_Threshold        | VIX high range that triggered trades        |
-| ATM_Strike           | Strike used as the long leg (ATM put)       |
-| Sell_Strike          | Strike used as the short leg                |
-| Number of Trades     | Total trades executed in that profile       |
-| Total Return         | Sum of all spread outcomes (net of fees)    |
-| Max Drawdown         | Worst peak-to-trough return drop            |
-| Winrate (%)          | % of trades with positive outcome           |
-| Avg Spread Cost      | Average premium received from the spread    |
-| Avg Expiry Value     | Mean value of the spread at expiry          |
-| Q1 / Median / Q3     | Expiry value distribution quartiles         |
+![Example of row data output](/img/outputex2.png)
+![Example of summarized data output](/img/exsummary.png)
 
 ---
 
