@@ -98,9 +98,10 @@ const config = {
           position: 'left',
           },
           {
-          label: 'Read Docs',
-          to: '/docs',
+          type: 'docSidebar',
+          sidebarId: 'tutorialSidebar',
           position: 'left',
+          label: 'Read docs',
           },
           {
           href: 'https://vercel.com/benjis-projects-c3cba0f9/vix-trading-strategy/deployments',
