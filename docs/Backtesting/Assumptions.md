@@ -12,8 +12,8 @@ This page outlines the **core assumptions** and logic used during the backtestin
 
 Each backtest simulates a **bull put spread** built when the VIX reached certain spike levels. The key structural elements of each test include:
 
-- **Sell put strike levels**: Ranged from 13 to 60 with a step of 1.
-- **VIX spike thresholds**: Backtests were segmented by daily high VIX values between 13 and 60, in 1-point bands (e.g., 15–16).
+- **Sell put strike levels**: Ranged from 10 to 60 with a step of 1.
+- **VIX spike thresholds**: Backtests were segmented by daily high VIX values between 10 and 60, in 1-point bands (e.g., 15–16).
 - **ATM (at-the-money) puts**: Chosen dynamically from the options available in the filtered dataset per day.
 - **Max Days to Expiration (DTE)**: Only trades with DTE ≤ 30 were considered.
 
@@ -55,6 +55,7 @@ Each trading scenario followed these steps:
 ## 📁 Output Format
 
 Each backtest result is saved as a `.csv` file named according to:
+<div class="extra-space"></div>
 vix_put_spread_results_threshold_`low-high`strike`sell_strike`.csv
 
 Each file contains:
@@ -85,8 +86,8 @@ Only files with a valid `'RETURN'` column are used in metric calculations.
 | Assumption                             | Value/Rule                                 |
 |----------------------------------------|--------------------------------------------|
 | VIX data range                         | 2010–2023                                   |
-| Strike intervals                       | 13 to 60, step 1                            |
-| Threshold range (VIX High)             | 13 to 60, step 1                            |
+| Strike intervals                       | 10 to 60, step 1                            |
+| Threshold range (VIX High)             | 10 to 60, step 1                            |
 | DTE max                                | 30 days                                     |
 | Put volume filter                      | Minimum 75 contracts                        |
 | Fee per spread (IB)                    | $1.70                                       |
