@@ -55,8 +55,7 @@ Each trading scenario followed these steps:
 ## 📁 Output Format
 
 Each backtest result is saved as a `.csv` file named according to:
-vix_put_spread_results_threshold_<low-high>strike<sell_strike>.csv
-
+vix_put_spread_results_threshold_`low-high`strike`sell_strike`.csv
 
 Each file contains:
 
