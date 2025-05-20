@@ -2,63 +2,77 @@
 sidebar_position: 2
 ---
 
-# Python Replication
+# Cleaning Data
 
-*Exportation was done from both APIs [bitcoin-data.com](https://bitcoin-data.com) and complemented with fallback data from [Blockchain.com](https://www.blockchain.com/) info are on a daily basis, and I computed daily data <u>to get weekly ones</u>.* 
+After collecting over **160 monthly End of Day `.txt` files** from OptionsDX, the next step was to **clean, transform, and structure** the raw data to prepare it for analysis and strategy testing.
 
-Weekly data for all indicators was derived by identifying <u>Mondays within the dataset</u>. 
+The entire cleaning process was handled through a custom Python script, which I designed to handle format inconsistencies, filter out low-quality data, and align everything with historical VIX OHLC data.
 
-When data for a specific Monday was unavailable, the closest preceding value within a seven-day range was used. 
+---
 
-For all indicators, **missing values were forward-filled**, ensuring continuity and reliability across the entire time series.<div class="extra-space"></div>
-Several factors can influence the replication process and contribute to discrepancies between TradingView values and replicated values. Although not exhaustive, one common issue arises when an API fails to provide data for a specific week. This can disrupt calculations such as moving averages or shift the reference point for the end of the week. Additionally, the chosen trading pair can introduce variations; APIs typically use the BTC/USD pair from a specific exchange, while TradingView often employs the aggregated “BTC/USD Crypto” pair, which combines data. Last but not least, there are differences in computation methods by APIs, such as distinct formulas or division factors (e.g., for the CVDD indicator), that increase delta.
-**However, overall, results are pretty satisfying.** 
+## Step 1: Converting `.txt` to `.xlsx`
 
-<div class="extra-space"></div>
-A huge thanks to bitcoin-data, which is the only one I’ve found that provides free various data (30 requests limit per hour). 
-<div class="extra-space"></div>
+The raw data was delivered in `.txt` format with **inconsistent delimiters** (comma, tab, or space). I wrote a converter function that:
+- Automatically detects the correct delimiter
+- Loads the content into a DataFrame
+- Saves the result as an `.xlsx` file
+- Deletes the original `.txt` file once converted
 
-### Net Unrealized Profit and Loss (NUPL)
-- **Calculation:** A percentage that measures the overall profitability of Bitcoin holders in the market.
-<div class="extra-space"></div>
+This helped standardize the dataset before processing.
 
+---
 
+## Step 2: Preprocessing VIX Historical OHLC
 
-### Spent Output Profit Ratio (SOPR)
-- **Calculation:** A smoothing mechanism was applied using the exponential moving average to compute Signal Line:
-<div class="extra-space"></div>
+I separately loaded a `.csv` file containing **daily VIX OHLC data** (Open, High, Low, Close) and:
+- Parsed the date column into a consistent `datetime.date` format
+- Cleaned up any malformed entries
+- Used this dataset to **enrich the options data** later
 
+---
 
-### Market Value to Realized Value Z-score (MVRV-Z)
-- **Calculation:** The Z-score normalization of MVRV (historical standard deviation), where MVRV = Market Cap / Realized Cap.
+## Step 3: Cleaning and Filtering Options Chain Data
 
-<div class="extra-space"></div>
+For each `.xlsx` options file, the following transformations were applied:
 
-### Cumulative Coin Value Days Destroyed (CVDD)
-- **Calculation:** CVDD incorporates cumulative value days destroyed (CDD) and market age. Adjusted CVDD was obtained by scaling CVDD (150%).
+- **Column Cleanup:** Renamed and stripped extra characters from headers
+- **Date Parsing:** Converted the `QUOTE_DATE` to a usable `DATE` field
+- **Type Conversion:** Coerced numeric columns (e.g., bid/ask, IV, volume) into proper numeric format
+- **Filtering:**
+  - Only kept **Put options**
+  - Selected options with **DTE (Days to Expiry) ≤ 30**
+  - Excluded rows with **Put Volume < 75** to focus on liquid contracts
 
-<div class="extra-space"></div>
+---
 
-### Simple Moving Averages 
-- **Calculation:** Simple moving averages (SMA) were computed over different windows (20, 50, 100, 200 days).
-<div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "10px" }}>
-</div>
+## Step 4: Merging with VIX OHLC Data
 
-<div class="extra-space"></div>
+To model and simulate realistic price paths:
+- I merged each options entry with the corresponding **daily VIX OHLC data**
+- Calculated the date **DTE days ahead** and fetched:
+  - `OPEN`, `HIGH`, `LOW`, `CLOSE` on that target date
+  - The **minimum LOW between trade date +1 and target DTE date** for stop-loss or drawdown analysis
 
-### Relative Strength Index (RSI-14EMA)
-- **Calculation:** Gains and losses were computed using exponential weighted averages over a 14-day period:
-<div class="extra-space"></div>
+Any row with missing price data for the `DTE`-targeted date was dropped to ensure data integrity.
 
-### Bitcoin Difficulty Ratio (14EMA)
-- **Calculation:** A smoothing mechanism was applied using the exponential moving average:
+---
 
-<div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "10px" }}>
-</div>
-<div class="extra-space"></div>
+## Step 5: Output Cleaned Files
 
+Each cleaned file was:
+- Saved **per trading day**
+- Stored in an organized subfolder structure matching the original dataset
+- Output as a separate `.xlsx` file named by the trading date (e.g., `VIX_Cleaned_2015-03-17.xlsx`)
 
+This format made it easy to access and test the data for each trade setup individually.
 
-Now that I've successfully replicated almost perfectly required independent indicators, it's time to focus on dependent variable. 
+---
 
-Next here ⏭️: **[Dependent Variable](../Indicators/Dependent%20Variable)** 
+## Result
+
+The cleaned dataset is now:
+- **Consistent and structured**
+- **Filtered for liquidity and DTE constraints**
+- **Enriched with historical VIX price context**
+
+This pipeline ensures all backtests and forward tests are based on **realistic**, **clean**, and **well-aligned data**, providing a robust foundation for strategy design and evaluation.
