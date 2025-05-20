@@ -66,32 +66,31 @@ function HomepageHeader() {
   // ⏳ Countdown to market CLOSE (4:00 PM NY time)
   function getMarketCloseCountdown() {
   const now = new Date();
+
+  // Get current time in New York
   const nyNow = new Date(
     now.toLocaleString('en-US', { timeZone: 'America/New_York' })
   );
 
-  const day = nyNow.getDay();
-  const hour = nyNow.getHours();
-  const minute = nyNow.getMinutes();
+  // Set today’s 4:00 PM in New York
+  const nyClose = new Date(
+    nyNow.toLocaleString('en-US', { timeZone: 'America/New_York' })
+  );
+  nyClose.setHours(16, 0, 0, 0);
 
-  // Check if we’re already past market close
-  const isAfterClose = hour > 16 || (hour === 16 && minute >= 0);
-
-  if (day === 0 || day === 6 || isAfterClose) {
-    return '0:00:00:00';
-  }
-
-  // Set today's 4 PM NY time
-  let closeTime = new Date(nyNow);
-  closeTime.setHours(16, 0, 0, 0);
-
+  // Convert both NY times to UTC to do the math safely
+  const utcNow = new Date(
+    nyNow.toLocaleString('en-US', { timeZone: 'UTC' })
+  );
   const utcClose = new Date(
-    closeTime.toLocaleString('en-US', { timeZone: 'UTC' })
+    nyClose.toLocaleString('en-US', { timeZone: 'UTC' })
   );
 
-  const diff = utcClose - now;
-  const seconds = Math.max(0, Math.floor(diff / 1000));
+  const diff = utcClose - utcNow;
 
+  if (diff <= 0) return '0:00:00:00';
+
+  const seconds = Math.floor(diff / 1000);
   const d = Math.floor(seconds / (3600 * 24));
   const h = Math.floor((seconds % (3600 * 24)) / 3600);
   const m = Math.floor((seconds % 3600) / 60);
@@ -101,7 +100,6 @@ function HomepageHeader() {
     .toString()
     .padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
 }
-
 
   // 🔁 State management
   const [isLive, setIsLive] = React.useState(false);
