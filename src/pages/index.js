@@ -8,72 +8,101 @@ import Heading from '@theme/Heading';
 import styles from './index.module.css';
 
 function HomepageHeader() {
-  const {siteConfig} = useDocusaurusContext();
+  const { siteConfig } = useDocusaurusContext();
 
-  // Helper functions to check trading hours and compute countdown
+  // 🕒 Detect if it's a US trading day + hours (based on NY time)
   function isUsTradingHours() {
-  const now = new Date();
+    const now = new Date();
+    const nyTime = new Date(
+      now.toLocaleString('en-US', { timeZone: 'America/New_York' })
+    );
 
-  // Convert current time to New York time
-  const nyTime = new Date(
-    now.toLocaleString('en-US', { timeZone: 'America/New_York' })
-  );
+    const day = nyTime.getDay(); // Sunday = 0, Saturday = 6
+    const hour = nyTime.getHours();
+    const minute = nyTime.getMinutes();
 
-  const day = nyTime.getDay(); // Sunday = 0, Saturday = 6
-  const hour = nyTime.getHours();
-  const minute = nyTime.getMinutes();
+    const isBusinessDay = day >= 1 && day <= 5;
+    const isTradingHour =
+      (hour > 9 || (hour === 9 && minute >= 30)) && hour < 16;
 
-  const isBusinessDay = day >= 1 && day <= 5;
-  const isTradingHour =
-    (hour > 9 || (hour === 9 && minute >= 30)) && hour < 16;
-
-  return isBusinessDay && isTradingHour;
-}
-
-
-  function getNextTradingCountdown() {
-  const now = new Date();
-
-  // Get current time in New York
-  const nyNow = new Date(
-    now.toLocaleString('en-US', { timeZone: 'America/New_York' })
-  );
-
-  let nextOpen = new Date(nyNow);
-  nextOpen.setHours(9, 30, 0, 0); // Next open at 9:30 AM
-
-  // If it's after today's open time, or not a business day, move to next weekday
-  while (
-    nextOpen <= nyNow || // time has passed
-    nextOpen.getDay() === 0 || // Sunday
-    nextOpen.getDay() === 6 // Saturday
-  ) {
-    nextOpen.setDate(nextOpen.getDate() + 1);
-    nextOpen.setHours(9, 30, 0, 0);
+    return isBusinessDay && isTradingHour;
   }
 
-  // Convert both times back to UTC timestamps
-  const utcNext = new Date(nextOpen.toLocaleString('en-US', { timeZone: 'UTC' }));
-  const diff = utcNext - now;
-  const seconds = Math.floor(diff / 1000);
-  const d = Math.floor(seconds / (3600 * 24));
-  const h = Math.floor((seconds % (3600 * 24)) / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  const s = seconds % 60;
-  return `${d}:${h.toString().padStart(2, '0')}:${m
-    .toString()
-    .padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-}
+  // ⏳ Countdown to next market OPEN (9:30 AM NY time)
+  function getNextTradingCountdown() {
+    const now = new Date();
+    const nyNow = new Date(
+      now.toLocaleString('en-US', { timeZone: 'America/New_York' })
+    );
 
-  // Set up React state and update loop
+    let nextOpen = new Date(nyNow);
+    nextOpen.setHours(9, 30, 0, 0);
+
+    while (
+      nextOpen <= nyNow ||
+      nextOpen.getDay() === 0 ||
+      nextOpen.getDay() === 6
+    ) {
+      nextOpen.setDate(nextOpen.getDate() + 1);
+      nextOpen.setHours(9, 30, 0, 0);
+    }
+
+    const utcNext = new Date(
+      nextOpen.toLocaleString('en-US', { timeZone: 'UTC' })
+    );
+    const diff = utcNext - now;
+    const seconds = Math.floor(diff / 1000);
+
+    const d = Math.floor(seconds / (3600 * 24));
+    const h = Math.floor((seconds % (3600 * 24)) / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+
+    return `${d}:${h.toString().padStart(2, '0')}:${m
+      .toString()
+      .padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  }
+
+  // ⏳ Countdown to market CLOSE (4:00 PM NY time)
+  function getMarketCloseCountdown() {
+    const now = new Date();
+    const nyNow = new Date(
+      now.toLocaleString('en-US', { timeZone: 'America/New_York' })
+    );
+
+    let closeTime = new Date(nyNow);
+    closeTime.setHours(16, 0, 0, 0);
+
+    const utcClose = new Date(
+      closeTime.toLocaleString('en-US', { timeZone: 'UTC' })
+    );
+
+    const diff = utcClose - now;
+    const seconds = Math.max(0, Math.floor(diff / 1000));
+
+    const d = Math.floor(seconds / (3600 * 24));
+    const h = Math.floor((seconds % (3600 * 24)) / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+
+    return `${d}:${h.toString().padStart(2, '0')}:${m
+      .toString()
+      .padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  }
+
+  // 🔁 State management
   const [isLive, setIsLive] = React.useState(false);
   const [countdown, setCountdown] = React.useState('');
+  const [liveEndCountdown, setLiveEndCountdown] = React.useState('');
 
   React.useEffect(() => {
     const updateStatus = () => {
       const live = isUsTradingHours();
       setIsLive(live);
-      if (!live) {
+
+      if (live) {
+        setLiveEndCountdown(getMarketCloseCountdown());
+      } else {
         setCountdown(getNextTradingCountdown());
       }
     };
@@ -86,7 +115,7 @@ function HomepageHeader() {
   return (
     <header
       className={clsx('hero hero--primary', styles.heroBanner)}
-      style={{ position: 'relative' }} // important for absolute positioning of live status
+      style={{ position: 'relative' }}
     >
       <div className="container">
         <Heading as="h1" className="hero__title">
@@ -96,11 +125,13 @@ function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            to="/performances">
+            to="/performances"
+          >
             Performances ➡️
           </Link>
         </div>
-        {/* Live Status box, placed in the bottom-right corner of the hero section */}
+
+        {/* ✅ LIVE STATUS BOX */}
         <div
           style={{
             position: 'absolute',
@@ -115,7 +146,11 @@ function HomepageHeader() {
           }}
         >
           <span>Live Status: {isLive ? '🟢' : '🔴'}</span>
-          {!isLive && (
+          {isLive ? (
+            <div style={{ fontSize: '0.85rem', marginTop: '0.25rem' }}>
+              Bot live ends in {liveEndCountdown}
+            </div>
+          ) : (
             <div style={{ fontSize: '0.85rem', marginTop: '0.25rem' }}>
               Bot live in {countdown}
             </div>
@@ -127,7 +162,7 @@ function HomepageHeader() {
 }
 
 export default function Home() {
-  const {siteConfig} = useDocusaurusContext();
+  const { siteConfig } = useDocusaurusContext();
   return (
     <Layout
       title={`${siteConfig.title}`}
