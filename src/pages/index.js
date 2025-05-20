@@ -12,38 +12,58 @@ function HomepageHeader() {
 
   // Helper functions to check trading hours and compute countdown
   function isUsTradingHours() {
-    const now = new Date();
-    const day = now.getDay(); // 0 (Sun) to 6 (Sat)
-    const hour = now.getUTCHours(); // using UTC
-    const minute = now.getUTCMinutes();
-    // US market (EST) open: Mon-Fri, 9:30am to 4:00pm EST = 14:30 to 21:00 UTC
-    const isBusinessDay = day >= 1 && day <= 5;
-    const isTradingHour =
-      (hour > 14 || (hour === 14 && minute >= 30)) &&
-      hour < 21;
-    return isBusinessDay && isTradingHour;
-  }
+  const now = new Date();
+
+  // Convert current time to New York time
+  const nyTime = new Date(
+    now.toLocaleString('en-US', { timeZone: 'America/New_York' })
+  );
+
+  const day = nyTime.getDay(); // Sunday = 0, Saturday = 6
+  const hour = nyTime.getHours();
+  const minute = nyTime.getMinutes();
+
+  const isBusinessDay = day >= 1 && day <= 5;
+  const isTradingHour =
+    (hour > 9 || (hour === 9 && minute >= 30)) && hour < 16;
+
+  return isBusinessDay && isTradingHour;
+}
+
 
   function getNextTradingCountdown() {
-    const now = new Date();
-    let next = new Date(now);
-    // Set to next open at 14:30 UTC
-    next.setUTCHours(14, 30, 0, 0);
-    // If that time is in the past (or today isn’t a business day), move ahead until it's valid.
-    while (next <= now || next.getDay() === 0 || next.getDay() === 6) {
-      next.setUTCDate(next.getUTCDate() + 1);
-      next.setUTCHours(14, 30, 0, 0); // reset hours for each new day
-    }
-    const diff = next - now;
-    const seconds = Math.floor(diff / 1000);
-    const d = Math.floor(seconds / (3600 * 24));
-    const h = Math.floor((seconds % (3600 * 24)) / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = seconds % 60;
-    return `${d}:${h.toString().padStart(2, '0')}:${m
-      .toString()
-      .padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  const now = new Date();
+
+  // Get current time in New York
+  const nyNow = new Date(
+    now.toLocaleString('en-US', { timeZone: 'America/New_York' })
+  );
+
+  let nextOpen = new Date(nyNow);
+  nextOpen.setHours(9, 30, 0, 0); // Next open at 9:30 AM
+
+  // If it's after today's open time, or not a business day, move to next weekday
+  while (
+    nextOpen <= nyNow || // time has passed
+    nextOpen.getDay() === 0 || // Sunday
+    nextOpen.getDay() === 6 // Saturday
+  ) {
+    nextOpen.setDate(nextOpen.getDate() + 1);
+    nextOpen.setHours(9, 30, 0, 0);
   }
+
+  // Convert both times back to UTC timestamps
+  const utcNext = new Date(nextOpen.toLocaleString('en-US', { timeZone: 'UTC' }));
+  const diff = utcNext - now;
+  const seconds = Math.floor(diff / 1000);
+  const d = Math.floor(seconds / (3600 * 24));
+  const h = Math.floor((seconds % (3600 * 24)) / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+  return `${d}:${h.toString().padStart(2, '0')}:${m
+    .toString()
+    .padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+}
 
   // Set up React state and update loop
   const [isLive, setIsLive] = React.useState(false);
