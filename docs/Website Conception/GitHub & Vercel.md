@@ -45,7 +45,3 @@ This setup integrates smoothly with my trading automation system:
 ✅ This means I can **monitor forward-tested strategies** live from anywhere, without needing direct server access.
 
 ---
-
-## ⏭️ What’s Next
-
-In the [next page](./Real-time Dashboards.md), I will explain how I built **interactive real-time dashboards** using these integrations — allowing deeper visualization of strategy behavior, performance, and open trade states.
