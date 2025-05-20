@@ -32,7 +32,7 @@ This ensures **better fills**, **tighter execution**, and more **accurate market
 This script:
 - Connects to IBKR
 - Loads the selected strategy profile based on the **current live VIX price**
-- Qualifies available options with <31 DTE
+- Qualifies available options with < 31 DTE
 - Checks bid/ask conditions to **filter valid spreads**
 - Dynamically submits **limit orders** to IBKR
 - Monitors partial fills and **reprices** within limits
@@ -59,11 +59,11 @@ This file monitors existing positions:
 
 To automate both entry and exit logic on a rolling basis throughout the day, I built two looped scripts:
 
-### 🔄 `loop_entry.py`
+### `loop_entry.py`
 - Executes `entry_trades.py` every 60 seconds
 - Pushes updated logs to Git for live portfolio monitoring
 
-### 🔄 `loop_exit.py`
+### `loop_exit.py`
 - Executes `exit_trades.py` every 60 seconds
 - Ensures exits are checked frequently as market evolves
 
