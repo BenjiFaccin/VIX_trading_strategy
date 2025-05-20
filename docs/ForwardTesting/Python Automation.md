@@ -76,8 +76,7 @@ To automate both entry and exit logic on a rolling basis throughout the day, I b
 This script runs automatically each evening and:
 - Reads both `entry_trades.csv` and `exit_trades.csv`
 - Counts the number of trades executed for the day
-- Sends a formatted summary email to:
-  - `benjamin.faccin@gmail.com`
+- Sends a formatted summary email to my email address
 - Email includes:
   - Number of entries and exits
   - Timestamp
