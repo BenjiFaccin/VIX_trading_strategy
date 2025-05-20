@@ -18,4 +18,3 @@ The statistical tests performed on the residuals of the Eclipse model indicate t
 
 <div class="extra-space"></div>
 
-<img src="/img/AnalysisResults.jpg" alt="AnalysisResults" style={{ maxWidth: "100%" }} />

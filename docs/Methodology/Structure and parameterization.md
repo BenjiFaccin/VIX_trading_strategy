@@ -13,7 +13,6 @@ In the development of the Eclipse indicator, a 52-week sliding window was select
 
 Extensive testing was conducted with various window lengths, ranging from shorter to longer periods. These experiments revealed that shorter windows lacked the necessary context for detecting longer-term cycles, while longer windows introduced excessive noise, diminishing the model's ability to adapt to recent data. The 52-week window consistently produced the best performance and accuracy, making it the most effective choice for predicting cyclical tops and bottoms in Bitcoin’s market trends.
 
-![InputData](/img/InputData.jpg)
 
 <div class="extra-space"></div>
 
@@ -29,7 +28,6 @@ A reduced number of units (64 compared to the first layer's 128) helps to distil
 With return_sequences=False, this layer outputs only the final hidden state rather than the full sequence. This is appropriate for downstream dense layers that require a fixed-size input, such as the output layer used in this model.
 The dense layer consists of a single neuron, which produces the final prediction for the dependent variable. This ensures a one-to-one correspondence with the target output.
 
-![ModelArchitecture](/img/ModelArchitecture.jpg)
 
 <div class="extra-space"></div>
 
@@ -38,6 +36,5 @@ The dense layer consists of a single neuron, which produces the final prediction
 
 A batch size of 32 balances computational efficiency and model performance, with a maximum of 100 epochs. However, Early Stopping halts training if the validation loss does not improve for 10 consecutive epochs, restoring the best weights to prevent overfitting. The data is split into 80% training and 20% validation, ensuring the model is evaluated effectively while being trained on a substantial portion of the data.
 
-![TrainingConfiguration](/img/TrainingConfiguration.jpg)
 
 <div class="extra-space"></div>

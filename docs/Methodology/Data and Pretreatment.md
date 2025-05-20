@@ -11,7 +11,6 @@ It was then applied a **MinMaxScaler with a range of (0, 1) as a normalization**
 <div class="extra-space"></div>
 MinMaxScaler used transforms each independent variables values using the formula:
 
-![MinMaxScaler](/img/MinMaxScaler.jpg)
 
 <div class="extra-space"></div>
 **I developed a <u>fully automated Python script that consolidates all tasks required to update, import, and save files for each independent variable</u>**. 

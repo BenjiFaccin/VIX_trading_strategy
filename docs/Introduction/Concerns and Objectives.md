@@ -6,8 +6,6 @@ sidebar_position: 2
 
 The **main concern** isn’t about accurary of the current model, it’s about how long this model will be accurate enough. As evoked earlier, historical Bitcoin patterns’ cycles are very similar in terms duration and very different at the same time, especially in terms of expansion which tends to be logarithmic. This affects a lot the model as some independent variables I’ll use will show less extreme values through time. 
 
-
-<img src="/img/logbtc.jpg" alt="Bitcoin Price and Fear & Greed Index" style={{ maxWidth: "100%" }} />
 <div class="extra-space"></div>
 While the concept of capitalizing on extremes of fear and greed is intuitive, translating this into a systematic and actionable tool requires careful analysis and validation. 
 

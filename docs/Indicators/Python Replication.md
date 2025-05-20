@@ -20,57 +20,40 @@ A huge thanks to bitcoin-data, which is the only one I’ve found that provides 
 
 ### Net Unrealized Profit and Loss (NUPL)
 - **Calculation:** A percentage that measures the overall profitability of Bitcoin holders in the market.
-![NUPLcalculation](/img/NUPLcalculation.jpg)
-![NUPLresults](/img/NUPLresults.jpg)
 <div class="extra-space"></div>
 
 
 
 ### Spent Output Profit Ratio (SOPR)
 - **Calculation:** A smoothing mechanism was applied using the exponential moving average to compute Signal Line:
-![SOPRcalculation](/img/SOPRcalculation.jpg)
-![SOPRresults](/img/SOPRresults.jpg)
 <div class="extra-space"></div>
 
 
 ### Market Value to Realized Value Z-score (MVRV-Z)
 - **Calculation:** The Z-score normalization of MVRV (historical standard deviation), where MVRV = Market Cap / Realized Cap.
 
-![MVRVcalculation](/img/MVRVcalculation.jpg)
-![MVRVresults](/img/MVRVresults.jpg)
 <div class="extra-space"></div>
 
 ### Cumulative Coin Value Days Destroyed (CVDD)
 - **Calculation:** CVDD incorporates cumulative value days destroyed (CDD) and market age. Adjusted CVDD was obtained by scaling CVDD (150%).
 
-![CVDDcalculation](/img/CVDDcalculation.jpg)
-![CVDDresults](/img/CVDDresults.jpg)
 <div class="extra-space"></div>
 
 ### Simple Moving Averages 
 - **Calculation:** Simple moving averages (SMA) were computed over different windows (20, 50, 100, 200 days).
-![SMAcalculation](/img/SMAcalculation.jpg)
 <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "10px" }}>
-  <img src="/img/SMAresults.jpg" alt="SMA Results 1" style={{ width: "45%" }} />
-  <img src="/img/SMAresults2.jpg" alt="SMA Results 2" style={{ width: "45%" }} />
 </div>
 
 <div class="extra-space"></div>
 
 ### Relative Strength Index (RSI-14EMA)
 - **Calculation:** Gains and losses were computed using exponential weighted averages over a 14-day period:
-![RSIcalculation](/img/RSIcalculation.jpg)
-![RSIcalculation](/img/RSIcalculation2.jpg)
-![RSIresults](/img/RSIresults.jpg)
 <div class="extra-space"></div>
 
 ### Bitcoin Difficulty Ratio (14EMA)
 - **Calculation:** A smoothing mechanism was applied using the exponential moving average:
 
-![BTCDcalculation](/img/BTCDcalculation.jpg)
 <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "10px" }}>
-  <img src="/img/BTCDresults.jpg" alt="SMA Results 1" style={{ width: "45%" }} />
-  <img src="/img/BTCDresults2.jpg" alt="SMA Results 2" style={{ width: "45%" }} />
 </div>
 <div class="extra-space"></div>
 

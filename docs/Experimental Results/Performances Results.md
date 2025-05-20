@@ -6,7 +6,6 @@ sidebar_position: 1
 
 The performance metrics indicate that the Eclipse model achieves exceptional predictive accuracy and robust generalization capabilities. 🚀 
 
-<img src="/img/PerformancesResults.jpg" alt="PerformancesResults" style={{ maxWidth: "100%" }} />
 
 ### Training set 
 On the training set, the **MAPE of 5.26%** reflects that, on average, the model’s predictions deviate by 5.26% from the true values. 

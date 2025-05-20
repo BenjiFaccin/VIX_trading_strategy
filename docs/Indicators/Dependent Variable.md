@@ -11,8 +11,6 @@ I used *linear interpolation* between each extreme to assign intra-top-bottom va
 Visually, the normalization of the dependent variable relative to the price appears as follows:
 
 
-![NormalizedVariable](/img/NormalizedVariable.jpg)
-
 
 What you can immediately see is the non-consideration of second 2021-top, as on-chain metrics regarding my independent variables were too much contradictory.
 

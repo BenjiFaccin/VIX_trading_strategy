@@ -8,7 +8,6 @@ sidebar_label: API Data
 
 The latest predictions for Bitcoin cycle tops and bottoms are available in JSON format.
 
-➡️ **[Data: signals.json](./signals.json)**
 
 The file contains predictions like this:
 
