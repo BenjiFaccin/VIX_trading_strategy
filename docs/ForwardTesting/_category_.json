@@ -1,6 +1,6 @@
 {
   "label": "ForwardTesting",
-  "position": 6,
+  "position": 5,
   "link": {
     "type": "generated-index",
     "description": "Check out how I integrated with Interactive Brokers and TraderWorkStation (TWS) to implement an automated trading strategy."
