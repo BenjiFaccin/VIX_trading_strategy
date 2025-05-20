@@ -55,7 +55,7 @@ The majority of strategies exhibit **positive asymmetry**, and several offer exc
 
 The drawdowns were tightly contained even across different market conditions, confirming the defensive nature of the selected spreads.
 
-![Max Drawdown Chart](/img/cummaxdrawdown.csv)
+![Max Drawdown Chart](/img/cummaxdrawdown.png)
 
 ---
 
