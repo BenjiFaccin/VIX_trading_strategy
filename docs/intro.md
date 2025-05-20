@@ -37,9 +37,9 @@ This strategy and its implementation are not financial advice and are presented 
 
 
 
+
 ---
-sidebar_position: 1
----
+<div class="extra-space"></div>
 
 
 # Context and Motivation
@@ -50,6 +50,7 @@ This project was initiated after successfully completing the **CFA Level I exam*
 
 The goal was also to **learn how to automate trading strategies in a concrete**, real-world way, moving beyond academic concepts that often fall short when applied to live markets. Forward testing was chosen as a core focus because it allows strategies to be tested against actual market conditions, accounting for real-world issues like execution errors, slippage, technical constraints, and dynamic risk management.
 
+<div class="extra-space"></div>
 
 # Key Concerns and Limitations
 
@@ -57,7 +58,7 @@ While building and forward-testing this VIX bull put spread strategy, I’ve ide
 
 ---
 
-## 1. **Look-Ahead Bias from VIX Close Timestamp**
+### **Look-Ahead Bias from VIX Close Timestamp**
 
 One of the biggest pitfalls I encountered relates to the **timing mismatch between the VIX index close and the ETF/option market close**. The VIX officially closes at **4:15 PM**, while SPY, VXX, and most US ETFs/options close at **4:00 PM**. If I were to use the **VIX daily close** as a signal and act on it at the same day’s market close, I’d be **inadvertently using future information**, introducing a **look-ahead bias** into my results.
 
@@ -70,7 +71,7 @@ Always double-check timestamps — the **devil really is in the details**.
 
 ---
 
-## 2. **Liquidity and Slippage on Far OTM Legs**
+### **Liquidity and Slippage on Far OTM Legs**
 
 Another major issue comes from the **execution side** — specifically, with the **deep out-of-the-money (OTM)** put options used to build the spreads. In backtests, it's easy to assume smooth fills at midpoint prices. In practice, **bid/ask spreads widen significantly**, especially on far OTM strikes with low open interest.
 
@@ -83,7 +84,7 @@ Accounting for **realistic fills** and using **conservative slippage assumptions
 
 ---
 
-## 3. **Signal/Instrument Mismatch from VIX Futures Structure**
+### **Signal/Instrument Mismatch from VIX Futures Structure**
 
 Lastly, there’s a structural mismatch between the **VIX spot**, which I use for signal generation, and the **VIX options**, which are priced off **VIX futures**. This can lead to inconsistencies, especially:
 - Near **options expiration**
@@ -99,4 +100,3 @@ To mitigate this, I pay close attention to:
 ---
 
 These three areas — **timestamp accuracy**, **realistic execution**, and **instrument alignment** — are where most of the risk hides in this strategy. I've integrated safeguards into my automation to account for them, but they remain **core limitations** of the approach.
-
