@@ -10,7 +10,7 @@ import styles from './index.module.css';
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
 
-  // 🕒 Get reliable NY time
+  // 🕒 Get NY time reliably
   function getNewYorkTime() {
     const formatter = new Intl.DateTimeFormat('en-US', {
       timeZone: 'America/New_York',
@@ -38,7 +38,8 @@ function HomepageHeader() {
     const minute = nyTime.getMinutes();
 
     const isBusinessDay = day >= 1 && day <= 5;
-    const isTradingHour = (hour > 9 || (hour === 9 && minute >= 30)) && hour < 16;
+    const isTradingHour =
+      (hour > 9 || (hour === 9 && minute >= 30)) && hour < 16;
 
     return isBusinessDay && isTradingHour;
   }
@@ -71,12 +72,13 @@ function HomepageHeader() {
     nyClose.setHours(16, 0, 0, 0);
 
     const diff = nyClose.getTime() - nyNow.getTime();
+
     if (diff <= 0) return '0:00:00:00';
 
     return formatCountdown(diff);
   }
 
-  // 🔢 Format milliseconds to d:hh:mm:ss
+  // 🔢 Format ms diff to d:hh:mm:ss
   function formatCountdown(ms) {
     const totalSeconds = Math.floor(ms / 1000);
     const d = Math.floor(totalSeconds / (3600 * 24));
@@ -84,9 +86,9 @@ function HomepageHeader() {
     const m = Math.floor((totalSeconds % 3600) / 60);
     const s = totalSeconds % 60;
 
-    return `${d}:${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s
+    return `${d}:${h.toString().padStart(2, '0')}:${m
       .toString()
-      .padStart(2, '0')}`;
+      .padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   }
 
   // 🔁 State management
@@ -157,5 +159,20 @@ function HomepageHeader() {
         </div>
       </div>
     </header>
+  );
+}
+
+export default function Home() {
+  const { siteConfig } = useDocusaurusContext();
+  return (
+    <Layout
+      title={`${siteConfig.title}`}
+      description="A bull intraday put-spread automated trading algo strategy on VIX."
+    >
+      <HomepageHeader />
+      <main>
+        <HomepageFeatures />
+      </main>
+    </Layout>
   );
 }
