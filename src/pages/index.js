@@ -10,96 +10,84 @@ import styles from './index.module.css';
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
 
+  // 🕒 Get reliable NY time
+  function getNewYorkTime() {
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/New_York',
+      hour12: false,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+
+    const parts = formatter.formatToParts(new Date());
+    const obj = Object.fromEntries(parts.map(({ type, value }) => [type, value]));
+
+    return new Date(`${obj.year}-${obj.month}-${obj.day}T${obj.hour}:${obj.minute}:${obj.second}`);
+  }
+
   // 🕒 Detect if it's a US trading day + hours (based on NY time)
   function isUsTradingHours() {
-    const now = new Date();
-    const nyTime = new Date(
-      now.toLocaleString('en-US', { timeZone: 'America/New_York' })
-    );
+    const nyTime = getNewYorkTime();
 
     const day = nyTime.getDay(); // Sunday = 0, Saturday = 6
     const hour = nyTime.getHours();
     const minute = nyTime.getMinutes();
 
     const isBusinessDay = day >= 1 && day <= 5;
-    const isTradingHour =
-      (hour > 9 || (hour === 9 && minute >= 30)) && hour < 16;
+    const isTradingHour = (hour > 9 || (hour === 9 && minute >= 30)) && hour < 16;
 
     return isBusinessDay && isTradingHour;
   }
 
   // ⏳ Countdown to next market OPEN (9:30 AM NY time)
   function getNextTradingCountdown() {
-    const now = new Date();
-    const nyNow = new Date(
-      now.toLocaleString('en-US', { timeZone: 'America/New_York' })
-    );
+    const nyNow = getNewYorkTime();
 
     let nextOpen = new Date(nyNow);
     nextOpen.setHours(9, 30, 0, 0);
 
     while (
       nextOpen <= nyNow ||
-      nextOpen.getDay() === 0 ||
-      nextOpen.getDay() === 6
+      nextOpen.getDay() === 0 || // Sunday
+      nextOpen.getDay() === 6    // Saturday
     ) {
       nextOpen.setDate(nextOpen.getDate() + 1);
       nextOpen.setHours(9, 30, 0, 0);
     }
 
-    const utcNext = new Date(
-      nextOpen.toLocaleString('en-US', { timeZone: 'UTC' })
-    );
-    const diff = utcNext - now;
-    const seconds = Math.floor(diff / 1000);
-
-    const d = Math.floor(seconds / (3600 * 24));
-    const h = Math.floor((seconds % (3600 * 24)) / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = seconds % 60;
-
-    return `${d}:${h.toString().padStart(2, '0')}:${m
-      .toString()
-      .padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    const diff = nextOpen.getTime() - nyNow.getTime();
+    return formatCountdown(diff);
   }
 
   // ⏳ Countdown to market CLOSE (4:00 PM NY time)
   function getMarketCloseCountdown() {
-  const now = new Date();
+    const nyNow = getNewYorkTime();
 
-  // Get current time in New York
-  const nyNow = new Date(
-    now.toLocaleString('en-US', { timeZone: 'America/New_York' })
-  );
+    const nyClose = new Date(nyNow);
+    nyClose.setHours(16, 0, 0, 0);
 
-  // Set today’s 4:00 PM in New York
-  const nyClose = new Date(
-    nyNow.toLocaleString('en-US', { timeZone: 'America/New_York' })
-  );
-  nyClose.setHours(16, 0, 0, 0);
+    const diff = nyClose.getTime() - nyNow.getTime();
+    if (diff <= 0) return '0:00:00:00';
 
-  // Convert both NY times to UTC to do the math safely
-  const utcNow = new Date(
-    nyNow.toLocaleString('en-US', { timeZone: 'UTC' })
-  );
-  const utcClose = new Date(
-    nyClose.toLocaleString('en-US', { timeZone: 'UTC' })
-  );
+    return formatCountdown(diff);
+  }
 
-  const diff = utcClose - utcNow;
+  // 🔢 Format milliseconds to d:hh:mm:ss
+  function formatCountdown(ms) {
+    const totalSeconds = Math.floor(ms / 1000);
+    const d = Math.floor(totalSeconds / (3600 * 24));
+    const h = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = totalSeconds % 60;
 
-  if (diff <= 0) return '0:00:00:00';
-
-  const seconds = Math.floor(diff / 1000);
-  const d = Math.floor(seconds / (3600 * 24));
-  const h = Math.floor((seconds % (3600 * 24)) / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  const s = seconds % 60;
-
-  return `${d}:${h.toString().padStart(2, '0')}:${m
-    .toString()
-    .padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-}
+    return `${d}:${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s
+      .toString()
+      .padStart(2, '0')}`;
+  }
 
   // 🔁 State management
   const [isLive, setIsLive] = React.useState(false);
@@ -169,20 +157,5 @@ function HomepageHeader() {
         </div>
       </div>
     </header>
-  );
-}
-
-export default function Home() {
-  const { siteConfig } = useDocusaurusContext();
-  return (
-    <Layout
-      title={`${siteConfig.title}`}
-      description="A bull intraday put-spread automated trading algo strategy on VIX."
-    >
-      <HomepageHeader />
-      <main>
-        <HomepageFeatures />
-      </main>
-    </Layout>
   );
 }
