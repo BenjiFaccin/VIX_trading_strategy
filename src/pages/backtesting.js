@@ -12,7 +12,7 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 
 export default function GeneralMetricsBacktesting() {
   const totalBacktestedTx = 21485;
-  const percentageSelected = 1.52;
+  const percentageSelected = 1.48;
 
   const [strategyData, setStrategyData] = useState([]);
   const [winrateData, setWinrateData] = useState([]);
@@ -128,7 +128,7 @@ export default function GeneralMetricsBacktesting() {
               {percentageSelected.toFixed(2)}%
             </span>
             <span style={metricLabelStyle}>
-              % of best profiles selected (38 out of 2500)
+              % of best profiles selected (37 out of 2500)
             </span>
           </div>
         </div>
