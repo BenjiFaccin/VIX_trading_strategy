@@ -151,10 +151,13 @@ export default function OverviewPage() {
                 .filter(row => row['Status'] === 'Exited')
                 .sort((a, b) => new Date(b['Date']) - new Date(a['Date']))
                 .map((row, index) => {
-                  const returnValue = 
-                    parseFloat(row["Current Expiry Value"]) + 
-                    parseFloat(row["Total Costs"]) - 
-                    1.31;
+                  const currentExpiry = parseFloat(row["Current Expiry Value"]);
+                  const totalCosts = parseFloat(row["Total Costs"]);
+
+                  let returnValue = null;
+                  if (!isNaN(currentExpiry) && !isNaN(totalCosts)) {
+                    returnValue = currentExpiry + totalCosts - 1.31;
+                  }
                   const avgBacktestedReturn = calculateBacktestedReturn(row);
                   return (
                     <tr key={index}>
@@ -166,9 +169,8 @@ export default function OverviewPage() {
                           padding: '8px',
                           textAlign: 'center'
                         };
-
                         if (col === 'Return') {
-                          if (!isNaN(returnValue)) {
+                          if (returnValue !== null) {
                             cellValue = returnValue.toFixed(2);
                             if (returnValue > 0) className = 'return-positive';
                             else if (returnValue < 0) className = 'return-negative';
@@ -180,7 +182,6 @@ export default function OverviewPage() {
                         } else {
                           cellValue = formatCell(row[col], col);
                         }
-
                         return (
                           <td key={col} style={baseStyle} className={className}>
                             {cellValue}
