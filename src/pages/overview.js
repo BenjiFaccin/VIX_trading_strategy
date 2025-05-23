@@ -148,7 +148,7 @@ export default function OverviewPage() {
             </thead>
             <tbody>
               {trades
-                .filter(row => row['Status'] === 'Exit')
+                .filter(row => row['Status'] === 'Exited')
                 .sort((a, b) => new Date(b['Date']) - new Date(a['Date']))
                 .map((row, index) => {
                   const returnValue = parseFloat(getExitReturn(row));
