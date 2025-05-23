@@ -151,7 +151,10 @@ export default function OverviewPage() {
                 .filter(row => row['Status'] === 'Exited')
                 .sort((a, b) => new Date(b['Date']) - new Date(a['Date']))
                 .map((row, index) => {
-                  const returnValue = parseFloat(getExitReturn(row));
+                  const returnValue = 
+                    parseFloat(row["Current Expiry Value"]) + 
+                    parseFloat(row["Total Costs"]) - 
+                    1.31;
                   const avgBacktestedReturn = calculateBacktestedReturn(row);
 
                   return (
