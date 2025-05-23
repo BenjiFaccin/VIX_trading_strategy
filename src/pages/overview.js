@@ -154,7 +154,7 @@ export default function OverviewPage() {
                   const returnValue = 
                     parseFloat(row["Current Expiry Value"]) + 
                     parseFloat(row["Total Costs"]) - 
-                    1.315;
+                    1.31;
                   const avgBacktestedReturn = calculateBacktestedReturn(row);
                   return (
                     <tr key={index}>
