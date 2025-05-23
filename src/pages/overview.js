@@ -156,7 +156,6 @@ export default function OverviewPage() {
                     parseFloat(row["Total Costs"]) - 
                     1.31;
                   const avgBacktestedReturn = calculateBacktestedReturn(row);
-
                   return (
                     <tr key={index}>
                       {exitedColumns.map(col => {
