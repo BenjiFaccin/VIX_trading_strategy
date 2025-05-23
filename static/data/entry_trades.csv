@@ -7,3 +7,4 @@ Date,Option expiration date,Strike short put,Strike long put,DTE,Spread Cost,Com
 2025-05-23 17:14:20,2025-06-02,21.0,22.0,9,-60.0,1.31,1.46,2.77,Filled,22.37,1,1,0.75,1.01,1.21,1.35,0.82,1.43,-61.0,-63.77,Selected_vix_put_spread_results_threshold_22-23_strike_21.0.xlsx,133.4999999999999,129.69
 2025-05-23 17:56:52,2025-06-02,19.0,21.0,9,-81.0,1.31,1.31,2.62,Filled,21.99,1,1,0.19,0.3,0.76,1.0,0.17,0.93,-76.0,-78.62,Selected_vix_put_spread_results_threshold_21-22_strike_19.0.xlsx,263.25,81.69
 2025-05-23 18:01:08,2025-06-02,17.0,21.0,9,-96.0,1.16,1.31,2.47,Filled,21.82,1,1,0.04,0.06,0.78,1.0,0.04,0.92,-88.0,-90.47,Selected_vix_put_spread_results_threshold_21-22_strike_17.0.xlsx,335.0000000000001,81.69
+2025-05-23 18:11:03,2025-06-02,20.0,21.0,9,-54.0,1.31,1.31,2.62,Filled,21.89,1,1,0.46,0.58,0.78,1.0,0.4,0.89,-49.0,-51.62,Selected_vix_put_spread_results_threshold_21-22_strike_20.0.xlsx,188.75
