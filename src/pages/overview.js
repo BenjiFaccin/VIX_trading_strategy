@@ -8,7 +8,7 @@ export default function OverviewPage() {
         [exitData, setExitData] = useState([]),
         [longLegTrades, setLongLegTrades] = useState([]),
         [shortLegTrades, setShortLegTrades] = useState([]),
-        [sortConfig, setSortConfig] = useState({ key: 'Date', direction: 'desc' });
+        [sortConfigs, setSortConfigs] = useState({});
 
   const urls = {
     entry: useBaseUrl('/data/entry_trades.csv'),
@@ -24,19 +24,25 @@ export default function OverviewPage() {
     shortExercised: ['Date','Option expiration date','Strike short put','Strike long put','Status','Qty Buy','Qty Sell','Total Costs','AVG Backtested Return','Payoff']
   };
 
-  const handleSort = key => setSortConfig(prev => ({
-    key,
-    direction: prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc'
-  }));
+  const handleSort = (tableKey, key) => {
+    setSortConfigs(prev => {
+      const prevConfig = prev[tableKey] || { key: '', direction: 'asc' };
+      const direction = prevConfig.key === key && prevConfig.direction === 'asc' ? 'desc' : 'asc';
+      return { ...prev, [tableKey]: { key, direction } };
+    });
+  };
 
   const formatCell = (value, col) => {
     if (!value) return '—';
     const date = new Date(value);
     if (col === 'Date' && !isNaN(date)) return `${date.getMonth()+1}`.padStart(2, '0') + '/' + `${date.getDate()}`.padStart(2, '0') + '/' + date.getFullYear() + ' ' + `${date.getHours()}`.padStart(2, '0') + ':' + `${date.getMinutes()}`.padStart(2, '0');
     if (col === 'Option expiration date' && !isNaN(date)) return `${date.getMonth()+1}`.padStart(2, '0') + '/' + `${date.getDate()}`.padStart(2, '0') + '/' + date.getFullYear();
-    const numCols = ['Current Expiry Value','AVG Expiry Value','AVG Backtested Return','Return','Payoff'];
+    const roundCols = ['Strike short put','Strike long put','Qty Buy','Qty Sell'];
+    const floatCols = ['Current Expiry Value','AVG Expiry Value','AVG Backtested Return','Return','Payoff'];
     const num = parseFloat(value);
-    return numCols.includes(col) && !isNaN(num) ? num.toFixed(2) : value;
+    if (roundCols.includes(col) && !isNaN(num)) return Math.ceil(num);
+    if (floatCols.includes(col) && !isNaN(num)) return num.toFixed(2);
+    return value;
   };
 
   const calculateBacktestedReturn = trade => {
@@ -45,34 +51,47 @@ export default function OverviewPage() {
     return !isNaN(avg) && !isNaN(cost) ? avg - Math.abs(cost) : null;
   };
 
-  const renderTable = (data, cols, filterFn, extraCols = {}) => (
-    <table style={{ borderCollapse: 'collapse', width: '80%', maxWidth: '1000px' }}>
-      <thead>
-        <tr>
-          {cols.map(col => (
-            <th key={col} onClick={() => handleSort(col)} style={{ cursor: 'pointer', border: '1px solid #ccc', padding: '8px', backgroundColor: 'var(--table-header-bg)', color: 'var(--table-header-color)', textAlign: 'center' }}>
-              {col} {sortConfig.key === col ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {data.filter(filterFn).sort((a, b) => new Date(b['Date']) - new Date(a['Date'])).map((row, i) => (
-          <tr key={i}>
-            {cols.map(col => {
-              let value = extraCols[col]?.(row) ?? formatCell(row[col], col);
-              let className = '';
-              if (['Return', 'Payoff'].includes(col)) {
-                const num = parseFloat(value);
-                if (!isNaN(num)) className = num > 0 ? 'return-positive' : (num < 0 ? 'return-negative' : '');
-              }
-              return <td key={col} style={{ border: '1px solid #eee', padding: '8px', textAlign: 'center' }} className={className}>{value}</td>;
-            })}
+  const renderTable = (tableKey, data, cols, filterFn, extraCols = {}) => {
+    const sortConfig = sortConfigs[tableKey] || { key: 'Date', direction: 'desc' };
+    const sortedData = [...data].filter(filterFn).sort((a, b) => {
+      const aVal = a[sortConfig.key], bVal = b[sortConfig.key];
+      if (!aVal || !bVal) return 0;
+      const isDate = sortConfig.key.toLowerCase().includes('date');
+      if (isDate) return sortConfig.direction === 'asc' ? new Date(aVal) - new Date(bVal) : new Date(bVal) - new Date(aVal);
+      const aNum = parseFloat(aVal), bNum = parseFloat(bVal);
+      if (!isNaN(aNum) && !isNaN(bNum)) return sortConfig.direction === 'asc' ? aNum - bNum : bNum - aNum;
+      return sortConfig.direction === 'asc' ? String(aVal).localeCompare(String(bVal)) : String(bVal).localeCompare(String(aVal));
+    });
+
+    return (
+      <table style={{ borderCollapse: 'collapse', width: '80%', maxWidth: '1000px' }}>
+        <thead>
+          <tr>
+            {cols.map(col => (
+              <th key={col} onClick={() => handleSort(tableKey, col)} style={{ cursor: 'pointer', border: '1px solid #ccc', padding: '8px', backgroundColor: 'var(--table-header-bg)', color: 'var(--table-header-color)', textAlign: 'center' }}>
+                {col} {sortConfig.key === col ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+              </th>
+            ))}
           </tr>
-        ))}
-      </tbody>
-    </table>
-  );
+        </thead>
+        <tbody>
+          {sortedData.map((row, i) => (
+            <tr key={i}>
+              {cols.map(col => {
+                let value = extraCols[col]?.(row) ?? formatCell(row[col], col);
+                let className = '';
+                if (['Return', 'Payoff'].includes(col)) {
+                  const num = parseFloat(value);
+                  if (!isNaN(num)) className = num > 0 ? 'return-positive' : (num < 0 ? 'return-negative' : '');
+                }
+                return <td key={col} style={{ border: '1px solid #eee', padding: '8px', textAlign: 'center' }} className={className}>{value}</td>;
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+  };
 
   useEffect(() => {
     Promise.all(Object.values(urls).map(url => fetch(url).then(r => r.text())))
@@ -89,12 +108,12 @@ export default function OverviewPage() {
       <main style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
         <h1 style={{ textAlign: 'center', marginBottom: '1.5rem', fontSize: '1.8rem' }}>Active trades: Put-Spreads</h1>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '3rem' }}>
-          {renderTable(trades, columns.active, row => row['Status'] !== 'Exited')}
+          {renderTable('active', trades, columns.active, row => row['Status'] !== 'Exited')}
         </div>
 
         <h1 style={{ textAlign: 'center', marginBottom: '1.5rem', fontSize: '1.8rem' }}>Exited trades</h1>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          {renderTable(trades, columns.exited, row => row['Status'] === 'Exited', {
+          {renderTable('exited', trades, columns.exited, row => row['Status'] === 'Exited', {
             'Return': row => {
               const val = parseFloat(row["Current Expiry Value"]) + parseFloat(row["Total Costs"]) - 1.311;
               return !isNaN(val) ? val.toFixed(2) : '—';
@@ -108,7 +127,7 @@ export default function OverviewPage() {
 
         <h1 style={{ textAlign: 'center', margin: '3rem 0 1.5rem', fontSize: '1.8rem' }}>Exercised Long leg Trades</h1>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          {renderTable(longLegTrades, columns.exercised, row => row['Status'] === 'Exercised', {
+          {renderTable('long', longLegTrades, columns.exercised, row => row['Status'] === 'Exercised', {
             'Return': row => parseFloat(row['Return'])?.toFixed(2),
             'AVG Backtested Return': row => calculateBacktestedReturn(row)?.toFixed(2)
           })}
@@ -116,7 +135,7 @@ export default function OverviewPage() {
 
         <h1 style={{ textAlign: 'center', margin: '3rem 0 1.5rem', fontSize: '1.8rem' }}>Exercised Short leg Trades</h1>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          {renderTable(shortLegTrades, columns.shortExercised, row => row['Status'] === 'Exercised', {
+          {renderTable('short', shortLegTrades, columns.shortExercised, row => row['Status'] === 'Exercised', {
             'Payoff': row => parseFloat(row['Payoff'])?.toFixed(2),
             'AVG Backtested Return': row => calculateBacktestedReturn(row)?.toFixed(2)
           })}
