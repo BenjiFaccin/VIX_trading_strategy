@@ -86,51 +86,13 @@ export default function OverviewPage() {
 
   return (
     <Layout title="Overview">
-      <main style={{ padding: '2rem', fontFamily: 'sans-serif', scrollBehavior: 'smooth' }}>
-        {/* Sticky Nav */}
-        <nav style={{
-          position: 'sticky',
-          top: 0,
-          background: '#fff',
-          padding: '1rem',
-          zIndex: 100,
-          borderBottom: '1px solid #ddd',
-          textAlign: 'center'
-        }}>
-          {[
-            { id: 'active-trades', label: 'Active Trades' },
-            { id: 'exited-trades', label: 'Exited Trades' },
-            { id: 'long-leg', label: 'Exercised Long Leg Trades' },
-            { id: 'short-leg', label: 'Exercised Short Leg Trades' }
-          ].map(({ id, label }) => (
-            <a
-              key={id}
-              href={`#${id}`}
-              style={{
-                margin: '0 1rem',
-                color: '#0070f3',
-                textDecoration: 'none',
-                fontWeight: 'bold',
-                fontSize: '1rem'
-              }}
-            >
-              {label}
-            </a>
-          ))}
-        </nav>
-
-        {/* Active Trades */}
-        <h1 id="active-trades" style={{ textAlign: 'center', marginBottom: '1.5rem', fontSize: '1.8rem' }}>
-          Active trades: Put-Spreads
-        </h1>
+      <main style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
+        <h1 style={{ textAlign: 'center', marginBottom: '1.5rem', fontSize: '1.8rem' }}>Active trades: Put-Spreads</h1>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '3rem' }}>
           {renderTable(trades, columns.active, row => row['Status'] !== 'Exited')}
         </div>
 
-        {/* Exited Trades */}
-        <h1 id="exited-trades" style={{ textAlign: 'center', marginBottom: '1.5rem', fontSize: '1.8rem' }}>
-          Exited trades
-        </h1>
+        <h1 style={{ textAlign: 'center', marginBottom: '1.5rem', fontSize: '1.8rem' }}>Exited trades</h1>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           {renderTable(trades, columns.exited, row => row['Status'] === 'Exited', {
             'Return': row => {
@@ -144,10 +106,7 @@ export default function OverviewPage() {
           })}
         </div>
 
-        {/* Long Leg */}
-        <h1 id="long-leg" style={{ textAlign: 'center', margin: '3rem 0 1.5rem', fontSize: '1.8rem' }}>
-          Exercised Long leg Trades
-        </h1>
+        <h1 style={{ textAlign: 'center', margin: '3rem 0 1.5rem', fontSize: '1.8rem' }}>Exercised Long leg Trades</h1>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           {renderTable(longLegTrades, columns.exercised, row => row['Status'] === 'Exercised', {
             'Return': row => parseFloat(row['Return'])?.toFixed(2),
@@ -155,10 +114,7 @@ export default function OverviewPage() {
           })}
         </div>
 
-        {/* Short Leg */}
-        <h1 id="short-leg" style={{ textAlign: 'center', margin: '3rem 0 1.5rem', fontSize: '1.8rem' }}>
-          Exercised Short leg Trades
-        </h1>
+        <h1 style={{ textAlign: 'center', margin: '3rem 0 1.5rem', fontSize: '1.8rem' }}>Exercised Short leg Trades</h1>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           {renderTable(shortLegTrades, columns.shortExercised, row => row['Status'] === 'Exercised', {
             'Payoff': row => parseFloat(row['Payoff'])?.toFixed(2),
