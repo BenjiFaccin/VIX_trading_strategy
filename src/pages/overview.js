@@ -6,22 +6,26 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 export default function OverviewPage() {
   const [trades, setTrades] = useState([]);
   const [exitData, setExitData] = useState([]);
-
+  const [longLegTrades, setLongLegTrades] = useState([]);
   const entryCsvUrl = useBaseUrl('/data/entry_trades.csv');
   const exitCsvUrl = useBaseUrl('/data/exit_trades.csv');
+  const longLegCsvUrl = useBaseUrl('/data/longleg_trades.csv');
 
-  useEffect(() => {
-    Promise.all([
-      fetch(entryCsvUrl).then(res => res.text()),
-      fetch(exitCsvUrl).then(res => res.text())
-    ])
-      .then(([entryCsv, exitCsv]) => {
-        const parsedEntry = Papa.parse(entryCsv, { header: true, skipEmptyLines: true }).data;
-        const parsedExit = Papa.parse(exitCsv, { header: true, skipEmptyLines: true }).data;
-        setTrades(parsedEntry);
-        setExitData(parsedExit);
-      });
-  }, [entryCsvUrl, exitCsvUrl]);
+useEffect(() => {
+  Promise.all([
+    fetch(entryCsvUrl).then(res => res.text()),
+    fetch(exitCsvUrl).then(res => res.text()),
+    fetch(longLegCsvUrl).then(res => res.text())
+  ])
+    .then(([entryCsv, exitCsv, longLegCsv]) => {
+      const parsedEntry = Papa.parse(entryCsv, { header: true, skipEmptyLines: true }).data;
+      const parsedExit = Papa.parse(exitCsv, { header: true, skipEmptyLines: true }).data;
+      const parsedLongLeg = Papa.parse(longLegCsv, { header: true, skipEmptyLines: true }).data;
+      setTrades(parsedEntry);
+      setExitData(parsedExit);
+      setLongLegTrades(parsedLongLeg);
+    });
+}, [entryCsvUrl, exitCsvUrl, longLegCsvUrl]);
 
   const columnsToDisplay = [
     'Date',
@@ -184,6 +188,89 @@ export default function OverviewPage() {
                         return (
                           <td key={col} style={baseStyle} className={className}>
                             {cellValue}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </table>
+        </div>
+                {/* === EXERCISED LONG LEG TRADES === */}
+        <h1 style={{ textAlign: 'center', margin: '3rem 0 1.5rem', fontSize: '1.8rem' }}>
+          Exercised Long leg Trades
+        </h1>
+
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <table style={{ borderCollapse: 'collapse', width: '80%', maxWidth: '1000px' }}>
+            <thead>
+              <tr>
+                {[
+                  'Date',
+                  'Option expiration date',
+                  'Strike short put',
+                  'Strike long put',
+                  'Status',
+                  'Qty Buy',
+                  'Qty Sell',
+                  'Total Costs',
+                  'AVG Backtested Return',
+                  'Return'
+                ].map(col => (
+                  <th key={col} style={{
+                    border: '1px solid #ccc',
+                    padding: '8px',
+                    backgroundColor: 'var(--table-header-bg)',
+                    color: 'var(--table-header-color)',
+                    textAlign: 'center'
+                  }}>
+                    {col}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {longLegTrades
+                .filter(row => row['Status'] === 'Exercised')
+                .sort((a, b) => new Date(b['Date']) - new Date(a['Date']))
+                .map((row, index) => {
+                  const avgBacktestedReturn = calculateBacktestedReturn(row);
+                  const returnValue = parseFloat(row['Return']);
+                  return (
+                    <tr key={index}>
+                      {[
+                        'Date',
+                        'Option expiration date',
+                        'Strike short put',
+                        'Strike long put',
+                        'Status',
+                        'Qty Buy',
+                        'Qty Sell',
+                        'Total Costs',
+                        'AVG Backtested Return',
+                        'Return'
+                      ].map(col => {
+                        let value = '—';
+                        let className = '';
+                        const baseStyle = {
+                          border: '1px solid #eee',
+                          padding: '8px',
+                          textAlign: 'center'
+                        };
+
+                        if (col === 'Return' && !isNaN(returnValue)) {
+                          value = returnValue.toFixed(2);
+                          className = returnValue > 0 ? 'return-positive' : (returnValue < 0 ? 'return-negative' : '');
+                        } else if (col === 'AVG Backtested Return' && !isNaN(avgBacktestedReturn)) {
+                          value = avgBacktestedReturn.toFixed(2);
+                        } else {
+                          value = formatCell(row[col], col);
+                        }
+
+                        return (
+                          <td key={col} style={baseStyle} className={className}>
+                            {value}
                           </td>
                         );
                       })}
