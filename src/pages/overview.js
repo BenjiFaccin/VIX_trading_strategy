@@ -58,13 +58,18 @@ useEffect(() => {
     'Return'
   ];
 
-  const formatCell = (value, column) => {
+const formatCell = (value, column) => {
   const numColumns = ['Current Expiry Value', 'AVG Expiry Value', 'AVG Backtested Return', 'Return', 'Payoff'];
 
   if (column === 'Date' || column === 'Option expiration date') {
     const date = new Date(value);
     if (!isNaN(date.getTime())) {
-      return date.toISOString().slice(0, 16).replace('T', ' ');
+      const mm = String(date.getMonth() + 1).padStart(2, '0');
+      const dd = String(date.getDate()).padStart(2, '0');
+      const yyyy = date.getFullYear();
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      return `${mm}/${dd}/${yyyy} ${hours}:${minutes}`;
     }
   }
 
