@@ -7,6 +7,7 @@ export default function OverviewPage() {
   const [trades, setTrades] = useState([]);
   const [exitData, setExitData] = useState([]);
   const [longLegTrades, setLongLegTrades] = useState([]);
+  const [shortLegTrades, setShortLegTrades] = useState([]); 
   const entryCsvUrl = useBaseUrl('/data/entry_trades.csv');
   const exitCsvUrl = useBaseUrl('/data/exit_trades.csv');
   const longLegCsvUrl = useBaseUrl('/data/longleg_trades.csv');
@@ -285,48 +286,13 @@ useEffect(() => {
           </table>
         </div>
         {/* === EXERCISED SHORT LEG TRADES === */}
-<h1 style={{ textAlign: 'center', margin: '3rem 0 1.5rem', fontSize: '1.8rem' }}>
-  Exercised Short leg Trades
-</h1>
-
-<div style={{ display: 'flex', justifyContent: 'center' }}>
-  <table style={{ borderCollapse: 'collapse', width: '80%', maxWidth: '1000px' }}>
-    <thead>
-      <tr>
-        {[
-          'Date',
-          'Option expiration date',
-          'Strike short put',
-          'Strike long put',
-          'Status',
-          'Qty Buy',
-          'Qty Sell',
-          'Total Costs',
-          'AVG Backtested Return',
-          'Payoff'
-        ].map(col => (
-          <th key={col} style={{
-            border: '1px solid #ccc',
-            padding: '8px',
-            backgroundColor: 'var(--table-header-bg)',
-            color: 'var(--table-header-color)',
-            textAlign: 'center'
-          }}>
-            {col}
-          </th>
-        ))}
-      </tr>
-    </thead>
-    <tbody>
-      {shortLegTrades
-        .filter(row => row['Status'] === 'Exercised')
-        .sort((a, b) => new Date(b['Date']) - new Date(a['Date']))
-        .map((row, index) => {
-          const avgBacktestedReturn = calculateBacktestedReturn(row);
-          const payoff = parseFloat(row['Payoff']);
-
-          return (
-            <tr key={index}>
+      <h1 style={{ textAlign: 'center', margin: '3rem 0 1.5rem', fontSize: '1.8rem' }}>
+        Exercised Short leg Trades
+      </h1>
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <table style={{ borderCollapse: 'collapse', width: '80%', maxWidth: '1000px' }}>
+          <thead>
+            <tr>
               {[
                 'Date',
                 'Option expiration date',
@@ -338,36 +304,70 @@ useEffect(() => {
                 'Total Costs',
                 'AVG Backtested Return',
                 'Payoff'
-              ].map(col => {
-                let value = '—';
-                let className = '';
-                const baseStyle = {
-                  border: '1px solid #eee',
+              ].map(col => (
+                <th key={col} style={{
+                  border: '1px solid #ccc',
                   padding: '8px',
+                  backgroundColor: 'var(--table-header-bg)',
+                  color: 'var(--table-header-color)',
                   textAlign: 'center'
-                };
-
-                if (col === 'Payoff' && !isNaN(payoff)) {
-                  value = payoff.toFixed(2);
-                  className = payoff > 0 ? 'return-positive' : (payoff < 0 ? 'return-negative' : '');
-                } else if (col === 'AVG Backtested Return' && !isNaN(avgBacktestedReturn)) {
-                  value = avgBacktestedReturn.toFixed(2);
-                } else {
-                  value = formatCell(row[col], col);
-                }
+                }}>
+                  {col}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {shortLegTrades
+              .filter(row => row['Status'] === 'Exercised')
+              .sort((a, b) => new Date(b['Date']) - new Date(a['Date']))
+              .map((row, index) => {
+                const avgBacktestedReturn = calculateBacktestedReturn(row);
+                const payoff = parseFloat(row['Payoff']);
 
                 return (
-                  <td key={col} style={baseStyle} className={className}>
-                    {value}
-                  </td>
+                  <tr key={index}>
+                    {[
+                      'Date',
+                      'Option expiration date',
+                      'Strike short put',
+                      'Strike long put',
+                      'Status',
+                      'Qty Buy',
+                      'Qty Sell',
+                      'Total Costs',
+                      'AVG Backtested Return',
+                      'Payoff'
+                    ].map(col => {
+                      let value = '—';
+                      let className = '';
+                      const baseStyle = {
+                        border: '1px solid #eee',
+                        padding: '8px',
+                        textAlign: 'center'
+                      };
+
+                      if (col === 'Payoff' && !isNaN(payoff)) {
+                        value = payoff.toFixed(2);
+                        className = payoff > 0 ? 'return-positive' : (payoff < 0 ? 'return-negative' : '');
+                      } else if (col === 'AVG Backtested Return' && !isNaN(avgBacktestedReturn)) {
+                        value = avgBacktestedReturn.toFixed(2);
+                      } else {
+                        value = formatCell(row[col], col);
+                      }
+
+                      return (
+                        <td key={col} style={baseStyle} className={className}>
+                          {value}
+                        </td>
+                      );
+                    })}
+                  </tr>
                 );
               })}
-            </tr>
-          );
-        })}
-    </tbody>
-  </table>
-</div> 
+          </tbody>
+        </table>
+      </div> 
       </main>
     </Layout>
   );
