@@ -59,13 +59,22 @@ useEffect(() => {
   ];
 
   const formatCell = (value, column) => {
-    const numColumns = ['Current Expiry Value', 'AVG Expiry Value', 'AVG Backtested Return', 'Return'];
-    const number = parseFloat(value);
-    if (numColumns.includes(column) && !isNaN(number)) {
-      return number.toFixed(2);
+  const numColumns = ['Current Expiry Value', 'AVG Expiry Value', 'AVG Backtested Return', 'Return', 'Payoff'];
+
+  if (column === 'Date' || column === 'Option expiration date') {
+    const date = new Date(value);
+    if (!isNaN(date.getTime())) {
+      return date.toISOString().slice(0, 16).replace('T', ' ');
     }
-    return value || '—';
-  };
+  }
+
+  const number = parseFloat(value);
+  if (numColumns.includes(column) && !isNaN(number)) {
+    return number.toFixed(2);
+  }
+
+  return value || '—';
+};
 
   const getExitReturn = (trade) => {
     const match = exitData.find(exit =>
