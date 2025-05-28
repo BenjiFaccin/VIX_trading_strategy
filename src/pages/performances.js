@@ -16,6 +16,10 @@ export default function PerformancesPage() {
   const entryCsvUrl = useBaseUrl('/data/entry_trades.csv');
   const exitCsvUrl = useBaseUrl('/data/exit_trades.csv');
 
+  const [longlegData, setLonglegData] = useState([]);
+  const longlegCsvUrl = useBaseUrl('/data/longleg_trades.csv');
+
+
   useEffect(() => {
     fetch(entryCsvUrl)
       .then(res => res.text())
@@ -36,6 +40,15 @@ export default function PerformancesPage() {
           complete: results => setExitData(results.data)
         });
       });
+      fetch(longlegCsvUrl)
+        .then(res => res.text())
+        .then(csv => {
+          Papa.parse(csv, {
+            header: true,
+            skipEmptyLines: true,
+            complete: results => setLonglegData(results.data)
+          });
+        });
   }, []);
 
   const formatTxCount = (num) => {
@@ -140,29 +153,56 @@ const cancelledCostData = entryData
     };
   });
 
-  let cumRowReturn = 0;
-let cumNetReturn = 0;
+// 1. Extraire rowReturn du fichier longleg
+const longlegReturns = longlegData
+  .map(row => {
+    const date = normalizeDate(row['Option expiration date']);
+    const value = parseFloat(row['Current Expiry Value']) || 0;
+    return { date, value };
+  })
+  .filter(row => row.date);
 
-const cumulativeReturnData = exitData
+// 2. Extraire rowReturn et netReturn du fichier exit
+const exitReturns = exitData
   .map(row => {
     const date = normalizeDate(row['Date']);
-    const rowReturn = parseFloat(row['Current Value of sell leg']) || 0;
+    const rowValue = parseFloat(row['Current Value of sell leg']) || 0;
     const expiryValue = parseFloat(row['Current Expiry Value']) || 0;
     const cost = parseFloat(row['Total Costs']) || 0;
     const netReturn = expiryValue + cost;
-    return { date, rowReturn, netReturn };
+    return { date, rowValue, netReturn };
   })
-  .filter(row => row.date) // Valid dates only
-  .sort((a, b) => new Date(a.date) - new Date(b.date))
-  .map(row => {
-    cumRowReturn += row.rowReturn;
-    cumNetReturn += row.netReturn;
-    return {
-      date: row.date,
-      rowReturn: parseFloat(cumRowReturn.toFixed(2)),
-      netReturn: parseFloat(cumNetReturn.toFixed(2))
-    };
-  });
+  .filter(row => row.date);
+
+// 3. Fusionner les deux sources par date
+const allDatesSet = new Set([
+  ...exitReturns.map(r => r.date),
+  ...longlegReturns.map(r => r.date)
+]);
+
+const combinedReturnDates = [...allDatesSet].sort((a, b) => new Date(a) - new Date(b));
+
+let cumRowReturn = 0;
+let cumNetReturn = 0;
+
+const cumulativeReturnData = combinedReturnDates.map(date => {
+  const longlegValue = longlegReturns
+    .filter(r => r.date === date)
+    .reduce((sum, r) => sum + r.value, 0);
+
+  const exitEntry = exitReturns.find(r => r.date === date);
+  const rowValue = exitEntry ? exitEntry.rowValue : 0;
+  const netVal = exitEntry ? exitEntry.netReturn : 0;
+
+  cumRowReturn += rowValue + longlegValue;
+  cumNetReturn += netVal;
+
+  return {
+    date,
+    rowReturn: parseFloat(cumRowReturn.toFixed(2)),
+    netReturn: parseFloat(cumNetReturn.toFixed(2))
+  };
+});
 
   let cumTotalCosts = 0;
 let cumTotalCommissions = 0;
