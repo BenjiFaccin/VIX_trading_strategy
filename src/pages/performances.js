@@ -19,17 +19,7 @@ export default function PerformancesPage() {
   const [longlegData, setLonglegData] = useState([]);
   const longlegCsvUrl = useBaseUrl('/data/longleg_trades.csv');
   const shortlegCsvUrl = useBaseUrl('/data/shortleg_trades.csv');
-
-fetch(shortlegCsvUrl)
-  .then(res => res.text())
-  .then(csv => {
-    Papa.parse(csv, {
-      header: true,
-      skipEmptyLines: true,
-      complete: results => setShortlegData(results.data)
-    });
-  });
-
+  const [shortlegData, setShortlegData] = useState([]);
 
   useEffect(() => {
     fetch(entryCsvUrl)
@@ -58,6 +48,15 @@ fetch(shortlegCsvUrl)
             header: true,
             skipEmptyLines: true,
             complete: results => setLonglegData(results.data)
+          });
+        });
+        fetch(shortlegCsvUrl)
+        .then(res => res.text())
+        .then(csv => {
+          Papa.parse(csv, {
+            header: true,
+            skipEmptyLines: true,
+            complete: results => setShortlegData(results.data)
           });
         });
   }, []);
