@@ -18,6 +18,17 @@ export default function PerformancesPage() {
 
   const [longlegData, setLonglegData] = useState([]);
   const longlegCsvUrl = useBaseUrl('/data/longleg_trades.csv');
+  const shortlegCsvUrl = useBaseUrl('/data/shortleg_trades.csv');
+
+fetch(shortlegCsvUrl)
+  .then(res => res.text())
+  .then(csv => {
+    Papa.parse(csv, {
+      header: true,
+      skipEmptyLines: true,
+      complete: results => setShortlegData(results.data)
+    });
+  });
 
 
   useEffect(() => {
@@ -170,7 +181,7 @@ const longlegReturns = longlegData
   })
   .filter(row => row.date);
 
-  const shortlegPayoffs = shortLegTrades
+  const shortlegPayoffs = shortlegData
   .map(row => {
     const date = normalizeDate(row['Option expiration date']);
     const value = parseFloat(row['Payoff']) || 0;
