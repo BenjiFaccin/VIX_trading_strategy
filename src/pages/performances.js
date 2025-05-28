@@ -213,7 +213,9 @@ const combinedReturnDates = [...allDatesSet].sort((a, b) => new Date(a) - new Da
 let cumRowReturn = 0;
 let cumNetReturn = 0;
 
-const cumulativeReturnData = combinedReturnDates.map(date => {
+const today = new Date();
+const filteredDates = combinedReturnDates.filter(d => new Date(d) <= today);
+const cumulativeReturnData = filteredDates.map(date => {
   const longlegValue = longlegReturns
     .filter(r => r.date === date)
     .reduce((sum, r) => sum + r.value, 0);
