@@ -1,2 +1,2 @@
 Date,Option expiration date,Strike short put,Strike long put,DTE,Spread Cost,Commission Sell,Commission Buy,Total Commissions,Status,VIX underlying price at trade,Qty Sell,Qty Buy,Bid Sell,Ask Sell,Bid Buy,Ask Buy,Price Sold,Price Paid,Effective Spread Cost,Total Costs,Strategy File,AVG Expiry Value,Current Expiry Value,Return
-2025-05-22 16:13:00,2025-05-02,15.0,24.0,10.0,-93.0,1.16,1.31,2.47,Exercised,20.69,1.0,1.0,0.01,0.03,0.66,0.94,0.01,0.88,-87.0,-89.47,Selected_vix_put_spread_results_threshold_20-21_strike_15.0.xlsx,462.0,130.69000000000003,41.22000000000003
+5/22/2025 16:13,5/2/2025,15,24,10,-93,1.16,1.31,2.47,Exercised,20.69,1,1,0.01,0.03,0.66,0.94,0.01,0.88,-87,-89.47,Selected_vix_put_spread_results_threshold_20-21_strike_15.0.xlsx,462,130.69,41.22

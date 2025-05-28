@@ -162,6 +162,15 @@ const longlegReturns = longlegData
   })
   .filter(row => row.date);
 
+  const longlegNetReturns = longlegData
+  .map(row => {
+    const date = normalizeDate(row['Option expiration date']);
+    const value = parseFloat(row['Return']) || 0;
+    return { date, value };
+  })
+  .filter(row => row.date);
+
+
 // 2. Extraire rowReturn et netReturn du fichier exit
 const exitReturns = exitData
   .map(row => {
@@ -177,7 +186,8 @@ const exitReturns = exitData
 // 3. Fusionner les deux sources par date
 const allDatesSet = new Set([
   ...exitReturns.map(r => r.date),
-  ...longlegReturns.map(r => r.date)
+  ...longlegReturns.map(r => r.date),
+  ...longlegNetReturns.map(r => r.date),
 ]);
 
 const combinedReturnDates = [...allDatesSet].sort((a, b) => new Date(a) - new Date(b));
@@ -192,10 +202,15 @@ const cumulativeReturnData = combinedReturnDates.map(date => {
 
   const exitEntry = exitReturns.find(r => r.date === date);
   const rowValue = exitEntry ? exitEntry.rowValue : 0;
-  const netVal = exitEntry ? exitEntry.netReturn : 0;
+  const longlegNetSum = longlegNetReturns
+  .filter(r => r.date === date)
+  .reduce((sum, r) => sum + r.value, 0);
+
+const netVal = (exitEntry ? exitEntry.netReturn : 0) + longlegNetSum;
+cumNetReturn += netVal;
+
 
   cumRowReturn += rowValue + longlegValue;
-  cumNetReturn += netVal;
 
   return {
     date,
@@ -203,9 +218,6 @@ const cumulativeReturnData = combinedReturnDates.map(date => {
     netReturn: parseFloat(cumNetReturn.toFixed(2))
   };
 });
-
-  let cumTotalCosts = 0;
-let cumTotalCommissions = 0;
 
 let cumCost = 0;
 let cumCommission = 0;
