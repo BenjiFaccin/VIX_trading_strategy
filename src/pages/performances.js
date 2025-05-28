@@ -147,7 +147,9 @@ const cumulativeReturnData = exitData
   .map(row => {
     const date = normalizeDate(row['Date']);
     const rowReturn = parseFloat(row['Current Value of sell leg']) || 0;
-    const netReturn = parseFloat(row['Expected return ']) || 0;
+    const expiryValue = parseFloat(row['Current Expiry Value']) || 0;
+    const cost = parseFloat(row['Total Costs']) || 0;
+    const netReturn = expiryValue + cost;
     return { date, rowReturn, netReturn };
   })
   .filter(row => row.date) // Valid dates only
