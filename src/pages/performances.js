@@ -341,19 +341,27 @@ allCombinedDates.forEach(date => {
 });
 
 // Net Return Exercised Legs (long + short return par date)
-const mergedNetReturnDataMap = {};
+const exercisedNetReturnMap = {};
 
-exercisedLongLegData.forEach(({ date, longLegReturn }) => {
-  mergedNetReturnDataMap[date] = mergedNetReturnDataMap[date] || { date, netReturn: 0 };
-  mergedNetReturnDataMap[date].netReturn += longLegReturn;
+longlegData.forEach(row => {
+  const date = normalizeDate(row['Option expiration date']);
+  const value = parseFloat(row['Return']) || 0;
+  if (!date) return;
+  exercisedNetReturnMap[date] = (exercisedNetReturnMap[date] || 0) + value;
 });
 
-exercisedShortLegData.forEach(({ date, shortLegReturn }) => {
-  mergedNetReturnDataMap[date] = mergedNetReturnDataMap[date] || { date, netReturn: 0 };
-  mergedNetReturnDataMap[date].netReturn += shortLegReturn;
+shortlegData.forEach(row => {
+  const date = normalizeDate(row['Option expiration date']);
+  const value = parseFloat(row['Return']) || 0;
+  if (!date) return;
+  exercisedNetReturnMap[date] = (exercisedNetReturnMap[date] || 0) + value;
 });
 
-const exercisedNetReturnData = Object.values(mergedNetReturnDataMap)
+const exercisedNetReturnData = Object.entries(exercisedNetReturnMap)
+  .map(([date, netReturn]) => ({
+    date,
+    netReturn: parseFloat(netReturn.toFixed(2))
+  }))
   .sort((a, b) => new Date(a.date) - new Date(b.date));
 
 let cumNet = 0;
