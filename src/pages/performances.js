@@ -219,10 +219,9 @@ const cumulativeReturnData = filteredDates.map(date => {
   // ==== Exit trades ====
   const exitMatches = exitData.filter(r => normalizeDate(r['Date']) === date);
 
-  const exitRowReturn = exitMatches.reduce((sum, r) => {
-    const exitPrice = parseFloat(r['Exit Price']) || 0;
-    return sum + (exitPrice * 100);
-  }, 0);
+  const exitExpiryValue = exitMatches.reduce((sum, r) => {
+  return sum + (parseFloat(r['Current Expiry Value']) || 0);
+}, 0);
 
   const exitCosts = exitMatches.reduce((sum, r) => {
     return sum + (parseFloat(r['Total Costs']) || 0);
@@ -242,8 +241,7 @@ const cumulativeReturnData = filteredDates.map(date => {
 
   // ==== Calculs ====
   const rowReturn = exitRowReturn + longlegReturnSum;
-  const netReturn = exitRowReturn + exitCosts + longlegReturnSum + shortlegReturnSum;
-
+  const netReturn = exitExpiryValue + exitCosts + longlegReturnSum + shortlegReturnSum;
   cumRowReturn += rowReturn;
   cumNetReturn += netReturn;
 
