@@ -21,8 +21,8 @@ export default function OverviewPage() {
     active: ['Date','Option expiration date','Strike short put','Strike long put','Status','Qty Buy','Qty Sell','Total Costs','Current Expiry Value','AVG Expiry Value'],
     exited: ['Date','Option expiration date','Strike short put','Strike long put','Status','Qty Buy','Qty Sell','Total Costs','AVG Backtested Return','Return'],
     exercised: ['Date','Option expiration date','Strike short put','Strike long put','Status','Qty Buy','Qty Sell','Total Costs','AVG Backtested Return','Return'],
-    shortExercised: ['Date','Option expiration date','Strike short put','Strike long put','Status','Qty Buy','Qty Sell','Total Costs','AVG Backtested Return','Payoff']
-  };
+   shortExercised: ['Date','Option expiration date','Strike short put','Strike long put','Status','Qty Buy','Qty Sell','Total Costs','AVG Backtested Return','Return']
+ };
 
   const handleSort = (tableKey, key) => {
     setSortConfigs(prev => {
@@ -108,7 +108,7 @@ export default function OverviewPage() {
       <main style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
         <h1 style={{ textAlign: 'center', marginBottom: '1.5rem', fontSize: '1.8rem' }}>Active trades: Put-Spreads</h1>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '3rem' }}>
-          {renderTable('active', trades, columns.active, row => row['Status'] !== 'Exited')}
+          {renderTable('active', trades, columns.active, row => ['Filled', 'Partial/Cancelled'].includes(row['Status']))}
         </div>
 
         <h1 style={{ textAlign: 'center', marginBottom: '1.5rem', fontSize: '1.8rem' }}>Exited trades</h1>
@@ -136,7 +136,7 @@ export default function OverviewPage() {
         <h1 style={{ textAlign: 'center', margin: '3rem 0 1.5rem', fontSize: '1.8rem' }}>Exercised Short leg Trades</h1>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           {renderTable('short', shortLegTrades, columns.shortExercised, row => row['Status'] === 'Exercised', {
-            'Payoff': row => parseFloat(row['Payoff'])?.toFixed(2),
+            'Return': row => parseFloat(row['Return'])?.toFixed(2),
             'AVG Backtested Return': row => calculateBacktestedReturn(row)?.toFixed(2)
           })}
         </div>
