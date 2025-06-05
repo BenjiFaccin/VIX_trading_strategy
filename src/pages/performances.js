@@ -210,30 +210,42 @@ const allDatesSet = new Set([
 
 const combinedReturnDates = [...allDatesSet].sort((a, b) => new Date(a) - new Date(b));
 
+const today = new Date();
+const filteredDates = combinedReturnDates.filter(d => new Date(d) <= today);
 let cumRowReturn = 0;
 let cumNetReturn = 0;
 
-const today = new Date();
-const filteredDates = combinedReturnDates.filter(d => new Date(d) <= today);
 const cumulativeReturnData = filteredDates.map(date => {
-  const longlegValue = longlegReturns
-    .filter(r => r.date === date)
-    .reduce((sum, r) => sum + r.value, 0);
-  
-  const shortlegPayoffSum = shortlegPayoffs
-    .filter(r => r.date === date)
-    .reduce((sum, r) => sum + r.value, 0);
+  // ==== Exit trades ====
+  const exitMatches = exitData.filter(r => normalizeDate(r['Date']) === date);
 
-  const exitEntry = exitReturns.find(r => r.date === date);
-  const rowValue = exitEntry ? exitEntry.rowValue : 0;
-  const longlegNetSum = longlegNetReturns
-  .filter(r => r.date === date)
-  .reduce((sum, r) => sum + r.value, 0);
+  const exitRowReturn = exitMatches.reduce((sum, r) => {
+    const exitPrice = parseFloat(r['Exit Price']) || 0;
+    return sum + (exitPrice * 100);
+  }, 0);
 
-const netVal = (exitEntry ? exitEntry.netReturn : 0) + longlegNetSum + shortlegPayoffSum;
-cumNetReturn += netVal;
+  const exitCosts = exitMatches.reduce((sum, r) => {
+    return sum + (parseFloat(r['Total Costs']) || 0);
+  }, 0);
 
-  cumRowReturn += rowValue + longlegValue;
+  // ==== Longleg trades ====
+  const longlegMatches = longlegData.filter(r => normalizeDate(r['Option expiration date']) === date);
+  const longlegReturnSum = longlegMatches.reduce((sum, r) => {
+    return sum + (parseFloat(r['Return']) || 0);
+  }, 0);
+
+  // ==== Shortleg trades ====
+  const shortlegMatches = shortlegData.filter(r => normalizeDate(r['Option expiration date']) === date);
+  const shortlegReturnSum = shortlegMatches.reduce((sum, r) => {
+    return sum + (parseFloat(r['Return']) || 0);
+  }, 0);
+
+  // ==== Calculs ====
+  const rowReturn = exitRowReturn + longlegReturnSum;
+  const netReturn = exitRowReturn + exitCosts + longlegReturnSum + shortlegReturnSum;
+
+  cumRowReturn += rowReturn;
+  cumNetReturn += netReturn;
 
   return {
     date,
