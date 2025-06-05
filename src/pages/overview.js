@@ -20,8 +20,8 @@ export default function OverviewPage() {
   const columns = {
     active: ['Date','Option expiration date','Strike short put','Strike long put','Status','Qty Buy','Qty Sell','Total Costs','Current Expiry Value','AVG Expiry Value'],
     exited: ['Date','Option expiration date','Strike short put','Strike long put','Status','Qty Buy','Qty Sell','Total Costs','AVG Backtested Return','Return'],
-    exercised: ['Date','Option expiration date','Strike short put','Strike long put','Status','Qty Buy','Qty Sell','Total Costs','AVG Backtested Return','Return'],
-   shortExercised: ['Date','Option expiration date','Strike short put','Strike long put','Status','Qty Buy','Qty Sell','Total Costs','AVG Backtested Return','Return']
+    exercised: ['Date','Option expiration date','Strike long put','Status','Qty Buy','Qty Sell','Total Costs','AVG Backtested Return','Return'],
+   shortExercised: ['Date','Option expiration date','Strike short put','Status','Qty Buy','Qty Sell','Total Costs','AVG Backtested Return','Return']
  };
 
   const handleSort = (tableKey, key) => {
@@ -106,11 +106,19 @@ export default function OverviewPage() {
   return (
     <Layout title="Overview">
       <main style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
-        <h1 style={{ textAlign: 'center', marginBottom: '1.5rem', fontSize: '1.8rem' }}>Active trades: Put-Spreads</h1>
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '3rem' }}>
-          {renderTable('active', trades, columns.active, row => ['Filled', 'Partial/Cancelled'].includes(row['Status']))}
-        </div>
-
+        {(() => {
+  const activeFiltered = trades.filter(row => ['Filled', 'Partial/Cancelled'].includes(row['Status']));
+  return (
+    <>
+      <h1 style={{ textAlign: 'center', marginBottom: '1.5rem', fontSize: '1.8rem' }}>
+        Active trades: Put-Spreads ({activeFiltered.length})
+      </h1>
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '3rem' }}>
+        {renderTable('active', activeFiltered, columns.active, () => true)}
+      </div>
+    </>
+  );
+})()}
         <h1 style={{ textAlign: 'center', marginBottom: '1.5rem', fontSize: '1.8rem' }}>Exited trades</h1>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           {renderTable('exited', trades, columns.exited, row => row['Status'] === 'Exited', {
