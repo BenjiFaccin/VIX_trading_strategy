@@ -254,11 +254,12 @@ exitData.forEach(row => {
 });
 
 // Même logique appliquée aux commissions
+// Ajouter 1.47 par ligne de exitData pour les commissions
 const fixedExitCommissionsByDate = {};
 exitData.forEach(row => {
   const date = normalizeDate(row['Date']);
   if (!date) return;
-  fixedExitCommissionsByDate[date] = (fixedExitCommissionsByDate[date] || 0) - 1.47;
+  fixedExitCommissionsByDate[date] = (fixedExitCommissionsByDate[date] || 0) + 1.47;
 });
 
 // Fusionner toutes les dates pertinentes
