@@ -618,7 +618,7 @@ const exercisedNetCumulativeData = exercisedNetReturnData.map(({ date, netReturn
     <ResponsiveContainer width="100%" height={300}>
       <LineChart data={exercisedCombinedCumulativeData}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" interval={0} angle={-45} textAnchor="end" />
+        <XAxis dataKey="date" tick={{ fontSize: 12 }} />
         <YAxis />
         <Tooltip formatter={(v) => `$${v}`} />
         <Legend />
@@ -634,7 +634,7 @@ const exercisedNetCumulativeData = exercisedNetReturnData.map(({ date, netReturn
     <ResponsiveContainer width="100%" height={300}>
       <BarChart data={exercisedNetReturnData}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" interval={0} angle={-45} textAnchor="end" />
+        <XAxis dataKey="date" tick={{ fontSize: 12 }} />
         <YAxis />
         <Tooltip formatter={(v) => `$${v}`} />
         <Legend />
@@ -649,7 +649,7 @@ const exercisedNetCumulativeData = exercisedNetReturnData.map(({ date, netReturn
     <ResponsiveContainer width="100%" height={300}>
       <LineChart data={exercisedNetCumulativeData}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" interval={0} angle={-45} textAnchor="end" />
+        <XAxis dataKey="date" tick={{ fontSize: 12 }} />
         <YAxis />
         <Tooltip formatter={(v) => `$${v}`} />
         <Legend />
