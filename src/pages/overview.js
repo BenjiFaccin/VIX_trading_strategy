@@ -20,8 +20,8 @@ export default function OverviewPage() {
   const columns = {
     active: ['Date','Option expiration date','Strike short put','Strike long put','Status','Qty Buy','Qty Sell','Total Costs','Current Expiry Value','AVG Expiry Value'],
     exited: ['Date','Option expiration date','Strike short put','Strike long put','Status','Qty Buy','Qty Sell','Total Costs','AVG Backtested Return','Return'],
-    exercised: ['Date','Option expiration date','Strike long put','Status','Qty Buy','Qty Sell','Total Costs','AVG Backtested Return','Return'],
-   shortExercised: ['Date','Option expiration date','Strike short put','Status','Qty Buy','Qty Sell','Total Costs','AVG Backtested Return','Return']
+    exercised: ['Date','Option expiration date','Strike long put','Status','Qty Buy','Total Costs','AVG Backtested Return','Return'],
+   shortExercised: ['Date','Option expiration date','Strike short put','Status','Qty Sell','Total Costs','AVG Backtested Return','Return']
  };
 
   const handleSort = (tableKey, key) => {
