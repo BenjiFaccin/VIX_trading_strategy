@@ -611,50 +611,52 @@ const exercisedNetCumulativeData = exercisedNetReturnData.map(({ date, netReturn
     </ResponsiveContainer>
   </div>
 </div>
-{/* Merged Cumulative Exercised Legs */}
-<div style={{ marginTop: '3rem' }}>
-  <h3 style={{ textAlign: 'center' }}>Cumulative Exercised Long & Short Leg Returns</h3>
-  <ResponsiveContainer width="100%" height={300}>
-    <LineChart data={exercisedCombinedCumulativeData}>
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="date" />
-      <YAxis />
-      <Tooltip formatter={(v) => `$${v}`} />
-      <Legend />
-      <Line type="monotone" dataKey="longLeg" stroke="#4caf50" name="Long Leg Cumulative" />
-      <Line type="monotone" dataKey="shortLeg" stroke="#f44336" name="Short Leg Cumulative" />
-    </LineChart>
-  </ResponsiveContainer>
-</div>
+<div style={{ display: 'flex', gap: '2rem', marginTop: '3rem' }}>
+  {/* Cumulative Exercised Long & Short Leg Returns */}
+  <div style={{ flex: 1 }}>
+    <h3 style={{ textAlign: 'center' }}>Cumulative Exercised Long & Short Leg Returns</h3>
+    <ResponsiveContainer width="100%" height={300}>
+      <LineChart data={exercisedCombinedCumulativeData}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="date" interval={0} angle={-45} textAnchor="end" />
+        <YAxis />
+        <Tooltip formatter={(v) => `$${v}`} />
+        <Legend />
+        <Line type="monotone" dataKey="longLeg" stroke="#4caf50" name="Long Leg Cumulative" />
+        <Line type="monotone" dataKey="shortLeg" stroke="#f44336" name="Short Leg Cumulative" />
+      </LineChart>
+    </ResponsiveContainer>
+  </div>
 
-{/* Non-cumulative Net Return */}
-<div style={{ marginTop: '3rem' }}>
-  <h3 style={{ textAlign: 'center' }}>Net Return Exercised Legs (Non-Cumulative)</h3>
-  <ResponsiveContainer width="100%" height={300}>
-    <BarChart data={exercisedNetReturnData}>
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="date" />
-      <YAxis />
-      <Tooltip formatter={(v) => `$${v}`} />
-      <Legend />
-      <Bar dataKey="netReturn" fill="#2196f3" name="Net Return" />
-    </BarChart>
-  </ResponsiveContainer>
-</div>
+  {/* Net Return Exercised Legs (Non-Cumulative) */}
+  <div style={{ flex: 1 }}>
+    <h3 style={{ textAlign: 'center' }}>Net Return Exercised Legs (Non-Cumulative)</h3>
+    <ResponsiveContainer width="100%" height={300}>
+      <BarChart data={exercisedNetReturnData}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="date" interval={0} angle={-45} textAnchor="end" />
+        <YAxis />
+        <Tooltip formatter={(v) => `$${v}`} />
+        <Legend />
+        <Bar dataKey="netReturn" fill="#2196f3" name="Net Return" />
+      </BarChart>
+    </ResponsiveContainer>
+  </div>
 
-{/* Cumulative Net Return */}
-<div style={{ marginTop: '3rem' }}>
-  <h3 style={{ textAlign: 'center' }}>Net Cumulative Return Exercised Legs</h3>
-  <ResponsiveContainer width="100%" height={300}>
-    <LineChart data={exercisedNetCumulativeData}>
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="date" />
-      <YAxis />
-      <Tooltip formatter={(v) => `$${v}`} />
-      <Legend />
-      <Line type="monotone" dataKey="netReturn" stroke="#673ab7" name="Cumulative Net Return" />
-    </LineChart>
-  </ResponsiveContainer>
+  {/* Net Cumulative Return Exercised Legs */}
+  <div style={{ flex: 1 }}>
+    <h3 style={{ textAlign: 'center' }}>Net Cumulative Return Exercised Legs</h3>
+    <ResponsiveContainer width="100%" height={300}>
+      <LineChart data={exercisedNetCumulativeData}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="date" interval={0} angle={-45} textAnchor="end" />
+        <YAxis />
+        <Tooltip formatter={(v) => `$${v}`} />
+        <Legend />
+        <Line type="monotone" dataKey="netReturn" stroke="#673ab7" name="Cumulative Net Return" />
+      </LineChart>
+    </ResponsiveContainer>
+  </div>
 </div>
       </main>
     </Layout>
