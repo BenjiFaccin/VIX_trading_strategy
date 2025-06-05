@@ -306,23 +306,39 @@ const cumulativeCostsData = allCostDates.map(date => {
   };
 });
 
-// Exercised Long Leg Return
-const exercisedLongLegData = longlegData
-  .map(row => {
-    const date = normalizeDate(row['Option expiration date']);
-    const value = parseFloat(row['Return']) || 0;
-    return { date, longLegReturn: value };
-  })
-  .filter(row => row.date);
+const exercisedCombinedCumulativeData = [];
 
-// Exercised Short Leg Return
-const exercisedShortLegData = shortlegData
-  .map(row => {
-    const date = normalizeDate(row['Option expiration date']);
-    const value = parseFloat(row['Return']) || 0;
-    return { date, shortLegReturn: value };
-  })
-  .filter(row => row.date);
+let cumLong = 0;
+let cumShort = 0;
+
+const longMap = {};
+longlegData.forEach(row => {
+  const date = normalizeDate(row['Option expiration date']);
+  if (!date) return;
+  const value = parseFloat(row['Return']) || 0;
+  longMap[date] = (longMap[date] || 0) + value;
+});
+
+const shortMap = {};
+shortlegData.forEach(row => {
+  const date = normalizeDate(row['Option expiration date']);
+  if (!date) return;
+  const value = parseFloat(row['Return']) || 0;
+  shortMap[date] = (shortMap[date] || 0) + value;
+});
+
+const allCombinedDates = [...new Set([...Object.keys(longMap), ...Object.keys(shortMap)])]
+  .sort((a, b) => new Date(a) - new Date(b));
+
+allCombinedDates.forEach(date => {
+  cumLong += longMap[date] || 0;
+  cumShort += shortMap[date] || 0;
+  exercisedCombinedCumulativeData.push({
+    date,
+    longLeg: parseFloat(cumLong.toFixed(2)),
+    shortLeg: parseFloat(cumShort.toFixed(2))
+  });
+});
 
 // Net Return Exercised Legs (long + short return par date)
 const mergedNetReturnDataMap = {};
@@ -339,6 +355,15 @@ exercisedShortLegData.forEach(({ date, shortLegReturn }) => {
 
 const exercisedNetReturnData = Object.values(mergedNetReturnDataMap)
   .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+let cumNet = 0;
+const exercisedNetCumulativeData = exercisedNetReturnData.map(({ date, netReturn }) => {
+  cumNet += netReturn;
+  return {
+    date,
+    netReturn: parseFloat(cumNet.toFixed(2))
+  };
+});
 
   return (
     <Layout title="Performances">
@@ -576,51 +601,50 @@ const exercisedNetReturnData = Object.values(mergedNetReturnDataMap)
     </ResponsiveContainer>
   </div>
 </div>
-<div style={{ display: 'flex', gap: '2rem', marginTop: '3rem' }}>
-  {/* Exercised Long Leg Return */}
-  <div style={{ flex: 1 }}>
-    <h3 style={{ textAlign: 'center' }}>Exercised Long Leg Return</h3>
-    <ResponsiveContainer width="100%" height={300}>
-      <LineChart data={exercisedLongLegData}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" />
-        <YAxis />
-        <Tooltip formatter={(value) => `$${value}`} />
-        <Legend />
-        <Line type="monotone" dataKey="longLegReturn" stroke="#4caf50" name="Long Leg Return" />
-      </LineChart>
-    </ResponsiveContainer>
-  </div>
+{/* Merged Cumulative Exercised Legs */}
+<div style={{ marginTop: '3rem' }}>
+  <h3 style={{ textAlign: 'center' }}>Cumulative Exercised Long & Short Leg Returns</h3>
+  <ResponsiveContainer width="100%" height={300}>
+    <LineChart data={exercisedCombinedCumulativeData}>
+      <CartesianGrid strokeDasharray="3 3" />
+      <XAxis dataKey="date" />
+      <YAxis />
+      <Tooltip formatter={(v) => `$${v}`} />
+      <Legend />
+      <Line type="monotone" dataKey="longLeg" stroke="#4caf50" name="Long Leg Cumulative" />
+      <Line type="monotone" dataKey="shortLeg" stroke="#f44336" name="Short Leg Cumulative" />
+    </LineChart>
+  </ResponsiveContainer>
+</div>
 
-  {/* Exercised Short Leg Return */}
-  <div style={{ flex: 1 }}>
-    <h3 style={{ textAlign: 'center' }}>Exercised Short Leg Return</h3>
-    <ResponsiveContainer width="100%" height={300}>
-      <LineChart data={exercisedShortLegData}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" />
-        <YAxis />
-        <Tooltip formatter={(value) => `$${value}`} />
-        <Legend />
-        <Line type="monotone" dataKey="shortLegReturn" stroke="#f44336" name="Short Leg Return" />
-      </LineChart>
-    </ResponsiveContainer>
-  </div>
+{/* Non-cumulative Net Return */}
+<div style={{ marginTop: '3rem' }}>
+  <h3 style={{ textAlign: 'center' }}>Net Return Exercised Legs (Non-Cumulative)</h3>
+  <ResponsiveContainer width="100%" height={300}>
+    <BarChart data={exercisedNetReturnData}>
+      <CartesianGrid strokeDasharray="3 3" />
+      <XAxis dataKey="date" />
+      <YAxis />
+      <Tooltip formatter={(v) => `$${v}`} />
+      <Legend />
+      <Bar dataKey="netReturn" fill="#2196f3" name="Net Return" />
+    </BarChart>
+  </ResponsiveContainer>
+</div>
 
-  {/* Net Return Exercised Legs */}
-  <div style={{ flex: 1 }}>
-    <h3 style={{ textAlign: 'center' }}>Net Return Exercised Legs</h3>
-    <ResponsiveContainer width="100%" height={300}>
-      <LineChart data={exercisedNetReturnData}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" />
-        <YAxis />
-        <Tooltip formatter={(value) => `$${value}`} />
-        <Legend />
-        <Line type="monotone" dataKey="netReturn" stroke="#2196f3" name="Net Return" />
-      </LineChart>
-    </ResponsiveContainer>
-  </div>
+{/* Cumulative Net Return */}
+<div style={{ marginTop: '3rem' }}>
+  <h3 style={{ textAlign: 'center' }}>Net Cumulative Return Exercised Legs</h3>
+  <ResponsiveContainer width="100%" height={300}>
+    <LineChart data={exercisedNetCumulativeData}>
+      <CartesianGrid strokeDasharray="3 3" />
+      <XAxis dataKey="date" />
+      <YAxis />
+      <Tooltip formatter={(v) => `$${v}`} />
+      <Legend />
+      <Line type="monotone" dataKey="netReturn" stroke="#673ab7" name="Cumulative Net Return" />
+    </LineChart>
+  </ResponsiveContainer>
 </div>
       </main>
     </Layout>
