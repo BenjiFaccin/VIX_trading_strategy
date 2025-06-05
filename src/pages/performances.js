@@ -76,6 +76,14 @@ export default function PerformancesPage() {
     return date.toLocaleDateString('en-US'); // MM/DD/YYYY
   };
 
+  // === Harmonisation des dates sur les jambes long/short ===
+const allExercisedDatesSet = new Set([
+  ...longlegData.map(row => normalizeDate(row['Option expiration date'])).filter(Boolean),
+  ...shortlegData.map(row => normalizeDate(row['Option expiration date'])).filter(Boolean),
+]);
+
+const allExercisedDates = [...allExercisedDatesSet].sort((a, b) => new Date(a) - new Date(b));
+
   const aggregateByDate = (dataArray, statusFilter, multiplier = 1) => {
     const result = {};
     dataArray.forEach(row => {
@@ -306,11 +314,6 @@ const cumulativeCostsData = allCostDates.map(date => {
   };
 });
 
-const exercisedCombinedCumulativeData = [];
-
-let cumLong = 0;
-let cumShort = 0;
-
 const longMap = {};
 longlegData.forEach(row => {
   const date = normalizeDate(row['Option expiration date']);
@@ -327,17 +330,18 @@ shortlegData.forEach(row => {
   shortMap[date] = (shortMap[date] || 0) + value;
 });
 
-const allCombinedDates = [...new Set([...Object.keys(longMap), ...Object.keys(shortMap)])]
-  .sort((a, b) => new Date(a) - new Date(b));
-
-allCombinedDates.forEach(date => {
-  cumLong += longMap[date] || 0;
-  cumShort += shortMap[date] || 0;
-  exercisedCombinedCumulativeData.push({
+let cumLong = 0;
+let cumShort = 0;
+const exercisedCombinedCumulativeData = allExercisedDates.map(date => {
+  const long = longMap[date] || 0;
+  const short = shortMap[date] || 0;
+  cumLong += long;
+  cumShort += short;
+  return {
     date,
     longLeg: parseFloat(cumLong.toFixed(2)),
     shortLeg: parseFloat(cumShort.toFixed(2))
-  });
+  };
 });
 
 // Net Return Exercised Legs (long + short return par date)
@@ -357,12 +361,10 @@ shortlegData.forEach(row => {
   exercisedNetReturnMap[date] = (exercisedNetReturnMap[date] || 0) + value;
 });
 
-const exercisedNetReturnData = Object.entries(exercisedNetReturnMap)
-  .map(([date, netReturn]) => ({
-    date,
-    netReturn: parseFloat(netReturn.toFixed(2))
-  }))
-  .sort((a, b) => new Date(a.date) - new Date(b.date));
+const exercisedNetReturnData = allExercisedDates.map(date => ({
+  date,
+  netReturn: parseFloat((exercisedNetReturnMap[date] || 0).toFixed(2))
+}));
 
 let cumNet = 0;
 const exercisedNetCumulativeData = exercisedNetReturnData.map(({ date, netReturn }) => {
