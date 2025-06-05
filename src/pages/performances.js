@@ -245,25 +245,43 @@ cumNetReturn += netVal;
 let cumCost = 0;
 let cumCommission = 0;
 
-const cumulativeCostsData = entryData
-  .map(row => {
-    const date = normalizeDate(row['Date']);
-    const cost = parseFloat(row['Total Costs']) || 0;
-    const commission = parseFloat(row['Total Commissions']) || 0;
-    return { date, cost, commission };
-  })
-  .filter(row => row.date)
-  .sort((a, b) => new Date(a.date) - new Date(b.date))
-  .map(row => {
-    cumCost += row.cost;
-    cumCommission += row.commission;
-    return {
-      date: row.date,
-      cost: Math.abs(parseFloat(cumCost.toFixed(2))), // ✅ Make cost absolute here
-      commission: parseFloat(cumCommission.toFixed(2))
-    };
-  });
+// Ajouter 1.47 par ligne de exitData, groupé par date
+const fixedExitCostsByDate = {};
+exitData.forEach(row => {
+  const date = normalizeDate(row['Date']);
+  if (!date) return;
+  fixedExitCostsByDate[date] = (fixedExitCostsByDate[date] || 0) + 1.47;
+});
 
+// Rassembler toutes les dates (entry + exit)
+const allCostDatesSet = new Set([
+  ...entryData.map(r => normalizeDate(r['Date'])).filter(Boolean),
+  ...Object.keys(fixedExitCostsByDate)
+]);
+
+const allCostDates = [...allCostDatesSet].sort((a, b) => new Date(a) - new Date(b));
+
+// Recalcul cumulé par date
+const cumulativeCostsData = allCostDates.map(date => {
+  const entryCosts = entryData
+    .filter(r => normalizeDate(r['Date']) === date)
+    .reduce((acc, r) => acc + (parseFloat(r['Total Costs']) || 0), 0);
+
+  const entryCommissions = entryData
+    .filter(r => normalizeDate(r['Date']) === date)
+    .reduce((acc, r) => acc + (parseFloat(r['Total Commissions']) || 0), 0);
+
+  const fixedExitCost = fixedExitCostsByDate[date] || 0;
+
+  cumCost += entryCosts + fixedExitCost;
+  cumCommission += entryCommissions;
+
+  return {
+    date,
+    cost: Math.abs(parseFloat(cumCost.toFixed(2))),
+    commission: parseFloat(cumCommission.toFixed(2))
+  };
+});
   return (
     <Layout title="Performances">
       <main style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
