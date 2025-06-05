@@ -253,6 +253,14 @@ exitData.forEach(row => {
   fixedExitCostsByDate[date] = (fixedExitCostsByDate[date] || 0) - 1.47;
 });
 
+// Même logique appliquée aux commissions
+const fixedExitCommissionsByDate = {};
+exitData.forEach(row => {
+  const date = normalizeDate(row['Date']);
+  if (!date) return;
+  fixedExitCommissionsByDate[date] = (fixedExitCommissionsByDate[date] || 0) - 1.47;
+});
+
 // Fusionner toutes les dates pertinentes
 const allCostDatesSet = new Set([
   ...entryData.map(r => normalizeDate(r['Date'])).filter(Boolean),
@@ -272,10 +280,9 @@ const cumulativeCostsData = allCostDates.map(date => {
     .reduce((acc, r) => acc + (parseFloat(r['Total Commissions']) || 0), 0);
 
   const fixedExitCost = fixedExitCostsByDate[date] || 0;
-
-  cumCost += entryCosts + fixedExitCost; // fixedExitCost est négatif ici
-  cumCommission += entryCommissions;
-
+  const fixedExitCommission = fixedExitCommissionsByDate[date] || 0;
+  cumCost += entryCosts + fixedExitCost;
+  cumCommission += entryCommissions + fixedExitCommission;
   return {
     date,
     cost: Math.abs(parseFloat(cumCost.toFixed(2))),
