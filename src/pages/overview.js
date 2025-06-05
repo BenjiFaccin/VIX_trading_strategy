@@ -119,35 +119,60 @@ export default function OverviewPage() {
     </>
   );
 })()}
-        <h1 style={{ textAlign: 'center', marginBottom: '1.5rem', fontSize: '1.8rem' }}>Exited trades</h1>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          {renderTable('exited', trades, columns.exited, row => row['Status'] === 'Exited', {
-            'Return': row => {
-              const val = parseFloat(row["Current Expiry Value"]) + parseFloat(row["Total Costs"]) - 1.311;
-              return !isNaN(val) ? val.toFixed(2) : '—';
-            },
-            'AVG Backtested Return': row => {
-              const val = calculateBacktestedReturn(row);
-              return !isNaN(val) ? val.toFixed(2) : '—';
-            }
-          })}
-        </div>
-
-        <h1 style={{ textAlign: 'center', margin: '3rem 0 1.5rem', fontSize: '1.8rem' }}>Exercised Long leg Trades</h1>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          {renderTable('long', longLegTrades, columns.exercised, row => row['Status'] === 'Exercised', {
-            'Return': row => parseFloat(row['Return'])?.toFixed(2),
-            'AVG Backtested Return': row => calculateBacktestedReturn(row)?.toFixed(2)
-          })}
-        </div>
-
-        <h1 style={{ textAlign: 'center', margin: '3rem 0 1.5rem', fontSize: '1.8rem' }}>Exercised Short leg Trades</h1>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          {renderTable('short', shortLegTrades, columns.shortExercised, row => row['Status'] === 'Exercised', {
-            'Return': row => parseFloat(row['Return'])?.toFixed(2),
-            'AVG Backtested Return': row => calculateBacktestedReturn(row)?.toFixed(2)
-          })}
-        </div>
+        {(() => {
+  const exitedFiltered = trades.filter(row => row['Status'] === 'Exited');
+  return (
+    <>
+      <h1 style={{ textAlign: 'center', marginBottom: '1.5rem', fontSize: '1.8rem' }}>
+        Exited trades ({exitedFiltered.length})
+      </h1>
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        {renderTable('exited', exitedFiltered, columns.exited, () => true, {
+          'Return': row => {
+            const val = parseFloat(row["Current Expiry Value"]) + parseFloat(row["Total Costs"]) - 1.311;
+            return !isNaN(val) ? val.toFixed(2) : '—';
+          },
+          'AVG Backtested Return': row => {
+            const val = calculateBacktestedReturn(row);
+            return !isNaN(val) ? val.toFixed(2) : '—';
+          }
+        })}
+      </div>
+    </>
+  );
+})()}
+        {(() => {
+  const longFiltered = longLegTrades.filter(row => row['Status'] === 'Exercised');
+  return (
+    <>
+      <h1 style={{ textAlign: 'center', margin: '3rem 0 1.5rem', fontSize: '1.8rem' }}>
+        Exercised Long leg Trades ({longFiltered.length})
+      </h1>
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        {renderTable('long', longFiltered, columns.exercised, () => true, {
+          'Return': row => parseFloat(row['Return'])?.toFixed(2),
+          'AVG Backtested Return': row => calculateBacktestedReturn(row)?.toFixed(2)
+        })}
+      </div>
+    </>
+  );
+})()}
+        {(() => {
+  const shortFiltered = shortLegTrades.filter(row => row['Status'] === 'Exercised');
+  return (
+    <>
+      <h1 style={{ textAlign: 'center', margin: '3rem 0 1.5rem', fontSize: '1.8rem' }}>
+        Exercised Short leg Trades ({shortFiltered.length})
+      </h1>
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        {renderTable('short', shortFiltered, columns.shortExercised, () => true, {
+          'Return': row => parseFloat(row['Return'])?.toFixed(2),
+          'AVG Backtested Return': row => calculateBacktestedReturn(row)?.toFixed(2)
+        })}
+      </div>
+    </>
+  );
+})()}
       </main>
     </Layout>
   );
