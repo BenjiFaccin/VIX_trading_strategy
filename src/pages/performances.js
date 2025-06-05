@@ -245,15 +245,15 @@ cumNetReturn += netVal;
 let cumCost = 0;
 let cumCommission = 0;
 
-// Ajouter 1.47 par ligne de exitData, groupé par date
+// Soustraire 1.47 par ligne de exitData, groupé par date
 const fixedExitCostsByDate = {};
 exitData.forEach(row => {
   const date = normalizeDate(row['Date']);
   if (!date) return;
-  fixedExitCostsByDate[date] = (fixedExitCostsByDate[date] || 0) + 1.47;
+  fixedExitCostsByDate[date] = (fixedExitCostsByDate[date] || 0) - 1.47;
 });
 
-// Rassembler toutes les dates (entry + exit)
+// Fusionner toutes les dates pertinentes
 const allCostDatesSet = new Set([
   ...entryData.map(r => normalizeDate(r['Date'])).filter(Boolean),
   ...Object.keys(fixedExitCostsByDate)
@@ -261,7 +261,7 @@ const allCostDatesSet = new Set([
 
 const allCostDates = [...allCostDatesSet].sort((a, b) => new Date(a) - new Date(b));
 
-// Recalcul cumulé par date
+// Construire les données cumulées par date
 const cumulativeCostsData = allCostDates.map(date => {
   const entryCosts = entryData
     .filter(r => normalizeDate(r['Date']) === date)
@@ -273,7 +273,7 @@ const cumulativeCostsData = allCostDates.map(date => {
 
   const fixedExitCost = fixedExitCostsByDate[date] || 0;
 
-  cumCost += entryCosts + fixedExitCost;
+  cumCost += entryCosts + fixedExitCost; // fixedExitCost est négatif ici
   cumCommission += entryCommissions;
 
   return {
@@ -282,6 +282,8 @@ const cumulativeCostsData = allCostDates.map(date => {
     commission: parseFloat(cumCommission.toFixed(2))
   };
 });
+
+
   return (
     <Layout title="Performances">
       <main style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
