@@ -231,6 +231,30 @@ const cumulativeReturnData = filteredDates.map(date => {
   return sum + (parseFloat(r['Current Expiry Value']) || 0);
 }, 0);
 
+// === Calcul du Win Rate basé sur l'évolution de netReturn cumulatif ===
+let winCount = 0;
+let lossCount = 0;
+
+if (cumulativeReturnData.length >= 2) {
+  for (let i = 1; i < cumulativeReturnData.length; i++) {
+    const prev = cumulativeReturnData[i - 1].netReturn;
+    const current = cumulativeReturnData[i].netReturn;
+    if (current > prev) winCount++;
+    else if (current < prev) lossCount++;
+    // égalité ignorée
+  }
+}
+
+let winRateDisplay;
+if (cumulativeReturnData.length < 2) {
+  winRateDisplay = 'N/A';
+} else if (lossCount === 0) {
+  winRateDisplay = '100%';
+} else {
+  const ratio = (winCount / (winCount + lossCount)) * 100;
+  winRateDisplay = ratio.toFixed(2) + '%';
+}
+
 const exitRowReturn = exitMatches.reduce((sum, r) => {
   const exitPrice = parseFloat(r['Exit Price']) || 0;
   return sum + (exitPrice * 100);
@@ -428,7 +452,7 @@ const exercisedNetCumulativeData = exercisedNetReturnData.map(({ date, netReturn
             justifyContent: 'center'
           }}>
             <span style={{ fontSize: '3rem', fontWeight: '600' }}>
-              <span style={{ marginRight: '0.3rem' }}>✓</span>–%
+                <span style={{ marginRight: '0.3rem' }}>✓</span>{winRateDisplay}
             </span>
             <span style={{ fontSize: '0.9rem', color: '#444' }}>Current Win Rate</span>
           </div>
@@ -630,7 +654,7 @@ const exercisedNetCumulativeData = exercisedNetReturnData.map(({ date, netReturn
 
   {/* Net Return Exercised Legs (Non-Cumulative) */}
   <div style={{ flex: 1 }}>
-    <h3 style={{ textAlign: 'center' }}>Net Return Exercised Legs (Non-Cumulative)</h3>
+    <h3 style={{ textAlign: 'center' }}>Net Return Exercised Legs </h3>
     <ResponsiveContainer width="100%" height={300}>
       <BarChart data={exercisedNetReturnData}>
         <CartesianGrid strokeDasharray="3 3" />
