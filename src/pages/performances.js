@@ -306,6 +306,39 @@ const cumulativeCostsData = allCostDates.map(date => {
   };
 });
 
+// Exercised Long Leg Return
+const exercisedLongLegData = longlegData
+  .map(row => {
+    const date = normalizeDate(row['Option expiration date']);
+    const value = parseFloat(row['Return']) || 0;
+    return { date, longLegReturn: value };
+  })
+  .filter(row => row.date);
+
+// Exercised Short Leg Return
+const exercisedShortLegData = shortlegData
+  .map(row => {
+    const date = normalizeDate(row['Option expiration date']);
+    const value = parseFloat(row['Return']) || 0;
+    return { date, shortLegReturn: value };
+  })
+  .filter(row => row.date);
+
+// Net Return Exercised Legs (long + short return par date)
+const mergedNetReturnDataMap = {};
+
+exercisedLongLegData.forEach(({ date, longLegReturn }) => {
+  mergedNetReturnDataMap[date] = mergedNetReturnDataMap[date] || { date, netReturn: 0 };
+  mergedNetReturnDataMap[date].netReturn += longLegReturn;
+});
+
+exercisedShortLegData.forEach(({ date, shortLegReturn }) => {
+  mergedNetReturnDataMap[date] = mergedNetReturnDataMap[date] || { date, netReturn: 0 };
+  mergedNetReturnDataMap[date].netReturn += shortLegReturn;
+});
+
+const exercisedNetReturnData = Object.values(mergedNetReturnDataMap)
+  .sort((a, b) => new Date(a.date) - new Date(b.date));
 
   return (
     <Layout title="Performances">
@@ -543,7 +576,52 @@ const cumulativeCostsData = allCostDates.map(date => {
     </ResponsiveContainer>
   </div>
 </div>
+<div style={{ display: 'flex', gap: '2rem', marginTop: '3rem' }}>
+  {/* Exercised Long Leg Return */}
+  <div style={{ flex: 1 }}>
+    <h3 style={{ textAlign: 'center' }}>Exercised Long Leg Return</h3>
+    <ResponsiveContainer width="100%" height={300}>
+      <LineChart data={exercisedLongLegData}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="date" />
+        <YAxis />
+        <Tooltip formatter={(value) => `$${value}`} />
+        <Legend />
+        <Line type="monotone" dataKey="longLegReturn" stroke="#4caf50" name="Long Leg Return" />
+      </LineChart>
+    </ResponsiveContainer>
+  </div>
 
+  {/* Exercised Short Leg Return */}
+  <div style={{ flex: 1 }}>
+    <h3 style={{ textAlign: 'center' }}>Exercised Short Leg Return</h3>
+    <ResponsiveContainer width="100%" height={300}>
+      <LineChart data={exercisedShortLegData}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="date" />
+        <YAxis />
+        <Tooltip formatter={(value) => `$${value}`} />
+        <Legend />
+        <Line type="monotone" dataKey="shortLegReturn" stroke="#f44336" name="Short Leg Return" />
+      </LineChart>
+    </ResponsiveContainer>
+  </div>
+
+  {/* Net Return Exercised Legs */}
+  <div style={{ flex: 1 }}>
+    <h3 style={{ textAlign: 'center' }}>Net Return Exercised Legs</h3>
+    <ResponsiveContainer width="100%" height={300}>
+      <LineChart data={exercisedNetReturnData}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="date" />
+        <YAxis />
+        <Tooltip formatter={(value) => `$${value}`} />
+        <Legend />
+        <Line type="monotone" dataKey="netReturn" stroke="#2196f3" name="Net Return" />
+      </LineChart>
+    </ResponsiveContainer>
+  </div>
+</div>
       </main>
     </Layout>
   );
