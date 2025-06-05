@@ -143,11 +143,7 @@ const cancelledCostData = entryData
       };
     });
 
-  const numLonglegTx = longlegData.length;
-  const numShortlegTx = shortlegData.length;
-
-  // NB: cumCancelled est déjà calculé depuis cancelledMap
-  const totalTxs = cumFilled + cumCompleted + cumCancelled + numLonglegTx + numShortlegTx;
+  const totalTxs = cumFilled + cumCompleted; // Exclude cancelled
 
   const entryExitRatioData = filledVsCompletedChartData.map(({ date, filled, completed }) => {
     const total = filled + completed;
