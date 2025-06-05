@@ -240,29 +240,6 @@ const exitRowReturn = exitMatches.reduce((sum, r) => {
     return sum + (parseFloat(r['Total Costs']) || 0);
   }, 0);
 
-  // === Calcul du Win Rate basé sur l'évolution de netReturn cumulatif ===
-let winCount = 0;
-let lossCount = 0;
-
-if (cumulativeReturnData.length >= 2) {
-  for (let i = 1; i < cumulativeReturnData.length; i++) {
-    const prev = cumulativeReturnData[i - 1].netReturn;
-    const current = cumulativeReturnData[i].netReturn;
-    if (current > prev) winCount++;
-    else if (current < prev) lossCount++;
-  }
-}
-
-let winRateDisplay;
-if (cumulativeReturnData.length < 2) {
-  winRateDisplay = 'N/A';
-} else if (lossCount === 0) {
-  winRateDisplay = '100%';
-} else {
-  const ratio = (winCount / (winCount + lossCount)) * 100;
-  winRateDisplay = ratio.toFixed(2) + '%';
-}
-
   // ==== Longleg trades ====
   const longlegMatches = longlegData.filter(r => normalizeDate(r['Option expiration date']) === date);
   const longlegReturnSum = longlegMatches.reduce((sum, r) => {
@@ -287,6 +264,29 @@ if (cumulativeReturnData.length < 2) {
     netReturn: parseFloat(cumNetReturn.toFixed(2))
   };
 });
+
+// === Calcul du Win Rate basé sur l'évolution de netReturn cumulatif ===
+let winCount = 0;
+let lossCount = 0;
+
+if (cumulativeReturnData.length >= 2) {
+  for (let i = 1; i < cumulativeReturnData.length; i++) {
+    const prev = cumulativeReturnData[i - 1].netReturn;
+    const current = cumulativeReturnData[i].netReturn;
+    if (current > prev) winCount++;
+    else if (current < prev) lossCount++;
+  }
+}
+
+var winRateDisplay;
+if (cumulativeReturnData.length < 2) {
+  winRateDisplay = 'N/A';
+} else if (lossCount === 0) {
+  winRateDisplay = '100%';
+} else {
+  const ratio = (winCount / (winCount + lossCount)) * 100;
+  winRateDisplay = ratio.toFixed(2) + '%';
+}
 
 let cumCost = 0;
 let cumCommission = 0;
