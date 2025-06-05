@@ -223,6 +223,11 @@ const cumulativeReturnData = filteredDates.map(date => {
   return sum + (parseFloat(r['Current Expiry Value']) || 0);
 }, 0);
 
+const exitRowReturn = exitMatches.reduce((sum, r) => {
+  const exitPrice = parseFloat(r['Exit Price']) || 0;
+  return sum + (exitPrice * 100);
+}, 0);
+
   const exitCosts = exitMatches.reduce((sum, r) => {
     return sum + (parseFloat(r['Total Costs']) || 0);
   }, 0);
