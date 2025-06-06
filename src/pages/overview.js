@@ -118,8 +118,10 @@ export default function OverviewPage() {
         Active trades: Put-Spreads ({activeFiltered.length})
       </h1>
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '3rem' }}>
-        {renderTable('active', activeFiltered, columns.active, () => true)}
-      </div>
+  <div style={{ width: '100%', maxWidth: '1200px', margin: '0 auto' }}>
+    {renderTable('active', activeFiltered, columns.active, () => true)}
+  </div>
+</div>
     </>
   );
 })()}
@@ -131,6 +133,7 @@ export default function OverviewPage() {
         Exited trades ({exitedFiltered.length})
       </h1>
       <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div style={{ width: '100%', maxWidth: '1200px', margin: '0 auto' }}>
         {renderTable('exited', exitedFiltered, columns.exited, () => true, {
           'Return': row => {
             const val = parseFloat(row["Current Expiry Value"]) + parseFloat(row["Total Costs"]) - 1.311;
@@ -141,6 +144,7 @@ export default function OverviewPage() {
             return !isNaN(val) ? val.toFixed(2) : '—';
           }
         })}
+      </div>
       </div>
     </>
   );
