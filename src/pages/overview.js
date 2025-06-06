@@ -64,7 +64,7 @@ export default function OverviewPage() {
     });
 
     return (
-      <table style={{ borderCollapse: 'collapse', width: '80%', maxWidth: '1000px' }}>
+      <table style={{ borderCollapse: 'collapse', width: '100%', maxWidth: '600px' }}>
         <thead>
           <tr>
             {cols.map(col => (
