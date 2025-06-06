@@ -141,34 +141,34 @@ export default function OverviewPage() {
     </>
   );
 })()}
-        {(() => {
+       {(() => {
   const longFiltered = longLegTrades.filter(row => row['Status'] === 'Exercised');
-  return (
-    <>
-      <h1 style={{ textAlign: 'center', margin: '3rem 0 1.5rem', fontSize: '1.8rem' }}>
-        Exercised Long leg Trades ({longFiltered.length})
-      </h1>
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        {renderTable('long', longFiltered, columns.exercised, () => true, {
-          'Return': row => parseFloat(row['Return'])?.toFixed(2),
-          'AVG Backtested Return': row => calculateBacktestedReturn(row)?.toFixed(2)
-        })}
-      </div>
-    </>
-  );
-})()}
-        {(() => {
   const shortFiltered = shortLegTrades.filter(row => row['Status'] === 'Exercised');
+
   return (
     <>
       <h1 style={{ textAlign: 'center', margin: '3rem 0 1.5rem', fontSize: '1.8rem' }}>
-        Exercised Short leg Trades ({shortFiltered.length})
+        Exercised Trades (Long & Short Legs)
       </h1>
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        {renderTable('short', shortFiltered, columns.shortExercised, () => true, {
-          'Return': row => parseFloat(row['Return'])?.toFixed(2),
-          'AVG Backtested Return': row => calculateBacktestedReturn(row)?.toFixed(2)
-        })}
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', flexWrap: 'wrap' }}>
+        <div>
+          <h2 style={{ textAlign: 'center', marginBottom: '1rem' }}>
+            Long leg Trades ({longFiltered.length})
+          </h2>
+          {renderTable('long', longFiltered, columns.exercised, () => true, {
+            'Return': row => parseFloat(row['Return'])?.toFixed(2),
+            'AVG Backtested Return': row => calculateBacktestedReturn(row)?.toFixed(2)
+          })}
+        </div>
+        <div>
+          <h2 style={{ textAlign: 'center', marginBottom: '1rem' }}>
+            Short leg Trades ({shortFiltered.length})
+          </h2>
+          {renderTable('short', shortFiltered, columns.shortExercised, () => true, {
+            'Return': row => parseFloat(row['Return'])?.toFixed(2),
+            'AVG Backtested Return': row => calculateBacktestedReturn(row)?.toFixed(2)
+          })}
+        </div>
       </div>
     </>
   );
