@@ -10,8 +10,11 @@ export default function OverviewPage() {
         [shortLegTrades, setShortLegTrades] = useState([]),
         [sortConfigs, setSortConfigs] = useState({});
 
+  const [checkTrades, setCheckTrades] = useState([]); 
+
   const urls = {
     entry: useBaseUrl('/data/entry_trades.csv'),
+    check: useBaseUrl('/data/checkexpvalue.csv'), 
     exit: useBaseUrl('/data/exit_trades.csv'),
     long: useBaseUrl('/data/longleg_trades.csv'),
     short: useBaseUrl('/data/shortleg_trades.csv')
@@ -99,8 +102,9 @@ export default function OverviewPage() {
 
   useEffect(() => {
     Promise.all(Object.values(urls).map(url => fetch(url).then(r => r.text())))
-      .then(([entry, exit, long, short]) => {
+      .then(([entry, check, exit, long, short]) => {
         setTrades(Papa.parse(entry, { header: true, skipEmptyLines: true }).data);
+        setCheckTrades(Papa.parse(check, { header: true, skipEmptyLines: true }).data); // ✅ New line
         setExitData(Papa.parse(exit, { header: true, skipEmptyLines: true }).data);
         setLongLegTrades(Papa.parse(long, { header: true, skipEmptyLines: true }).data);
         setShortLegTrades(Papa.parse(short, { header: true, skipEmptyLines: true }).data);
@@ -111,7 +115,7 @@ export default function OverviewPage() {
     <Layout title="Overview">
       <main style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
         {(() => {
-  const activeFiltered = trades.filter(row => ['Filled', 'Partial/Cancelled'].includes(row['Status']));
+  const activeFiltered = checkTrades.filter(row => ['Filled', 'Partial/Cancelled'].includes(row['Status'])); 
   return (
     <>
       <h1 style={{ textAlign: 'center', marginBottom: '1.5rem', fontSize: '1.8rem' }}>
