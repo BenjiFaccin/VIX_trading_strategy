@@ -261,7 +261,7 @@ const cumulativeReturnData = filteredDates.map(date => {
   // ==== Exit trades (by date) ====
   const exitMatches = exitData.filter(r => normalizeDate(r['Date']) === date);
   const sumCurrentValueSellLeg = exitMatches.reduce(
-    (sum, r) => sum + (parseFloat(r['Current Value of sell leg']) || 0),
+    (sum, r) => sum + ((parseFloat(r['Exit Price']) || 0) * 100),
     0
   );
   const sumExitCosts = exitMatches.reduce(
