@@ -139,15 +139,24 @@ export default function OverviewPage() {
       <div style={{ display: 'flex', justifyContent: 'center' }}>
           <div style={{ width: '100%', maxWidth: '1200px', margin: '0 auto' }}>
         {renderTable('exited', exitedFiltered, columns.exited, () => true, {
-          'Return': row => {
-            const val = parseFloat(row["Current Expiry Value"]) + parseFloat(row["Total Costs"]) - 1.311;
-            return !isNaN(val) ? val.toFixed(2) : '—';
-          },
-          'AVG Backtested Return': row => {
-            const val = calculateBacktestedReturn(row);
-            return !isNaN(val) ? val.toFixed(2) : '—';
-          }
-        })}
+  'Total Costs': row => {
+    const cost = parseFloat(row['Total Costs']);
+    if (isNaN(cost)) return '—';
+    return (cost - 1.31).toFixed(2);
+  },
+  'Return': row => {
+    const exitPrice = parseFloat(row["Exit Price"]);
+    const totalCosts = parseFloat(row["Total Costs"]);
+    if (isNaN(exitPrice) || isNaN(totalCosts)) return '—';
+    const ret = exitPrice * 100 + (totalCosts - 1.31);
+    return ret.toFixed(2);
+  },
+  'AVG Backtested Return': row => {
+    const val = calculateBacktestedReturn(row);
+    return !isNaN(val) ? val.toFixed(2) : '—';
+  }
+})}
+
       </div>
       </div>
     </>
