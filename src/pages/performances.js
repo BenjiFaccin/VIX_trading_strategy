@@ -144,6 +144,7 @@ const exercisedByDate = {};
   let cumFilled = 0;
   let cumCompleted = 0;
   let cumCancelled = 0;
+  let cumExercised = 0;
   const filledVsCompletedChartData = [...allDates]
     .sort((a, b) => new Date(a) - new Date(b))
     .map(date => {
