@@ -162,7 +162,6 @@ const exercisedByDate = {};
     };
   });
 
-
   const entryFilledCount = entryData.filter(row => row['Status'] === 'Filled').length * 2;
   const exitCount = exitData.length;
   const longlegCount = longlegData.length;
@@ -241,47 +240,51 @@ let cumRowReturn = 0;
 let cumNetReturn = 0;
 
 const cumulativeReturnData = filteredDates.map(date => {
-  // ==== Exit trades ====
-  const exitMatches = exitData.filter(r => normalizeDate(r['Date']) === date);
-
-  const exitExpiryValue = exitMatches.reduce((sum, r) => {
-  const exitPrice = parseFloat(r['Exit Price']) || 0;
-  return sum + (exitPrice * 100 - 1.31);
-}, 0);
-
-const exitRowReturn = exitMatches.reduce((sum, r) => {
-  const exitPrice = parseFloat(r['Exit Price']) || 0;
-  return sum + (exitPrice * 100);
-}, 0);
-
-  const exitCosts = exitMatches.reduce((sum, r) => {
-    return sum + (parseFloat(r['Total Costs']) || 0);
-  }, 0);
-
-  // ==== Longleg trades ====
+  // ==== Longleg trades (by date) ====
   const longlegMatches = longlegData.filter(r => normalizeDate(r['Option expiration date']) === date);
-  const longlegReturnSum = longlegMatches.reduce((sum, r) => {
-    return sum + (parseFloat(r['Return']) || 0);
-  }, 0);
+  const sumLonglegReturn = longlegMatches.reduce(
+    (sum, r) => sum + (parseFloat(r['Return']) || 0),
+    0
+  );
+  const sumLonglegCosts = longlegMatches.reduce(
+    (sum, r) => sum + (parseFloat(r['Total Costs']) || 0),
+    0
+  );
 
-  // ==== Shortleg trades ====
+  // ==== Shortleg trades (by date) ====
   const shortlegMatches = shortlegData.filter(r => normalizeDate(r['Option expiration date']) === date);
-  const shortlegReturnSum = shortlegMatches.reduce((sum, r) => {
-    return sum + (parseFloat(r['Return']) || 0);
-  }, 0);
+  const sumShortlegReturn = shortlegMatches.reduce(
+    (sum, r) => sum + (parseFloat(r['Return']) || 0),
+    0
+  );
 
-  // ==== Calculs ====
-  const rowReturn = exitRowReturn + longlegReturnSum;
-  const netReturn = exitExpiryValue + exitCosts + longlegReturnSum + shortlegReturnSum;
+  // ==== Exit trades (by date) ====
+  const exitMatches = exitData.filter(r => normalizeDate(r['Date']) === date);
+  const sumCurrentValueSellLeg = exitMatches.reduce(
+    (sum, r) => sum + (parseFloat(r['Current Value of sell leg']) || 0),
+    0
+  );
+  const sumExitCosts = exitMatches.reduce(
+    (sum, r) => sum + (parseFloat(r['Total Costs']) || 0),
+    0
+  );
+
+  // ==== Formulas ====
+  // ROW RETURN: Return (longleg) + Return (shortleg) + Current Value of sell leg (exit)
+  const rowReturn = sumLonglegReturn + sumShortlegReturn + sumCurrentValueSellLeg;
+  // NET RETURN: rowReturn + Total Costs (longleg) + Total Costs (exit)
+  const netReturn = rowReturn + sumLonglegCosts + sumExitCosts;
+
   cumRowReturn += rowReturn;
   cumNetReturn += netReturn;
 
   return {
     date,
     rowReturn: parseFloat(cumRowReturn.toFixed(2)),
-    netReturn: parseFloat(cumNetReturn.toFixed(2))
+    netReturn: parseFloat(cumNetReturn.toFixed(2)),
   };
 });
+
 
 // === Calcul du Win Rate basé sur l'évolution de netReturn cumulatif ===
 let winCount = 0;
