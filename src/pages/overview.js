@@ -148,7 +148,7 @@ export default function OverviewPage() {
     const exitPrice = parseFloat(row["Exit Price"]);
     const totalCosts = parseFloat(row["Total Costs"]);
     if (isNaN(exitPrice) || isNaN(totalCosts)) return '—';
-    const ret = exitPrice * 100 + (totalCosts - 1.31);
+    const ret = exitPrice * 100 + (totalCosts - 1.47);
     return ret.toFixed(2);
   },
   'AVG Backtested Return': row => {
