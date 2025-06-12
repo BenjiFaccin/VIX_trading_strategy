@@ -125,6 +125,14 @@ const cancelledCostData = entryData
     };
   });
 
+    // Aggregate all exercised trades by date (across both shortleg and longleg files)
+const exercisedByDate = {};
+[...shortlegData, ...longlegData].forEach(row => {
+  // Use the same normalizeDate function as everywhere else
+  const date = normalizeDate(row['Option expiration date']);
+  if (!date) return;
+  exercisedByDate[date] = (exercisedByDate[date] || 0) + 1;
+});
 
   const allDates = new Set([
   ...Object.keys(filledMap),
@@ -136,15 +144,6 @@ const cancelledCostData = entryData
   let cumFilled = 0;
   let cumCompleted = 0;
   let cumCancelled = 0;
-  // Aggregate all exercised trades by date (across both shortleg and longleg files)
-const exercisedByDate = {};
-[...shortlegData, ...longlegData].forEach(row => {
-  // Use the same normalizeDate function as everywhere else
-  const date = normalizeDate(row['Option expiration date']);
-  if (!date) return;
-  exercisedByDate[date] = (exercisedByDate[date] || 0) + 1;
-});
-
   const filledVsCompletedChartData = [...allDates]
     .sort((a, b) => new Date(a) - new Date(b))
     .map(date => {
