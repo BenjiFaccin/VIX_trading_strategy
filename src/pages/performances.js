@@ -127,21 +127,31 @@ const cancelledCostData = entryData
 
 
   const allDates = new Set([
-    ...Object.keys(filledMap),
-    ...Object.keys(completedMap),
-    ...Object.keys(cancelledMap)
-  ]);
+  ...Object.keys(filledMap),
+  ...Object.keys(completedMap),
+  ...Object.keys(cancelledMap),
+  ...Object.keys(exercisedByDate)
+]);
 
   let cumFilled = 0;
   let cumCompleted = 0;
   let cumCancelled = 0;
+  // Aggregate all exercised trades by date (across both shortleg and longleg files)
+const exercisedByDate = {};
+[...shortlegData, ...longlegData].forEach(row => {
+  // Use the same normalizeDate function as everywhere else
+  const date = normalizeDate(row['Option expiration date']);
+  if (!date) return;
+  exercisedByDate[date] = (exercisedByDate[date] || 0) + 1;
+});
+
   const filledVsCompletedChartData = [...allDates]
     .sort((a, b) => new Date(a) - new Date(b))
     .map(date => {
       cumFilled += filledMap[date] || 0;
       cumCompleted += completedMap[date] || 0;
       cumCancelled += cancelledMap[date] || 0;
-
+      cumExercised += exercisedByDate[date] || 0;
       return {
         date,
         filled: cumFilled,
@@ -157,12 +167,13 @@ const cancelledCostData = entryData
   const shortlegCount = shortlegData.length;
   const totalTxs = entryFilledCount + exitCount + longlegCount + shortlegCount;
 
-  const entryExitRatioData = filledVsCompletedChartData.map(({ date, filled, completed }) => {
-    const total = filled + completed;
-    const successRate = total > 0 ? filled / total : 1;
-    const failRate = 1 - successRate;
-    return { date, successRate, failRate };
-  });
+  const entryExitRatioData = filledVsCompletedChartData.map(({ date, filled, completed, exercised }) => {
+  const total = filled + completed + exercised;
+  const entryRate = total > 0 ? filled / total : 0;
+  const exitRate = total > 0 ? completed / total : 0;
+  const exercisedRate = total > 0 ? exercised / total : 0;
+  return { date, entryRate, exitRate, exercisedRate };
+});
 
   const cancelledRatioData = filledVsCompletedChartData.map(({ date, valid, cancelled }) => {
     const total = valid + cancelled;
@@ -474,6 +485,7 @@ const exercisedNetCumulativeData = exercisedNetReturnData.map(({ date, netReturn
                 <Legend />
                 <Bar dataKey="filled" stackId="a" fill="#00d1c1" name="entry" />
                 <Bar dataKey="completed" stackId="a" fill="#000000" name="exit" />
+                <Bar dataKey="exercised" stackId="a" fill="#f4b400" name="exercised" />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -482,26 +494,33 @@ const exercisedNetCumulativeData = exercisedNetReturnData.map(({ date, netReturn
             <h3 style={{ textAlign: 'center' }}>Transactions Rate Over Time</h3>
             <ResponsiveContainer width="100%" height={300}>
               <AreaChart data={entryExitRatioData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis domain={[0, 1]} tickFormatter={(v) => `${Math.round(v * 100)}%`} />
-                <Tooltip formatter={(value) => `${(value * 100).toFixed(2)}%`} />
-                <Legend />
-                <Area
-                  type="monotone"
-                  dataKey="successRate"
-                  stroke="#00d1c1"
-                  fill="#00d1c1"
-                  name="entry"
-                />
-                <Area
-                  type="monotone"
-                  dataKey="failRate"
-                  stroke="#000"
-                  fill="#000"
-                  name="exit"
-                />
-              </AreaChart>
+  <CartesianGrid strokeDasharray="3 3" />
+  <XAxis dataKey="date" />
+  <YAxis domain={[0, 1]} tickFormatter={(v) => `${Math.round(v * 100)}%`} />
+  <Tooltip formatter={(value) => `${(value * 100).toFixed(2)}%`} />
+  <Legend />
+  <Area
+    type="monotone"
+    dataKey="entryRate"
+    stroke="#00d1c1"
+    fill="#00d1c1"
+    name="entry"
+  />
+  <Area
+    type="monotone"
+    dataKey="exitRate"
+    stroke="#000"
+    fill="#000"
+    name="exit"
+  />
+  <Area
+    type="monotone"
+    dataKey="exercisedRate"
+    stroke="#f4b400"
+    fill="#f4b400"
+    name="exercised"
+  />
+</AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
