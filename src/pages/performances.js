@@ -228,7 +228,8 @@ const cumulativeReturnData = filteredDates.map(date => {
   const exitMatches = exitData.filter(r => normalizeDate(r['Date']) === date);
 
   const exitExpiryValue = exitMatches.reduce((sum, r) => {
-  return sum + (parseFloat(r['Current Expiry Value']) || 0);
+  const exitPrice = parseFloat(r['Exit Price']) || 0;
+  return sum + (exitPrice * 100 - 1.31);
 }, 0);
 
 const exitRowReturn = exitMatches.reduce((sum, r) => {
