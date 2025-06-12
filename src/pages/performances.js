@@ -151,7 +151,11 @@ const cancelledCostData = entryData
       };
     });
 
-  const totalTxs = cumFilled + cumCompleted; // Exclude cancelled
+  const entryFilledCount = entryData.filter(row => row['Status'] === 'Filled').length * 2;
+  const exitCount = exitData.length;
+  const longlegCount = longlegData.length;
+  const shortlegCount = shortlegData.length;
+  const totalTxs = entryFilledCount + exitCount + longlegCount + shortlegCount;
 
   const entryExitRatioData = filledVsCompletedChartData.map(({ date, filled, completed }) => {
     const total = filled + completed;
