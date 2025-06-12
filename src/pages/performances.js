@@ -146,20 +146,22 @@ const exercisedByDate = {};
   let cumCancelled = 0;
   let cumExercised = 0;
   const filledVsCompletedChartData = [...allDates]
-    .sort((a, b) => new Date(a) - new Date(b))
-    .map(date => {
-      cumFilled += filledMap[date] || 0;
-      cumCompleted += completedMap[date] || 0;
-      cumCancelled += cancelledMap[date] || 0;
-      cumExercised += exercisedByDate[date] || 0;
-      return {
-        date,
-        filled: cumFilled,
-        completed: cumCompleted,
-        cancelled: cumCancelled,
-        valid: cumFilled + cumCompleted
-      };
-    });
+  .sort((a, b) => new Date(a) - new Date(b))
+  .map(date => {
+    cumFilled += filledMap[date] || 0;
+    cumCompleted += completedMap[date] || 0;
+    cumCancelled += cancelledMap[date] || 0;
+    cumExercised += exercisedByDate[date] || 0;
+    return {
+      date,
+      filled: cumFilled,
+      completed: cumCompleted,
+      cancelled: cumCancelled,
+      exercised: cumExercised, // <<< ADD THIS LINE!
+      valid: cumFilled + cumCompleted
+    };
+  });
+
 
   const entryFilledCount = entryData.filter(row => row['Status'] === 'Filled').length * 2;
   const exitCount = exitData.length;
