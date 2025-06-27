@@ -8,7 +8,7 @@ Following the backtest framework described in the [Assumptions](./Assumptions.md
 
 - A **VIX spike threshold range** (e.g., 18–19)
 - A **sell strike level** (from 10 to 60)
-- A **bull put spread configuration**
+- A **bear put spread configuration**
 
 This profiling system is designed to explore the performance of the strategy across a **broad volatility and strike space**, capturing edge cases and robust zones.
 

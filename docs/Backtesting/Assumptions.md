@@ -4,13 +4,13 @@ sidebar_position: 1
 
 # Assumptions
 
-This page outlines the **core assumptions** and logic used during the backtesting phase of the VIX Bull Put Spread strategy. All simulations were based on the **cleaned historical EoD options data** from 2010 to 2023 and implemented using a custom-built Python script.
+This page outlines the **core assumptions** and logic used during the backtesting phase of the VIX Bear Put Spread strategy. All simulations were based on the **cleaned historical EoD options data** from 2010 to 2023 and implemented using a custom-built Python script.
 
 ---
 
 ## 📊 Strategy Setup
 
-Each backtest simulates a **bull put spread** built when the VIX reached certain spike levels. The key structural elements of each test include:
+Each backtest simulates a **bear put spread** built when the VIX reached certain spike levels. The key structural elements of each test include:
 
 - **Sell put strike levels**: Ranged from 10 to 60 with a step of 1.
 - **VIX spike thresholds**: Backtests were segmented by daily high VIX values between 10 and 60, in 1-point bands (e.g., 15–16).

@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # VIX Trading Strategy
 
-Discover an automated **Bull Put-spread Strategy** on the VIX index, executed through **Interactive Brokers**.
+Discover an automated **Bear Put-spread Strategy** on the VIX index, executed through **Interactive Brokers**.
 
 ---
 
@@ -27,7 +27,7 @@ This VIX Trading strategy is based on selling higher striker put and buying lowe
 
 ## Why Trade VIX Put Spreads?
 
-The VIX index typically spikes during market turmoil and mean-reverts over time. This behavior makes it ideal for structured strategies like bull put spreads, which profit from elevated implied volatility and controlled risk exposure.
+The VIX index typically spikes during market turmoil and mean-reverts over time. This behavior makes it ideal for structured strategies like bear put spreads, which profit from elevated implied volatility and controlled risk exposure.
 
 ---
 
@@ -54,7 +54,7 @@ The goal was also to **learn how to automate trading strategies in a concrete**,
 
 # Key Concerns and Limitations
 
-While building and forward-testing this VIX bull put spread strategy, I’ve identified a few **critical concerns** that are essential to acknowledge for anyone applying or analyzing the approach. These insights came from both practical testing and lessons learned during system development.
+While building and forward-testing this VIX bear put spread strategy, I’ve identified a few **critical concerns** that are essential to acknowledge for anyone applying or analyzing the approach. These insights came from both practical testing and lessons learned during system development.
 
 ---
 
