@@ -11,7 +11,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'VIX Trading',
-  tagline: 'A Bull Put-spread Strategy',
+  tagline: 'A Bear Put-spread Strategy',
   favicon: 'img/LogoVIX.jpg',
 
   // Set the production url of your site here

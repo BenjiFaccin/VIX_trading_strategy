@@ -167,7 +167,7 @@ export default function Home() {
   return (
     <Layout
       title={`${siteConfig.title}`}
-      description="A bull intraday put-spread automated trading algo strategy on VIX."
+      description="A bear intraday put-spread automated trading algo strategy on VIX."
     >
       <HomepageHeader />
       <main>
