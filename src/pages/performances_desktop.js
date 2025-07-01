@@ -425,22 +425,21 @@ const exercisedNetCumulativeData = exercisedNetReturnData.map(({ date, netReturn
         <div style={{
           background: '#111',
           color: 'white',
-          padding: '1rem',
+          padding: '1.5rem',
           textAlign: 'center',
-          fontSize: '1.4rem',
+          fontSize: '1.8rem',
           fontWeight: 'bold',
           borderRadius: '12px',
-          marginBottom: '1.5rem'
+          marginBottom: '2rem'
         }}>
           Transactions Analysis
         </div>
 
         <div style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        gap: '1rem',
-        marginBottom: '2rem'
+          display: 'flex',
+          gap: '1.5rem',
+          marginBottom: '2rem',
+          justifyContent: 'space-between'
         }}>
           <div style={{
             flex: 1,
@@ -599,12 +598,12 @@ const exercisedNetCumulativeData = exercisedNetReturnData.map(({ date, netReturn
                   <div style={{
           background: '#111',
           color: 'white',
-          padding: '1rem',
+          padding: '1.5rem',
           textAlign: 'center',
-          fontSize: '1.4rem',
+          fontSize: '1.8rem',
           fontWeight: 'bold',
           borderRadius: '12px',
-          marginTop: '1.5rem'
+          marginTop: '3rem'
         }}>
           Performances Review
         </div>
