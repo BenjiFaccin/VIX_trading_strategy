@@ -66,17 +66,20 @@
   position: relative;
 }
 
+/* Ancien supprimé : plus besoin de position: absolute */
 .liveStatusMobile {
-  position: absolute;
-  bottom: 0.75rem;
-  right: 0.75rem;
-  background-color: rgba(0, 0, 0, 0.65);
+  display: none;
+}
+
+/* Nouveau live status intégré en bas, dans le flux normal */
+.liveStatusInline {
+  background-color: rgba(0, 0, 0, 0.75);
   color: white;
-  font-size: 0.6rem;
-  padding: 0.3rem 0.5rem;
-  border-radius: 6px;
-  line-height: 1.2;
-  max-width: 120px;
-  text-align: right;
-  z-index: 2;
+  font-size: 0.7rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+  width: 100%;
+  text-align: center;
+  box-sizing: border-box;
 }

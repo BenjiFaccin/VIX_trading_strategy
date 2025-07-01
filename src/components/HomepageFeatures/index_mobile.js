@@ -71,14 +71,13 @@ function HeroBannerMobile() {
         <button className={styles.performanceButton}>Performances ➡️</button>
       </div>
 
-      <div className={styles.liveStatusMobile}>
-        <strong>Live Status :</strong> 🔴<br />
-        <small>Bot live in 0:04:04:10</small>
+      {/* Live status intégré en dessous dans le flux normal */}
+      <div className={styles.liveStatusInline}>
+        <strong>Live Status :</strong> 🔴 Bot live in 0:04:00:00
       </div>
     </div>
   );
 }
-
 
 export default function HomepageFeatures() {
   const isMobile = useIsMobile();
