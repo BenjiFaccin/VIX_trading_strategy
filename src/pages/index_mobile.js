@@ -103,21 +103,21 @@ function HomepageHeader() {
         <div
           style={{
             position: 'absolute',
-            bottom: '10px',
-            right: '10px',
+            top: '5px',
+            right: '5px',
             backgroundColor: 'rgba(0, 0, 0, 0.65)',
             color: 'white',
             fontWeight: 500,
             padding: '0.3rem 0.6rem',
             borderRadius: '6px',
-            fontSize: '0.5rem',
+            fontSize: '0.4rem',
             maxWidth: '140px',
             lineHeight: 1.2,
             textAlign: 'right',
           }}
         >
           <span>Live Status: {isLive ? '🟢' : '🔴'}</span>
-          <div style={{ fontSize: '0.5rem', marginTop: '0.1rem' }}>
+          <div style={{ fontSize: '0.4rem', marginTop: '0.05rem' }}>
             {isLive ? `Ends in ${liveEndCountdown}` : `Bot live in ${countdown}`}
           </div>
         </div>
