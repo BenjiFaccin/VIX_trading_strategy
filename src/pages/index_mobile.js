@@ -10,7 +10,6 @@ import styles from './index.module.css';
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
 
-  // 🕒 Get NY time reliably
   function getNewYorkTime() {
     const formatter = new Intl.DateTimeFormat('en-US', {
       timeZone: 'America/New_York',
@@ -29,7 +28,6 @@ function HomepageHeader() {
     return new Date(`${obj.year}-${obj.month}-${obj.day}T${obj.hour}:${obj.minute}:${obj.second}`);
   }
 
-  // 🕒 Detect if it's a US trading day + hours (based on NY time)
   function isUsTradingHours() {
     const nyTime = getNewYorkTime();
     const day = nyTime.getDay();
@@ -38,7 +36,6 @@ function HomepageHeader() {
     return day >= 1 && day <= 5 && ((hour > 9 || (hour === 9 && minute >= 30)) && hour < 16);
   }
 
-  // ⏳ Countdown to next market OPEN (9:30 AM NY time)
   function getNextTradingCountdown() {
     const nyNow = getNewYorkTime();
     let nextOpen = new Date(nyNow);
@@ -50,7 +47,6 @@ function HomepageHeader() {
     return formatCountdown(nextOpen.getTime() - nyNow.getTime());
   }
 
-  // ⏳ Countdown to market CLOSE (4:00 PM NY time)
   function getMarketCloseCountdown() {
     const nyNow = getNewYorkTime();
     const nyClose = new Date(nyNow);
@@ -59,7 +55,6 @@ function HomepageHeader() {
     return diff <= 0 ? '0:00:00:00' : formatCountdown(diff);
   }
 
-  // 🔢 Format ms diff to d:hh:mm:ss
   function formatCountdown(ms) {
     const totalSeconds = Math.floor(ms / 1000);
     const d = Math.floor(totalSeconds / (3600 * 24));
@@ -69,7 +64,6 @@ function HomepageHeader() {
     return `${d}:${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   }
 
-  // 🔁 State
   const [isLive, setIsLive] = React.useState(false);
   const [countdown, setCountdown] = React.useState('');
   const [liveEndCountdown, setLiveEndCountdown] = React.useState('');
@@ -92,7 +86,7 @@ function HomepageHeader() {
   return (
     <header
       className={clsx('hero hero--primary', styles.heroBanner)}
-      style={{ position: 'relative', paddingBottom: '4.5rem' }}
+      style={{ position: 'relative' }}
     >
       <div className="container" style={{ position: 'relative' }}>
         <Heading as="h1" className="hero__title">
@@ -100,39 +94,30 @@ function HomepageHeader() {
         </Heading>
         <p className="hero__subtitle">{siteConfig.tagline}</p>
         <div className={styles.buttons}>
-          <Link
-            className="button button--secondary"
-            style={{
-              fontSize: '0.8rem',
-              padding: '0.4rem 0.8rem',
-              borderRadius: '6px',
-            }}
-            to="/performances"
-          >
+          <Link className="button button--secondary button--lg" to="/performances">
             Performances ➡️
           </Link>
         </div>
 
-        {/* ✅ LIVE STATUS for MOBILE – adjusted */}
+        {/* ✅ LIVE STATUS for MOBILE – Smaller and Bottom Right */}
         <div
           style={{
             position: 'absolute',
             bottom: '10px',
-            right: '15px',
+            right: '10px',
             backgroundColor: 'rgba(0, 0, 0, 0.65)',
             color: 'white',
             fontWeight: 500,
             padding: '0.3rem 0.6rem',
             borderRadius: '6px',
-            fontSize: '0.65rem',
+            fontSize: '0.5rem',
             maxWidth: '140px',
             lineHeight: 1.2,
             textAlign: 'right',
-            zIndex: 10,
           }}
         >
           <span>Live Status: {isLive ? '🟢' : '🔴'}</span>
-          <div style={{ fontSize: '0.6rem', marginTop: '0.2rem' }}>
+          <div style={{ fontSize: '0.5rem', marginTop: '0.1rem' }}>
             {isLive ? `Ends in ${liveEndCountdown}` : `Bot live in ${countdown}`}
           </div>
         </div>
