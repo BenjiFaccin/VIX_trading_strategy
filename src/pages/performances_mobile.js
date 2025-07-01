@@ -437,6 +437,7 @@ const exercisedNetCumulativeData = exercisedNetReturnData.map(({ date, netReturn
 
         <div style={{
         display: 'flex',
+        flexDirection: 'column',
         flexWrap: 'wrap',
         justifyContent: 'center',
         gap: '1rem',
@@ -479,7 +480,7 @@ const exercisedNetCumulativeData = exercisedNetReturnData.map(({ date, netReturn
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: '2rem', marginBottom: '3rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column',gap: '2rem', marginBottom: '3rem' }}>
           <div style={{ flex: 1 }}>
             <h3 style={{ textAlign: 'center' }}>Number of Transactions Over Time</h3>
             <ResponsiveContainer width="100%" height={300}>
@@ -532,7 +533,7 @@ const exercisedNetCumulativeData = exercisedNetReturnData.map(({ date, netReturn
         </div>
 
         {/* Cancelled Ratio vs Valid Transactions */}
-        <div style={{ display: 'flex', gap: '2rem', marginTop: '3rem' }}>
+        <div style={{ display: 'flex',flexDirection: 'column', gap: '2rem', marginTop: '3rem' }}>
           <div style={{ flex: 1 }}>
             <h3 style={{ textAlign: 'center' }}>Cancelled Transactions Ratio Over Time</h3>
             <ResponsiveContainer width="100%" height={300}>
@@ -634,7 +635,7 @@ const exercisedNetCumulativeData = exercisedNetReturnData.map(({ date, netReturn
     </LineChart>
   </ResponsiveContainer>
 </div>
-<div style={{ display: 'flex', gap: '2rem', marginTop: '3rem' }}>
+<div style={{ display: 'flex',flexDirection: 'column', gap: '2rem', marginTop: '3rem' }}>
   {/* Cumulative Total Costs */}
   <div style={{ flex: 1 }}>
     <h3 style={{ textAlign: 'center' }}>Cumulative Total Costs Over Time</h3>
@@ -664,7 +665,7 @@ const exercisedNetCumulativeData = exercisedNetReturnData.map(({ date, netReturn
     </ResponsiveContainer>
   </div>
 </div>
-<div style={{ display: 'flex', gap: '2rem', marginTop: '3rem' }}>
+<div style={{ display: 'flex', flexDirection: 'column',gap: '2rem', marginTop: '3rem' }}>
   {/* Cumulative Exercised Long & Short Leg Returns */}
   <div style={{ flex: 1 }}>
     <h3 style={{ textAlign: 'center' }}>Cumulative Exercised Long & Short Leg Returns</h3>
