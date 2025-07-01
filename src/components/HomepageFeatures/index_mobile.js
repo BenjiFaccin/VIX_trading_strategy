@@ -65,10 +65,11 @@ function Feature({Svg, title, description, isMobile}) {
 function HeroBannerMobile() {
   return (
     <div className={styles.heroContainer}>
-      <h1 className={styles.heroTitle}>VIX Trading</h1>
-      <p className={styles.heroSubtitle}>A Bear Put-spread Strategy</p>
-
-      <button className={styles.performanceButton}>Performances ➡️</button>
+      <div className={styles.heroText}>
+        <h1 className={styles.heroTitle}>VIX Trading</h1>
+        <p className={styles.heroSubtitle}>A Bear Put-spread Strategy</p>
+        <button className={styles.performanceButton}>Performances ➡️</button>
+      </div>
 
       <div className={styles.liveStatusMobile}>
         <strong>Live Status :</strong> 🔴<br />
@@ -77,6 +78,7 @@ function HeroBannerMobile() {
     </div>
   );
 }
+
 
 export default function HomepageFeatures() {
   const isMobile = useIsMobile();

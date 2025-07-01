@@ -25,7 +25,6 @@
 }
 
 /* HERO BANNER MOBILE */
-
 .heroContainer {
   position: relative;
   width: 100%;
@@ -35,6 +34,12 @@
   padding: 2rem 1rem;
   border-radius: 12px;
   margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+.heroText {
+  z-index: 1;
+  position: relative;
 }
 
 .heroTitle {
@@ -57,26 +62,21 @@
   cursor: pointer;
   color: #222;
   font-weight: bold;
-  z-index: 2;
+  z-index: 1;
+  position: relative;
 }
 
 .liveStatusMobile {
   position: absolute;
   bottom: 0.75rem;
-  right: 1rem;
+  right: 0.75rem;
   background-color: rgba(0, 0, 0, 0.65);
   color: white;
-  font-size: 0.65rem;
-  padding: 0.3rem 0.6rem;
+  font-size: 0.6rem;
+  padding: 0.3rem 0.5rem;
   border-radius: 6px;
   line-height: 1.2;
-  max-width: 130px;
+  max-width: 120px;
   text-align: right;
-}
-
-/* Facultatif : cacher sur desktop */
-@media screen and (min-width: 769px) {
-  .liveStatusMobile {
-    display: none;
-  }
+  z-index: 2;
 }
