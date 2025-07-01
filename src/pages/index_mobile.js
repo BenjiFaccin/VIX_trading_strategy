@@ -110,14 +110,14 @@ function HomepageHeader() {
             fontWeight: 500,
             padding: '0.3rem 0.6rem',
             borderRadius: '6px',
-            fontSize: '0.5rem',
+            fontSize: '0.6rem',
             maxWidth: '140px',
             lineHeight: 1.2,
             textAlign: 'right',
           }}
         >
           <span>Live Status: {isLive ? '🟢' : '🔴'}</span>
-          <div style={{ fontSize: '0.5rem', marginTop: '0.05rem' }}>
+          <div style={{ fontSize: '0.6rem', marginTop: '0.1rem' }}>
             {isLive ? `Ends in ${liveEndCountdown}` : `Bot live in ${countdown}`}
           </div>
         </div>
