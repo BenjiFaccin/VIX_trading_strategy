@@ -70,15 +70,9 @@ function HeroBannerMobile() {
         <p className={styles.heroSubtitle}>A Bear Put-spread Strategy</p>
         <button className={styles.performanceButton}>Performances ➡️</button>
       </div>
-
-      {/* Live status intégré en dessous dans le flux normal */}
-      <div className={styles.liveStatusInline}>
-        <strong>Live Status :</strong> 🔴 Bot live in 0:04:00:00
-      </div>
     </div>
   );
 }
-
 export default function HomepageFeatures() {
   const isMobile = useIsMobile();
 
