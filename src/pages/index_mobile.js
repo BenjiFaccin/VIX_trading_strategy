@@ -88,7 +88,7 @@ function HomepageHeader() {
       className={clsx('hero hero--primary', styles.heroBanner)}
       style={{ position: 'relative' }}
     >
-      <div className="container" style={{ position: 'relative' }}>
+      <div className="container">
         <Heading as="h1" className="hero__title">
           {siteConfig.title}
         </Heading>
