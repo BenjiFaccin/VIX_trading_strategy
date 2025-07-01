@@ -62,12 +62,29 @@ function Feature({Svg, title, description, isMobile}) {
   );
 }
 
+function HeroBannerMobile() {
+  return (
+    <div className={styles.heroContainer}>
+      <h1 className={styles.heroTitle}>VIX Trading</h1>
+      <p className={styles.heroSubtitle}>A Bear Put-spread Strategy</p>
+
+      <button className={styles.performanceButton}>Performances ➡️</button>
+
+      <div className={styles.liveStatusMobile}>
+        <strong>Live Status :</strong> 🔴<br />
+        <small>Bot live in 0:04:04:10</small>
+      </div>
+    </div>
+  );
+}
+
 export default function HomepageFeatures() {
   const isMobile = useIsMobile();
 
   return (
     <section className={styles.features}>
       <div className="container">
+        {isMobile && <HeroBannerMobile />}
         <div className="row">
           {FeatureList.map((props, idx) => (
             <Feature key={idx} {...props} isMobile={isMobile} />
