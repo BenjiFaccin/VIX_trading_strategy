@@ -9,3 +9,16 @@
   height: 200px;
   width: 200px;
 }
+
+.featureSvgMobile {
+  width: 80px;
+  height: 80px;
+}
+
+.mobileText {
+  font-size: 0.95rem;
+}
+
+.featureItem {
+  margin-bottom: 2rem;
+}
