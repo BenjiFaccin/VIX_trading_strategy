@@ -66,14 +66,4 @@ This prevents the strategy from running outside trading hours and ensures a clea
 ![Task schedulers configuration](/img/vm_program_task.png)
 
 
-## 🧠 Future Enhancements
-
-Though the system is largely automated, future improvements could include:
-
-- Log redirection for daily output tracking
-- Health checks to confirm IB Gateway is active
-- Email or Slack alerts for failures
-- Timezone handling to adjust for daylight savings
-- Automatic cleanup of stuck processes
-
-These changes would further increase reliability and reduce the need for manual supervision.
+This whole configuration allow a fully operational automated algorithmic trading strategy, without human intervention (only one connection a week to do) and an overview automatically updated dashboards to follow it easily.
