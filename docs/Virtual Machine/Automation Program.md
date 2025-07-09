@@ -20,6 +20,8 @@ The restart occurs outside trading hours and allows for multi-day operation with
 Configuration path:  
 **Configuration → Lock and Exit → Auto Restart**
 
+![VM IB Gateway Config](/img/vm_program.png)
+
 ## 🛠️ Batch Script for Launching the Strategy
 
 To streamline execution, I created a `.bat` file called `launch_trader.bat` to run the Python trading script:
@@ -40,6 +42,8 @@ Benefits:
 - Works with Task Scheduler
 - Easy to debug or expand later (e.g. with logs or error handling)
 
+![Bat file for launching algo](/img/vm_program_bat.png)
+
 ## ⏱️ Task Scheduler Setup
 
 Two scheduled tasks control the lifecycle of the algorithm. Both run under the secondary VPS user to stay independent of RDP sessions.
@@ -58,6 +62,9 @@ This ensures the bot starts at the exact U.S. market open, when most trading act
 - **Action**: Ends the CMD or Python process
 
 This prevents the strategy from running outside trading hours and ensures a clean stop each day.
+
+![Task schedulers configuration](/img/vm_program_task.png)
+
 
 ## 🧠 Future Enhancements
 
