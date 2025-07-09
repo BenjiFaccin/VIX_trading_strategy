@@ -14,7 +14,6 @@ The **exact logic behind entry and exit signals will not be disclosed**, as it c
 
 ---
 
-
 ## 🕰️ Scheduling Logic
 
 All execution is constrained to **global US trading hours**, specifically:
@@ -69,45 +68,54 @@ To automate both entry and exit logic on a rolling basis throughout the day, I b
 
 ---
 
-## 📧 Daily Email Recap
+## 📊 Exercised Leg Processing
 
-### `send_mail_recap.py`
+### `exercisedlong.py`
 
-This script runs automatically each evening and:
-- Reads both `entry_trades.csv` and `exit_trades.csv`
-- Counts the number of trades executed for the day
-- Sends a formatted summary email to my email address
-- Email includes:
-  - Number of entries and exits
-  - Timestamp
-  - Link to live dashboard
+This script:
+- Reviews `entry_trades.csv` and marks filled spreads as **Exercised** once the expiration date has passed
+- Extracts exercised long-leg trades and adds them to a dedicated `longleg_trades.csv`
+- Uses **CBOE data scraping** to retrieve the **VIX settlement price**
+- Calculates the **final payoff** of the long leg
+- Logs processed trades to both internal and public-facing CSVs
 
-✅ Helps track daily performance at a glance and ensures I’m alerted even if I don’t log into the IBKR portal.
+✅ Helps compute realistic P&L based on true VIX expiration levels.
 
 ---
 
+### `exercisedshort.py`
+
+This script:
+- Identical scheduling to `exercisedlong.py`, but focused on the **short leg** of spreads
+- Tracks **Exercised/Exited** short legs and appends them to `shortleg_trades.csv`
+- Uses VIX settlement pricing from CBOE to estimate actual payoff
+- Records both **return** and **settlement value** in final logs
+
+✅ This allows evaluating whether the short leg expired worthless or was exercised against.
+
+---
 
 ## 🧠 Central Coordinator: `runtrader.py`
 
 This is the main control script. It:
 - Launches `loop_entry.py` and `loop_exit.py` in parallel threads
 - Starts a **third thread** to monitor **Paris time** (UTC+1)
-- Sends a **daily recap email** just before **midnight Paris time (23:59)** using the email sender described below
+- Coordinates all automation logic to ensure consistent performance
 
 This ensures 24/7 automation during US market hours while maintaining logs and alerts.
 
 ---
 
-
 ## ✅ Summary
 
-| Component        | Purpose                                |
-|------------------|----------------------------------------|
-| `entry_trades.py` | Trade selection + execution engine     |
-| `exit_trades.py`  | Monitors and exits profitable trades   |
-| `loop_entry.py`   | Repeats entry script every minute      |
-| `loop_exit.py`    | Repeats exit script every minute       |
-| `send_mail_recap.py` | Sends daily trade summary by email  |
-| `runtrader.py`    | Master loop: runs both + mail scheduler|
+| Component            | Purpose                                      |
+|----------------------|----------------------------------------------|
+| `entry_trades.py`    | Trade selection + execution engine           |
+| `exit_trades.py`     | Monitors and exits profitable trades         |
+| `loop_entry.py`      | Repeats entry script every minute            |
+| `loop_exit.py`       | Repeats exit script every minute             |
+| `exercisedlong.py`   | Calculates payoff on long legs post-expiry   |
+| `exercisedshort.py`  | Calculates payoff on short legs post-expiry  |
+| `runtrader.py`       | Master loop: runs both + scheduler           |
 
 This architecture provides a **robust and fully autonomous forward-testing environment**, while keeping all sensitive strategy logic protected and isolated.

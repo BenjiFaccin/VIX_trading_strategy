@@ -4,13 +4,15 @@ sidebar_position: 1
 
 # VIX Trading Strategy
 
-Discover an automated **Bear Put-spread Strategy** on the VIX index, executed through **Interactive Brokers**.
+Discover an automated algorithmic **Bear Put-spread Strategy** on the VIX index, executed through **Interactive Brokers** via a virtual machine.
 
 ---
 
 ## Overview
 
-This VIX Trading strategy is based on selling higher striker put and buying lower strike put on the VIX index using historical data analysis, backtesting, and fully automated execution.
+This VIX Trading strategy is based on selling lower strike put and buying higher strike put on the VIX index using historical data analysis, backtesting, and fully automated execution.
+
+![Example bear put spread strat](/img/bear.png)
 
 ### Key Features
 

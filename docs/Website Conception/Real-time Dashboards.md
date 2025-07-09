@@ -22,7 +22,6 @@ The top section gives a **global overview** of trading activity:
 - Daily bar charts of **entries vs. exits**
 - Execution rates for monitoring latency or market conditions
 
-
 ---
 
 ### 🔄 Cancelled Orders Monitoring
@@ -53,6 +52,25 @@ Two additional live metrics:
 - **Total Costs Over Time** (spread cost basis)
 - **Total Commissions** (based on Interactive Brokers real fees)
 
-These metrics are essential for computing net profitability and ensuring model assumptions align with reality.
+---
+
+### 📉 Exercised Legs Performance
+
+To track the **final realized return** of spreads that were **held to expiry**, the dashboard now includes detailed analysis of the long and short legs:
+
+#### 1. Cumulative Exercised Long & Short Leg Returns
+- Shows **cumulative return** over time for both long and short legs
+- Green = Long Leg returns
+- Red = Short Leg returns
+
+#### 2. Net Return Exercised Legs
+- Highlights **net payoff** per expiry cycle
+- Net = Long leg - Short leg payoff
+
+#### 3. Net Cumulative Return Exercised Legs
+- Total **cumulative profit** for exercised spreads over time
+- Serves as a benchmark of realized profitability post-expiry
 
 ---
+
+These metrics are essential for computing net profitability and ensuring model assumptions align with reality.

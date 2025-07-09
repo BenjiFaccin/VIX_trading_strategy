@@ -12,9 +12,10 @@ To forward-test my selected VIX trading strategies in real market conditions, I 
 
 The system connects to IBKR using:
 - `host = 127.0.0.1`
-- `port = 7497` (paper account)
-- `clientId = 1`
+- `port = 4002` (paper account)
+- `clientId = 1 / 2 / 3*`
 
+*Different clientId because as several codes simulateneously interact with ib gateway, I have to connect through a different clientId to avoid errors. 
 This allows real-time interaction with **live or delayed data**, order placement, monitoring, and trade logging.
 
 ---

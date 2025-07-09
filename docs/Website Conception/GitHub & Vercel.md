@@ -38,7 +38,7 @@ The GitHub project is directly linked to **Vercel**, which enables **automatic d
 This setup integrates smoothly with my trading automation system:
 
 - `loop_entry.py` and `loop_exit.py` run continuously during US market hours
-- At every cycle, trade logs (`entry_trades.csv`, `exit_trades.csv`) are updated
+- At every cycle, trade logs (`entry_trades.csv`, `exit_trades.csv`,`longleg_trades.csv`,`shortleg_trades.csv`) are updated
 - These logs can be committed and pushed to GitHub automatically
 - Vercel picks up the update and redeploys the site within seconds
 
